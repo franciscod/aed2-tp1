@@ -49,7 +49,22 @@
 
 	
 
-	\begin{tad}{\tadNombre{Red}}
+	\begin{tad}{\tadNombre{DCNet}}
+		\tadGeneros{dcNet}
+
+		\tadGeneradores
+		\tadOperacion{crearRed}{topo}{dcNet}{}
+		\tadOperacion{seg}{dcNet}{dcNet}{}
+		\tadOperacion{mandarPaquete}{dcNet/dcn,pc/p1,pc/p2,paquete}{dcNet}
+		{($p_1$ $\in$ pcs(topo($dcn$)) $\land$  $p_2$ $\in$ pcs(topo($dcn$))) $\yluego$ \\ conectadas?(topo($dcn$) , $p_1$ , $p_2$)}
+
+		\tadObservadores
+		\tadOperacion{recorridoPaquete}{dcNet/dcn,paquete/p}{secu((ip,interface)))}{paquete?($dcn$,$p$)}
+		\tadOperacion{paquetesEnEspera}{dcNet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))}
+		\tadOperacion{paquete?}{dcNet/dcn,paquete/p}{bool)}{}
+
+		\tadOtrasOperaciones
+		\tadOperacion{maxPaquetesMandados}{dcNet}{pc}{}
 		
 
 	\end{tad}
