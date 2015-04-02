@@ -58,7 +58,7 @@
 \grupo{Grupo: 12}
 
 \integrante{Demartino, Francisco}{348/14}{demartino.francisco@gmail.com}
-\integrante{Paz, Maximiliano Le\'on}{XXX/XX}{asdm4xileon@gmail.com}
+\integrante{Paz, Maximiliano Le\'on}{251/14}{m4xileon@gmail.com}
 \integrante{Mena, Manuel}{313/14}{manuelmena1993@gmail.com}
 \integrante{Pondal, Iv\'an}{078/14}{ivan.pondal@gmail.com}
 
@@ -89,9 +89,11 @@
 
 	\begin{tad}{\tadNombre{DCNet}}
 		\tadGeneros{dcNet}
-		\tadIgualdadObservacional{d}{d'}{dcNet}{$ (topo(d) \igobs topo(d')) \land  ((\forall p: paquetes)\newline(paquete?(d,p) \igobs paquete?(d',p))
-			\impluego( recorridoPaquete(d,p) \igobs recorridoPaquete(d',p) ) ) \land
-			((\forall p: pc)(p \in pcs(topo(d)) \land p \in pcs(topo(d')) \impluego (paquetesEnEspera(d,p) \igobs paquetesEnEspera(d',p)  )$}
+		\tadIgualdadObservacional{d}{d'}{dcNet}{$ (topo(d) \igobs topo(d')) \land 
+			((\forall p: pc)(p \in pcs(topo(d)) \land p \in pcs(topo(d')) \impluego (bufer(d,p) \igobs bufer(d',p) \land paquetesMandados(d,p) \igobs paquetesMandados(d',p) ) 
+			\land ((\forall p: paquetes)
+			((\exists  c: pc )(c \in pcs(topo(d') \land  c \in pcs(topo(d') ) \yluego(p \in buffer(d,c) \land p \in bufer(d',c) ) )
+			\impluego( recorridoPaquete(d,p) \igobs recorridoPaquete(d',p) ) ) $}
 		\tadGeneradores
 		\tadOperacion{crearRed}{topo}{dcNet}{}
 		\tadOperacion{seg}{dcNet}{dcNet}{}
@@ -99,12 +101,14 @@
 		{($p_1$ $\in$ pcs(topo($dcn$)) $\land$  $p_2$ $\in$ pcs(topo($dcn$))) $\yluego$ \\ conectadas?(topo($dcn$) , $p_1$ , $p_2$)}
 
 		\tadObservadores
-		\tadOperacion{recorridoPaquete}{dcNet/dcn,paquete/p}{secu((ip,interface)))}{paquete?($dcn$,$p$)}
-		\tadOperacion{paquetesEnEspera}{dcNet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))}
-		\tadOperacion{paquete?}{dcNet,paquete}{bool}{}
+		\tadOperacion{recorridoPaquete}{dcNet/dcn,paquete/p}{secu((ip,interface)))}{$(\exists  c: pc )(c \in pcs(topo(dcn)) \yluego (p \in buffer(dcn,c))$}
+		\tadOperacion{bufer}{dcNet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))} 
+		\tadOperacion{paquetesMandados}{dcNet/dcn,pc/p}{nat}{$p$ $\in$ pcs(topo($dcn$))} 
+
 		\tadOperacion{topo}{dcNet}{topologia}{}
 
 		\tadOtrasOperaciones
+		\tadOperacion{paqueteEnTransito?}{dcNet,paquete}{bool}{}
 		\tadOperacion{maxPaquetesMandados}{dcNet}{pc}{}
 		\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c,c'},\paratodo{dcNet}{dcn},\paratodo{topologia}{t}]
 
@@ -112,9 +116,14 @@
 		\tadAxioma{topo(seg(dcn))}{topo(dcn)}
 		\tadAxioma{topo(mandarPaquete(dcn,c,c',p))}{topo(dcn)}
 
+		\tadAxioma{paquetesMandados(crearRed(t))}{0}
+		\tadAxioma{paquetesMandados(seg(dcn))}{paquetesMandados(dcn)}
+		\tadAxioma{paquetesMandados(mandarPaquete(dcn,o,d,p),c)}{\IF\ $c = o$ THEN $paquetesMandados(dcn,c) + 1$ ELSE $paquetesMandados(dcn,c)$ FI}
+
 
 
 	\end{tad}
+	\newpage
 
 \begin{tadx}{\tadNombre{Topolog\'ia}}{
 	\noindent Este TAD modela el grafo de compus, interfaces y conexiones.
@@ -124,7 +133,7 @@
 }
 
 	\tadAlinearFunciones{conectarCompus}{topo, nat/ipA, nat/ifA, nat/ipB, nat/ifB}
-
+	\tadGeneros{topologia}
 	\tadObservadores
 	\tadOperacion{compus}{topo}{conj(nat)}{}
 	\tadOperacion{\#interfaces}{topo/t, nat/ip}{nat}{$ip \in compus(t)$}
