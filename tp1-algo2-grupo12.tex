@@ -88,6 +88,34 @@
 % aca van los tads
 
 
+	\begin{tad}{\tadNombre{DCNet}}
+		\tadGeneros{dcNet}
+		\tadIgualdadObservacional{d}{d'}{dcNet}{$ (topo(d) \igobs topo(d')) \land  ((\forall p: paquetes)\newline(paquete?(d,p) \igobs paquete?(d',p))
+			\impluego( recorridoPaquete(d,p) \igobs recorridoPaquete(d',p) ) ) \land
+			((\forall p: pc)(p \in pcs(topo(d)) \land p \in pcs(topo(d')) \impluego (paquetesEnEspera(d,p) \igobs paquetesEnEspera(d',p)  )$}
+		\tadGeneradores
+		\tadOperacion{crearRed}{topo}{dcNet}{}
+		\tadOperacion{seg}{dcNet}{dcNet}{}
+		\tadOperacion{mandarPaquete}{dcNet/dcn,pc/p1,pc/p2,paquete}{dcNet}
+		{($p_1$ $\in$ pcs(topo($dcn$)) $\land$  $p_2$ $\in$ pcs(topo($dcn$))) $\yluego$ \\ conectadas?(topo($dcn$) , $p_1$ , $p_2$)}
+
+		\tadObservadores
+		\tadOperacion{recorridoPaquete}{dcNet/dcn,paquete/p}{secu((ip,interface)))}{paquete?($dcn$,$p$)}
+		\tadOperacion{paquetesEnEspera}{dcNet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))}
+		\tadOperacion{paquete?}{dcNet,paquete}{bool}{}
+		\tadOperacion{topo}{dcNet}{topologia}{}
+
+		\tadOtrasOperaciones
+		\tadOperacion{maxPaquetesMandados}{dcNet}{pc}{}
+		\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c,c'},\paratodo{dcNet}{dcn},\paratodo{topologia}{t}]
+
+		\tadAxioma{topo(crearRed(t))}{t}
+		\tadAxioma{topo(seg(dcn))}{topo(dcn)}
+		\tadAxioma{topo(mandarPaquete(dcn,c,c',p))}{topo(dcn)}
+
+
+
+	\end{tad}
 
 
 \end{document}
