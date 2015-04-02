@@ -85,8 +85,7 @@
 % Otro salto de pagina
 % \newpage
 
-% aca van los tads
-
+% kudos al que logra mandar cada tad a un archivo y traerlo con un include
 
 	\begin{tad}{\tadNombre{DCNet}}
 		\tadGeneros{dcNet}
@@ -116,6 +115,45 @@
 
 
 	\end{tad}
+
+\begin{tadx}{\tadNombre{Topolog\'ia}}{
+	\noindent Este TAD modela el grafo de compus, interfaces y conexiones.
+	Al agregar una compu a la topologia, se define cuantas interfaces tienes,
+	y considera que estan numeradas de 1 a k (siendo k la cantidad de interfaces).
+    Adem\'as, se asume que no van a agregarse compus diferentes con misma ip.
+}
+
+	\tadAlinearFunciones{conectarCompus}{topo, nat/ipA, nat/ifA, nat/ipB, nat/ifB}
+
+	\tadObservadores
+	\tadOperacion{compus}{topo}{conj(nat)}{}
+	\tadOperacion{\#interfaces}{topo/t, nat/ip}{nat}{$ip \in compus(t)$}
+	\tadOperacion{vecinos}{topo/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
+
+	\tadGeneradores
+	\tadOperacion{nuevaTopo}{}{topo}{}
+	\tadOperacion{agregarCompu}{topo, nat, nat}{topo}{}
+	\tadOperacion{conectarCompus}{topo, nat, nat, nat, nat}{topo}{}
+
+	% \tadOperacion{darRutas}{nat/ipA, nat/ipB}{}
+
+	%\tadOtrasOperaciones
+	%\tadOperacion{compusConectadas}{topo, nat/ip}{conj(nat)}{}
+	%\tadOperacion{compusConectadas'}{topo, conj(nat)}{conj(nat)}{}
+
+	\tadAxiomas[\paratodo{topo}{t}, \paratodo{nat}{ipAg, ipBus, n, ipA, ipB, ifA, ifB}]
+	\tadAlinearAxiomas{\#interfaces(conectarCompus($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}
+
+	\tadAxioma{compus(nuevaTopo)}{$\emptyset$}
+	\tadAxioma{compus(agregarCompu($t$, $ipAg$, $n$))}{Ag($ipAg$, compus($t$))}
+	\tadAxioma{compus(conectarCompus($t$, $ipA$, $ifA$, $ipB$, $ifB$))}{compus($t$)}
+
+	\tadAxioma{\#interfaces(agregarCompu($t$, $ipAg$, $n$), $ipBus$)}{\IF $ipAg$ == $ipBus$ THEN $n$ ELSE \#interfaces($t$, $ipBus$) FI}
+	\tadAxioma{\#interfaces(conectarCompus($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}{\#interfaces($t$, $ipBus$)}
+
+	%\tadAxioma{vecinos($nuevaTopo$, $ip$)}{$\emptyset$}
+\end{tadx}
+
 
 
 \end{document}
