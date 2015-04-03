@@ -88,6 +88,8 @@
 
 	\begin{tad}{\tadNombre{DCNet}}
 		\tadGeneros{dcnet}
+
+		\tadAlinearFunciones{maxPaquetesMandados}{dcnet/dcn,pc/p1,pc/p2,paquete}
 		\tadIgualdadObservacional{d}{d'}{dcnet}{$ (topo(d) \igobs topo(d')) \land
 			((\forall p: pc)(p \in pcs(topo(d)) \land p \in pcs(topo(d')) \impluego (buffer(d,p) \igobs buffer(d',p) \land paquetesMandados(d,p) \igobs paquetesMandados(d',p) )
 			\land ((\forall p: paquetes)
@@ -109,6 +111,9 @@
 		\tadOtrasOperaciones
 		\tadOperacion{paqueteEnTransito?}{dcnet,paquete}{bool}{}
 		\tadOperacion{maxPaquetesMandados}{dcnet}{pc}{}
+
+		\tadAlinearAxiomas{paquetesMandados(mandarPaquete(dcn,o,d,p),c)}
+
 		\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c,c'},\paratodo{dcnet}{dcn},\paratodo{topologia}{t}]
 
 		\tadAxioma{topo(crearRed(t))}{t}
@@ -127,9 +132,10 @@
 \begin{tadx}{\tadNombre{Topología}}{
 	\noindent Este TAD modela cómo se conectan las computadoras. Las IP son únicas entre compus de la topología. ¿Interfaces? ¿Qué es eso?
 }
+
 	\tadGeneros{topologia}
 
-	\tadAlinearFunciones{todasLasConectadas}{topo/t, nat/ipA, nat/ipB}{bool}
+	\tadAlinearFunciones{todasLasConectadas}{topologia/t, nat/ipA, nat/ipB}
 
 	\tadGeneradores
 	\tadOperacion{NuevaTopo}{}{topologia}{}
@@ -146,8 +152,9 @@
 	\tadOperacion{expandirFull}{topologia/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
 	\tadOperacion{exp1}{topologia/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
 
-	\tadAxiomas[\paratodo{topologia}{t}, \paratodo{nat}{ip, ipBus, ipA, ipB}]
 	\tadAlinearAxiomas{vecinas(Vecina($t$, $ipA$, $ipB$), $ipBus$)}
+
+	\tadAxiomas[\paratodo{topologia}{t}, \paratodo{nat}{ip, ipBus, ipA, ipB}]
 
 	\tadAxioma{compus(NuevaTopo)}{$\emptyset$}
 	\tadAxioma{compus(Compu($t$, $ip$))}{Ag($ip$, compus($t$))}
