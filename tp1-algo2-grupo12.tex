@@ -126,41 +126,64 @@
 	\newpage
 
 \begin{tadx}{\tadNombre{Topolog\'ia}}{
-	\noindent Este TAD modela el grafo de compus, interfaces y conexiones.
-	Al agregar una compu a la topologia, se define cuantas interfaces tienes,
-	y considera que estan numeradas de 1 a k (siendo k la cantidad de interfaces).
-    Adem\'as, se asume que no van a agregarse compus diferentes con misma ip.
+	\noindent Este TAD modela c\'omo se conectan las computadoras. Las IP son \'unicas entre compus de la topolog\'ia. ¿Interfaces? ¿Qu\'e es eso?
 }
 
-	\tadAlinearFunciones{conectarCompus}{topo, nat/ipA, nat/ifA, nat/ipB, nat/ifB}
-	\tadGeneros{topologia}
-	\tadObservadores
-	\tadOperacion{compus}{topo}{conj(nat)}{}
-	\tadOperacion{\#interfaces}{topo/t, nat/ip}{nat}{$ip \in compus(t)$}
-	\tadOperacion{vecinos}{topo/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
+	\tadAlinearFunciones{todasLasConectadas}{topo/t, nat/ipA, nat/ipB}{bool}
 
 	\tadGeneradores
-	\tadOperacion{nuevaTopo}{}{topo}{}
-	\tadOperacion{agregarCompu}{topo, nat, nat}{topo}{}
-	\tadOperacion{conectarCompus}{topo, nat, nat, nat, nat}{topo}{}
+	\tadOperacion{NuevaTopo}{}{topo}{}
+	\tadOperacion{Compu}{topo, nat}{topo}{}
+	\tadOperacion{Vecina}{topo, nat, nat}{topo}{}
 
-	% \tadOperacion{darRutas}{nat/ipA, nat/ipB}{}
+	\tadObservadores
+	\tadOperacion{compus}{topo}{conj(nat)}{}
+	\tadOperacion{vecinas}{topo/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
 
-	%\tadOtrasOperaciones
-	%\tadOperacion{compusConectadas}{topo, nat/ip}{conj(nat)}{}
-	%\tadOperacion{compusConectadas'}{topo, conj(nat)}{conj(nat)}{}
+	\tadOtrasOperaciones
+	\tadOperacion{conectadas?}{topo/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
+	\tadOperacion{todasLasConectadas}{topo/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
+	\tadOperacion{expandirFull}{topo/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
+	\tadOperacion{exp1}{topo/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
 
-	\tadAxiomas[\paratodo{topo}{t}, \paratodo{nat}{ipAg, ipBus, n, ipA, ipB, ifA, ifB}]
-	\tadAlinearAxiomas{\#interfaces(conectarCompus($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}
+	\tadAxiomas[\paratodo{topo}{t}, \paratodo{nat}{ip, ipBus, ipA, ipB}]
+	\tadAlinearAxiomas{vecinas(Vecina($t$, $ipA$, $ipB$), $ipBus$)}
 
-	\tadAxioma{compus(nuevaTopo)}{$\emptyset$}
-	\tadAxioma{compus(agregarCompu($t$, $ipAg$, $n$))}{Ag($ipAg$, compus($t$))}
-	\tadAxioma{compus(conectarCompus($t$, $ipA$, $ifA$, $ipB$, $ifB$))}{compus($t$)}
+	\tadAxioma{compus(NuevaTopo)}{$\emptyset$}
+	\tadAxioma{compus(Compu($t$, $ip$))}{Ag($ip$, compus($t$))}
+	\tadAxioma{compus(Vecina($t$, $ipA$, $ipB$))}{compus($t$)}
 
-	\tadAxioma{\#interfaces(agregarCompu($t$, $ipAg$, $n$), $ipBus$)}{\IF $ipAg$ == $ipBus$ THEN $n$ ELSE \#interfaces($t$, $ipBus$) FI}
-	\tadAxioma{\#interfaces(conectarCompus($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}{\#interfaces($t$, $ipBus$)}
+	\tadAxioma{vecinas(NuevaTopo, $ipBus$)}{$\emptyset$}
+	\tadAxioma{vecinas(Compu($t$, $ip$), $ipBus$)}{vecinas($t$, $ipBus$)}
+	\tadAxioma{vecinas(Vecina($t$, $ipA$, $ipB$), $ipBus$)}{
+		\IF $ipBus$ $\in$ Ag($ipA$, Ag($ipB$, $\emptyset$)) THEN
+			Ag($ipA$, Ag($ipB$, $\emptyset$)) - \{$ipBus$\}
+		ELSE
+			$\emptyset$
+		FI $\cup$ vecinas($t$, $ipBus$)
+	}
 
-	%\tadAxioma{vecinos($nuevaTopo$, $ip$)}{$\emptyset$}
+	\tadAxioma{todasLasConectadas($t$, $ip$)}{expandirFull($t$, Ag($ip$, $\emptyset$))}
+
+	\tadAxioma{expandirFull($t$, $cs$)}{
+		\IF exp1($t$, $cs$) $\subseteq$ $cs$ THEN
+			$cs$
+		ELSE
+			expandirFull($t$, exp1($t$, $cs$))
+		FI
+	}
+
+	\tadAxioma{exp1($t$, $cs$)}{
+		\IF $\emptyset$?($cs$) THEN
+			$\emptyset$
+		ELSE
+			Ag(dameUno($cs$), vecinas($t$, dameUno($cs$))) $\cup$ exp1($t$, sinUno($cs$))
+		FI
+	}
+
+
+
+
 \end{tadx}
 
 
