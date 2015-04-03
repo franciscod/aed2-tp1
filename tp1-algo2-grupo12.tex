@@ -87,29 +87,29 @@
 % kudos al que logra mandar cada tad a un archivo y traerlo con un include
 
 	\begin{tad}{\tadNombre{DCNet}}
-		\tadGeneros{dcNet}
-		\tadIgualdadObservacional{d}{d'}{dcNet}{$ (topo(d) \igobs topo(d')) \land 
-			((\forall p: pc)(p \in pcs(topo(d)) \land p \in pcs(topo(d')) \impluego (bufer(d,p) \igobs bufer(d',p) \land paquetesMandados(d,p) \igobs paquetesMandados(d',p) ) 
+		\tadGeneros{dcnet}
+		\tadIgualdadObservacional{d}{d'}{dcnet}{$ (topo(d) \igobs topo(d')) \land
+			((\forall p: pc)(p \in pcs(topo(d)) \land p \in pcs(topo(d')) \impluego (buffer(d,p) \igobs buffer(d',p) \land paquetesMandados(d,p) \igobs paquetesMandados(d',p) )
 			\land ((\forall p: paquetes)
-			((\exists  c: pc )(c \in pcs(topo(d') \land  c \in pcs(topo(d') ) \yluego(p \in buffer(d,c) \land p \in bufer(d',c) ) )
+			((\exists  c: pc )(c \in pcs(topo(d') \land  c \in pcs(topo(d') ) \yluego(p \in buffer(d,c) \land p \in buffer(d',c) ) )
 			\impluego( recorridoPaquete(d,p) \igobs recorridoPaquete(d',p) ) ) $}
 		\tadGeneradores
-		\tadOperacion{crearRed}{topo}{dcNet}{}
-		\tadOperacion{seg}{dcNet}{dcNet}{}
-		\tadOperacion{mandarPaquete}{dcNet/dcn,pc/p1,pc/p2,paquete}{dcNet}
+		\tadOperacion{crearRed}{topo}{dcnet}{}
+		\tadOperacion{seg}{dcnet}{dcnet}{}
+		\tadOperacion{mandarPaquete}{dcnet/dcn,pc/p1,pc/p2,paquete}{dcnet}
 		{($p_1$ $\in$ pcs(topo($dcn$)) $\land$  $p_2$ $\in$ pcs(topo($dcn$))) $\yluego$ \\ conectadas?(topo($dcn$) , $p_1$ , $p_2$)}
 
 		\tadObservadores
-		\tadOperacion{recorridoPaquete}{dcNet/dcn,paquete/p}{secu((ip,interface)))}{$(\exists  c: pc )(c \in pcs(topo(dcn)) \yluego (p \in buffer(dcn,c))$}
-		\tadOperacion{bufer}{dcNet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))} 
-		\tadOperacion{paquetesMandados}{dcNet/dcn,pc/p}{nat}{$p$ $\in$ pcs(topo($dcn$))} 
+		\tadOperacion{recorridoPaquete}{dcnet/dcn,paquete/p}{secu((ip,interface)))}{$(\exists  c: pc )(c \in pcs(topo(dcn)) \yluego (p \in buffer(dcn,c))$}
+		\tadOperacion{buffer}{dcnet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))}
+		\tadOperacion{paquetesMandados}{dcnet/dcn,pc/p}{nat}{$p$ $\in$ pcs(topo($dcn$))}
 
-		\tadOperacion{topo}{dcNet}{topologia}{}
+		\tadOperacion{topo}{dcnet}{topologia}{}
 
 		\tadOtrasOperaciones
-		\tadOperacion{paqueteEnTransito?}{dcNet,paquete}{bool}{}
-		\tadOperacion{maxPaquetesMandados}{dcNet}{pc}{}
-		\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c,c'},\paratodo{dcNet}{dcn},\paratodo{topologia}{t}]
+		\tadOperacion{paqueteEnTransito?}{dcnet,paquete}{bool}{}
+		\tadOperacion{maxPaquetesMandados}{dcnet}{pc}{}
+		\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c,c'},\paratodo{dcnet}{dcn},\paratodo{topologia}{t}]
 
 		\tadAxioma{topo(crearRed(t))}{t}
 		\tadAxioma{topo(seg(dcn))}{topo(dcn)}
