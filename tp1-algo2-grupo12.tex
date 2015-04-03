@@ -1,7 +1,8 @@
-\documentclass[10pt, a4paper]{article}
+\documentclass[10pt, a4paper, spanish]{article}
 \usepackage[paper=a4paper, left=1.5cm, right=1.5cm, bottom=1.5cm, top=3.5cm]{geometry}
-\usepackage[latin1]{inputenc}
 \usepackage[spanish]{babel}
+\selectlanguage{spanish}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{indentfirst}
 \usepackage{fancyhdr}
@@ -21,9 +22,8 @@
 \hypersetup{%
  % Para que el PDF se abra a página completa.
  pdfstartview= {FitH \hypercalcbp{\paperheight-\topmargin-1in-\headheight}},
- pdfauthor={Cátedra de Algoritmos y Estructuras de Datos II - DC - UBA},
- pdfkeywords={TADs básicos},
- pdfsubject={Tipos abstractos de datos básicos}
+ pdfauthor={Grupo 12 - 1c2015 - Algoritmos y Estructuras de Datos II - DC - UBA},
+ pdfsubject={TP1}
 }
 
 \parskip=5pt % 10pt es el tamaño de fuente
@@ -37,12 +37,12 @@
 \thispagestyle{fancy}
 \addtolength{\headheight}{1pt}
 \lhead{Algoritmos y Estructuras de Datos II}
-\rhead{$1^{\mathrm{er}}$ cuatrimestre de 2012}
+\rhead{$1^{\mathrm{er}}$ cuatrimestre de 2015}
 \cfoot{\thepage /\pageref{LastPage}}
 \renewcommand{\footrulewidth}{0.4pt}
 
 % Encabezado
-\lhead{Algoritmos y Estructuras de Datos I}
+\lhead{Algoritmos y Estructuras de Datos II}
 \rhead{Grupo 12}
 % Pie de pagina
 \renewcommand{\footrulewidth}{0.4pt}
@@ -53,17 +53,16 @@
 
 % Datos de caratula
 \materia{Algoritmos y Estructuras de Datos II}
-\titulo{Trabajo Pr\'actico I}
+\titulo{Trabajo Práctico I}
 %\subtitulo{}
 \grupo{Grupo: 12}
 
 \integrante{Demartino, Francisco}{348/14}{demartino.francisco@gmail.com}
-\integrante{Paz, Maximiliano Le\'on}{251/14}{m4xileon@gmail.com}
+\integrante{Paz, Maximiliano León}{251/14}{m4xileon@gmail.com}
 \integrante{Mena, Manuel}{313/14}{manuelmena1993@gmail.com}
-\integrante{Pondal, Iv\'an}{078/14}{ivan.pondal@gmail.com}
+\integrante{Pondal, Iván}{078/14}{ivan.pondal@gmail.com}
 
 \maketitle
-
 \newpage
 
 % Para crear un indice
@@ -125,8 +124,8 @@
 	\end{tad}
 	\newpage
 
-\begin{tadx}{\tadNombre{Topolog\'ia}}{
-	\noindent Este TAD modela c\'omo se conectan las computadoras. Las IP son \'unicas entre compus de la topolog\'ia. ¿Interfaces? ¿Qu\'e es eso?
+\begin{tadx}{\tadNombre{Topología}}{
+	\noindent Este TAD modela cómo se conectan las computadoras. Las IP son únicas entre compus de la topología. ¿Interfaces? ¿Qué es eso?
 }
 
 	\tadAlinearFunciones{todasLasConectadas}{topo/t, nat/ipA, nat/ipB}{bool}
