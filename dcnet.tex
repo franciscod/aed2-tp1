@@ -1,0 +1,41 @@
+\begin{tad}{\tadNombre{DCNet}}
+	\tadGeneros{dcnet}
+
+	\tadAlinearFunciones{maxPaquetesMandados}{dcnet/dcn,pc/p1,pc/p2,paquete}
+	\tadIgualdadObservacional{d}{d'}{dcnet}{$ (topo(d) \igobs topo(d')) \land
+		((\forall p: pc)(p \in pcs(topo(d)) \land p \in pcs(topo(d')) \impluego (buffer(d,p) \igobs buffer(d',p) \land paquetesMandados(d,p) \igobs paquetesMandados(d',p) )
+		\land ((\forall p: paquetes)
+		((\exists  c: pc )(c \in pcs(topo(d') \land  c \in pcs(topo(d') ) \yluego(p \in buffer(d,c) \land p \in buffer(d',c) ) )
+		\impluego( recorridoPaquete(d,p) \igobs recorridoPaquete(d',p) ) ) $}
+	\tadGeneradores
+	\tadOperacion{crearRed}{topo}{dcnet}{}
+	\tadOperacion{seg}{dcnet}{dcnet}{}
+	\tadOperacion{mandarPaquete}{dcnet/dcn,pc/p1,pc/p2,paquete}{dcnet}
+	{($p_1$ $\in$ pcs(topo($dcn$)) $\land$  $p_2$ $\in$ pcs(topo($dcn$))) $\yluego$ \\ conectadas?(topo($dcn$) , $p_1$ , $p_2$)}
+
+	\tadObservadores
+	\tadOperacion{recorridoPaquete}{dcnet/dcn,paquete/p}{secu((ip,interface)))}{$(\exists  c: pc )(c \in pcs(topo(dcn)) \yluego (p \in buffer(dcn,c))$}
+	\tadOperacion{buffer}{dcnet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))}
+	\tadOperacion{paquetesMandados}{dcnet/dcn,pc/p}{nat}{$p$ $\in$ pcs(topo($dcn$))}
+
+	\tadOperacion{topo}{dcnet}{topologia}{}
+
+	\tadOtrasOperaciones
+	\tadOperacion{paqueteEnTransito?}{dcnet,paquete}{bool}{}
+	\tadOperacion{maxPaquetesMandados}{dcnet}{pc}{}
+
+	\tadAlinearAxiomas{paquetesMandados(mandarPaquete(dcn,o,d,p),c)}
+
+	\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c,c'},\paratodo{dcnet}{dcn},\paratodo{topologia}{t}]
+
+	\tadAxioma{topo(crearRed(t))}{t}
+	\tadAxioma{topo(seg(dcn))}{topo(dcn)}
+	\tadAxioma{topo(mandarPaquete(dcn,c,c',p))}{topo(dcn)}
+
+	\tadAxioma{paquetesMandados(crearRed(t))}{0}
+	\tadAxioma{paquetesMandados(seg(dcn))}{paquetesMandados(dcn)}
+	\tadAxioma{paquetesMandados(mandarPaquete(dcn,o,d,p),c)}{\IF\ $c = o$ THEN $paquetesMandados(dcn,c) + 1$ ELSE $paquetesMandados(dcn,c)$ FI}
+
+
+
+\end{tad}

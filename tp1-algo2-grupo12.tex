@@ -17,8 +17,6 @@
 
 \sloppy
 
-
-
 \hypersetup{%
  % Para que el PDF se abra a página completa.
  pdfstartview= {FitH \hypercalcbp{\paperheight-\topmargin-1in-\headheight}},
@@ -26,7 +24,7 @@
  pdfsubject={TP1}
 }
 
-\parskip=5pt % 10pt es el tamaño de fuente
+\parskip=5pt % 5pt es el tamaño de fuente
 
 % Pongo en 0 la distancia extra entre ítemes.
 \let\olditemize\itemize
@@ -71,128 +69,8 @@
 % Forzar salto de pagina
 \clearpage
 
-% Pueden modularizar el documento incluyendo otros .tex
-% \include{observaciones}
-
-% \section{Observaciones}
-%
-% 	\begin{enumerate}
-% 		\item un item
-% 		\item otro item
-% 	\end{enumerate}
-
-% Otro salto de pagina
-% \newpage
-
-% kudos al que logra mandar cada tad a un archivo y traerlo con un include
-
-	\begin{tad}{\tadNombre{DCNet}}
-		\tadGeneros{dcnet}
-
-		\tadAlinearFunciones{maxPaquetesMandados}{dcnet/dcn,pc/p1,pc/p2,paquete}
-		\tadIgualdadObservacional{d}{d'}{dcnet}{$ (topo(d) \igobs topo(d')) \land
-			((\forall p: pc)(p \in pcs(topo(d)) \land p \in pcs(topo(d')) \impluego (buffer(d,p) \igobs buffer(d',p) \land paquetesMandados(d,p) \igobs paquetesMandados(d',p) )
-			\land ((\forall p: paquetes)
-			((\exists  c: pc )(c \in pcs(topo(d') \land  c \in pcs(topo(d') ) \yluego(p \in buffer(d,c) \land p \in buffer(d',c) ) )
-			\impluego( recorridoPaquete(d,p) \igobs recorridoPaquete(d',p) ) ) $}
-		\tadGeneradores
-		\tadOperacion{crearRed}{topo}{dcnet}{}
-		\tadOperacion{seg}{dcnet}{dcnet}{}
-		\tadOperacion{mandarPaquete}{dcnet/dcn,pc/p1,pc/p2,paquete}{dcnet}
-		{($p_1$ $\in$ pcs(topo($dcn$)) $\land$  $p_2$ $\in$ pcs(topo($dcn$))) $\yluego$ \\ conectadas?(topo($dcn$) , $p_1$ , $p_2$)}
-
-		\tadObservadores
-		\tadOperacion{recorridoPaquete}{dcnet/dcn,paquete/p}{secu((ip,interface)))}{$(\exists  c: pc )(c \in pcs(topo(dcn)) \yluego (p \in buffer(dcn,c))$}
-		\tadOperacion{buffer}{dcnet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))}
-		\tadOperacion{paquetesMandados}{dcnet/dcn,pc/p}{nat}{$p$ $\in$ pcs(topo($dcn$))}
-
-		\tadOperacion{topo}{dcnet}{topologia}{}
-
-		\tadOtrasOperaciones
-		\tadOperacion{paqueteEnTransito?}{dcnet,paquete}{bool}{}
-		\tadOperacion{maxPaquetesMandados}{dcnet}{pc}{}
-
-		\tadAlinearAxiomas{paquetesMandados(mandarPaquete(dcn,o,d,p),c)}
-
-		\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c,c'},\paratodo{dcnet}{dcn},\paratodo{topologia}{t}]
-
-		\tadAxioma{topo(crearRed(t))}{t}
-		\tadAxioma{topo(seg(dcn))}{topo(dcn)}
-		\tadAxioma{topo(mandarPaquete(dcn,c,c',p))}{topo(dcn)}
-
-		\tadAxioma{paquetesMandados(crearRed(t))}{0}
-		\tadAxioma{paquetesMandados(seg(dcn))}{paquetesMandados(dcn)}
-		\tadAxioma{paquetesMandados(mandarPaquete(dcn,o,d,p),c)}{\IF\ $c = o$ THEN $paquetesMandados(dcn,c) + 1$ ELSE $paquetesMandados(dcn,c)$ FI}
-
-
-
-	\end{tad}
-	\newpage
-
-\begin{tadx}{\tadNombre{Topología}}{
-	\noindent Este TAD modela cómo se conectan las computadoras. Las IP son únicas entre compus de la topología. ¿Interfaces? ¿Qué es eso?
-}
-
-	\tadGeneros{topologia}
-
-	\tadAlinearFunciones{todasLasConectadas}{topologia/t, nat/ipA, nat/ipB}
-
-	\tadGeneradores
-	\tadOperacion{NuevaTopo}{}{topologia}{}
-	\tadOperacion{Compu}{topologia, nat}{topologia}{}
-	\tadOperacion{Vecina}{topologia, nat, nat}{topologia}{}
-
-	\tadObservadores
-	\tadOperacion{compus}{topologia}{conj(nat)}{}
-	\tadOperacion{vecinas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
-
-	\tadOtrasOperaciones
-	\tadOperacion{conectadas?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
-	\tadOperacion{todasLasConectadas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
-	\tadOperacion{expandirFull}{topologia/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
-	\tadOperacion{exp1}{topologia/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
-
-	\tadAlinearAxiomas{vecinas(Vecina($t$, $ipA$, $ipB$), $ipBus$)}
-
-	\tadAxiomas[\paratodo{topologia}{t}, \paratodo{nat}{ip, ipBus, ipA, ipB}]
-
-	\tadAxioma{compus(NuevaTopo)}{$\emptyset$}
-	\tadAxioma{compus(Compu($t$, $ip$))}{Ag($ip$, compus($t$))}
-	\tadAxioma{compus(Vecina($t$, $ipA$, $ipB$))}{compus($t$)}
-
-	\tadAxioma{vecinas(NuevaTopo, $ipBus$)}{$\emptyset$}
-	\tadAxioma{vecinas(Compu($t$, $ip$), $ipBus$)}{vecinas($t$, $ipBus$)}
-	\tadAxioma{vecinas(Vecina($t$, $ipA$, $ipB$), $ipBus$)}{
-		\IF $ipBus$ $\in$ Ag($ipA$, Ag($ipB$, $\emptyset$)) THEN
-			Ag($ipA$, Ag($ipB$, $\emptyset$)) - \{$ipBus$\}
-		ELSE
-			$\emptyset$
-		FI $\cup$ vecinas($t$, $ipBus$)
-	}
-
-	\tadAxioma{todasLasConectadas($t$, $ip$)}{expandirFull($t$, Ag($ip$, $\emptyset$))}
-
-	\tadAxioma{expandirFull($t$, $cs$)}{
-		\IF exp1($t$, $cs$) $\subseteq$ $cs$ THEN
-			$cs$
-		ELSE
-			expandirFull($t$, exp1($t$, $cs$))
-		FI
-	}
-
-	\tadAxioma{exp1($t$, $cs$)}{
-		\IF $\emptyset$?($cs$) THEN
-			$\emptyset$
-		ELSE
-			Ag(dameUno($cs$), vecinas($t$, dameUno($cs$))) $\cup$ exp1($t$, sinUno($cs$))
-		FI
-	}
-
-
-
-
-\end{tadx}
-
-
+\include{dcnet}
+\newpage
+\include{topologia}
 
 \end{document}

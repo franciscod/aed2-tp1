@@ -1,0 +1,63 @@
+\begin{tadx}{\tadNombre{Topología}}{
+	\noindent Este TAD modela cómo se conectan las computadoras. Las IP son únicas entre compus de la topología. ¿Interfaces? ¿Qué es eso?
+}
+
+	\tadGeneros{topologieeeeeeeeeea}
+
+	\tadAlinearFunciones{todasLasConectadas}{topologia/t, nat/ipA, nat/ipB}
+
+	\tadGeneradores
+	\tadOperacion{NuevaTopo}{}{topologia}{}
+	\tadOperacion{Compu}{topologia, nat}{topologia}{}
+	\tadOperacion{Vecina}{topologia, nat, nat}{topologia}{}
+
+	\tadObservadores
+	\tadOperacion{compus}{topologia}{conj(nat)}{}
+	\tadOperacion{vecinas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
+
+	\tadOtrasOperaciones
+	\tadOperacion{conectadas?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
+	\tadOperacion{todasLasConectadas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
+	\tadOperacion{expandirFull}{topologia/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
+	\tadOperacion{exp1}{topologia/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
+
+	\tadAlinearAxiomas{vecinas(Vecina($t$, $ipA$, $ipB$), $ipBus$)}
+
+	\tadAxiomas[\paratodo{topologia}{t}, \paratodo{nat}{ip, ipBus, ipA, ipB}]
+
+	\tadAxioma{compus(NuevaTopo)}{$\emptyset$}
+	\tadAxioma{compus(Compu($t$, $ip$))}{Ag($ip$, compus($t$))}
+	\tadAxioma{compus(Vecina($t$, $ipA$, $ipB$))}{compus($t$)}
+
+	\tadAxioma{vecinas(NuevaTopo, $ipBus$)}{$\emptyset$}
+	\tadAxioma{vecinas(Compu($t$, $ip$), $ipBus$)}{vecinas($t$, $ipBus$)}
+	\tadAxioma{vecinas(Vecina($t$, $ipA$, $ipB$), $ipBus$)}{
+		\IF $ipBus$ $\in$ Ag($ipA$, Ag($ipB$, $\emptyset$)) THEN
+			Ag($ipA$, Ag($ipB$, $\emptyset$)) - \{$ipBus$\}
+		ELSE
+			$\emptyset$
+		FI $\cup$ vecinas($t$, $ipBus$)
+	}
+
+	\tadAxioma{todasLasConectadas($t$, $ip$)}{expandirFull($t$, Ag($ip$, $\emptyset$))}
+
+	\tadAxioma{expandirFull($t$, $cs$)}{
+		\IF exp1($t$, $cs$) $\subseteq$ $cs$ THEN
+			$cs$
+		ELSE
+			expandirFull($t$, exp1($t$, $cs$))
+		FI
+	}
+
+	\tadAxioma{exp1($t$, $cs$)}{
+		\IF $\emptyset$?($cs$) THEN
+			$\emptyset$
+		ELSE
+			Ag(dameUno($cs$), vecinas($t$, dameUno($cs$))) $\cup$ exp1($t$, sinUno($cs$))
+		FI
+	}
+
+
+
+
+\end{tadx}
