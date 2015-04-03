@@ -127,25 +127,26 @@
 \begin{tadx}{\tadNombre{Topología}}{
 	\noindent Este TAD modela cómo se conectan las computadoras. Las IP son únicas entre compus de la topología. ¿Interfaces? ¿Qué es eso?
 }
+	\tadGeneros{topologia}
 
 	\tadAlinearFunciones{todasLasConectadas}{topo/t, nat/ipA, nat/ipB}{bool}
 
 	\tadGeneradores
-	\tadOperacion{NuevaTopo}{}{topo}{}
-	\tadOperacion{Compu}{topo, nat}{topo}{}
-	\tadOperacion{Vecina}{topo, nat, nat}{topo}{}
+	\tadOperacion{NuevaTopo}{}{topologia}{}
+	\tadOperacion{Compu}{topologia, nat}{topologia}{}
+	\tadOperacion{Vecina}{topologia, nat, nat}{topologia}{}
 
 	\tadObservadores
-	\tadOperacion{compus}{topo}{conj(nat)}{}
-	\tadOperacion{vecinas}{topo/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
+	\tadOperacion{compus}{topologia}{conj(nat)}{}
+	\tadOperacion{vecinas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
 
 	\tadOtrasOperaciones
-	\tadOperacion{conectadas?}{topo/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
-	\tadOperacion{todasLasConectadas}{topo/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
-	\tadOperacion{expandirFull}{topo/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
-	\tadOperacion{exp1}{topo/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
+	\tadOperacion{conectadas?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
+	\tadOperacion{todasLasConectadas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
+	\tadOperacion{expandirFull}{topologia/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
+	\tadOperacion{exp1}{topologia/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
 
-	\tadAxiomas[\paratodo{topo}{t}, \paratodo{nat}{ip, ipBus, ipA, ipB}]
+	\tadAxiomas[\paratodo{topologia}{t}, \paratodo{nat}{ip, ipBus, ipA, ipB}]
 	\tadAlinearAxiomas{vecinas(Vecina($t$, $ipA$, $ipB$), $ipBus$)}
 
 	\tadAxioma{compus(NuevaTopo)}{$\emptyset$}
