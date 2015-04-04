@@ -23,6 +23,7 @@
 	\tadOtrasOperaciones
 	\tadOperacion{paqueteEnTransito?}{dcnet,paquete}{bool}{}
 	\tadOperacion{maxPaquetesMandados}{dcnet}{pc}{}
+	\tadOperacion{auxMaxPaquetes}{dcnet,conj(pc)}{pc)}{}
 	
 	\tadOperacion{pasoSeg}{topo,buffers,buffers}{buffers}{}
 	\tadOperacion{regresion}{topo,buffers,secu(buffers)}{buffers}{}
@@ -32,6 +33,7 @@
 	\tadOperacion{envioYReciboPaquetes}{topo,buffers,conj(pc)}{buffers}{}
 	\tadOperacion{envio}{topo,buffers,buffer}{buffers}{}
 	\tadOperacion{nuevosPaquetes}{buffers,buffers}{buffers}{}
+	\tadOperacion{damePaquete}{buffer}{paquete}{}
 	\tadOperacion{pasarA}{topologia,pc,pc}{pc}{}
 
 
@@ -43,11 +45,23 @@
 	\tadAxioma{topo(seg(dcn))}{topo(dcn)}
 	\tadAxioma{topo(paquetePendiente(dcn,c,c',p))}{topo(dcn)}
 
-	\tadAxioma{paquetesMandados(crearRed(t))}{0}
-	\tadAxioma{paquetesMandados(seg(dcn))}{paquetesMandados(dcn)}
+	\tadAxioma{paquetesMandados(crearRed(t),c)}{0}
+	\tadAxioma{paquetesMandados(seg(dcn),c)}{paquetesMandados(dcn)}
 	\tadAxioma{paquetesMandados(paquetePendiente(dcn,o,d,p),c)}{\IF $c = o$ THEN $paquetesMandados(dcn,c) + 1$ ELSE $paquetesMandados(dcn,c)$ FI}
 
 	\tadAxioma{dcNetBuffer(dcn,c)}{obtener(c,regresion(topo(dcn),vacio,cronoPaquetes(dcn,vacio)))}
+
+	\tadAxioma{maxPaquetesMandados(dcn)}{auxMaxPaquetes(dcn,pcs(topo(dcn)))}
+	\tadAxioma{auxMaxPaquetes(dcn,cs)}{\IF $\emptyset?(sinUno(cs))$ THEN 
+											$dameUno(cs)$ 
+										ELSE { \IF $paquetesMandados(dcn,dameUno(cs)<$
+													$paquetesMandados(dcn,auxMaxPaquetes$
+													$(dcn,sinUno(cs))) $ THEN
+													$auxMaxPaquetes(dcn,sinUno(cs))$
+												ELSE
+													$dameUno(cs)$
+												FI}
+										FI}
 
 	\tadAxioma{cronoPaquetes(crearRed(t),bs)}{<>}
 	\tadAxioma{cronoPaquetes(seg(dcn),bs)}{ bs \puntito cronoPaquetes(dcn,$\emptyset$) }
@@ -82,5 +96,5 @@
 										FI }
 
 	\noindent TAD buffers es diccionario(pc,conj(paquete)) $\newline$
- 	\noindent TAD buffer es tupla(pc,conj(paquete))
+ 	\noindent TAD buffer es tupla(pc,conj(paquete)) $\newline$
 \end{tad}
