@@ -79,9 +79,9 @@
 
 
 
-	\tadAxioma{cronoPaquetes(crearRed(t),bs)}{<>}
+	\tadAxioma{cronoPaquetes(crearRed(t),bs)}{<bs>}
 	\tadAxioma{cronoPaquetes(seg(dcn),bs)}{ bs \puntito cronoPaquetes(dcn,$\emptyset$) }
-	\tadAxioma{cronoPaquetes(paquetePendiente(dcn,o,d,p),bs)}{ $auxDefinir(dp,o,Ag(p,\emptyset),obtener(o,bs))$ 
+	\tadAxioma{cronoPaquetes(paquetePendiente(dcn,o,d,p),bs)}{ $auxDefinir(bs,o,Ag(p,\emptyset),obtener(o,bs))$ 
 																$cronoPaquetes(dcn,bs) $}
 	\tadAxioma{auxDefinir(bs,c,n,v)}{\IF $def?(c,bs)$ THEN $borrar(c,bs) \ \ definir(c,n \cup v,bs)$ 
 										ELSE $definir(c,n)$ FI 
@@ -92,7 +92,7 @@
 
 	\tadAxioma{regresion(t,bs,cbs)}{\IF $vacia?(fin(cbs))$ THEN $ pasoSeg(bs,t,prim(cbs))$ ELSE $ regresion(t,pasoSeg(bs,t,prim(cbs)),fin(cbs))$ FI}
 	\tadAxioma{pasoSeg(t,bs,nbs)}{envioYReciboPaquetes(t,bs,claves(bs)) \ \ nuevosPaquetes(bs,nbs)}
-	\tadAxioma{envioYReciboPaquetes(t,bs,cp)}{\IF $\emptyset?(sinUno(cp))$ THEN $envio(t,bs,dameUno(ck))$ ELSE $ envioYReciboPaquetes(t,envio(t,bs,dameUno(cp)),$
+	\tadAxioma{envioYReciboPaquetes(t,bs,cp)}{\IF $\emptyset?(cp)$ THEN $bs$ ELSE $ envioYReciboPaquetes(t,envio(t,bs,dameUno(cp)),$
 													$sinUno(cp))$ FI}
 	\tadAxioma{pasarA(t,o,d)}{$prim(caminoMin(t,o,d))$}												
 	\tadAxioma{envio(t,bs,b)}{$ auxDefinir(bs,pasarA(t,\Pi_1(b),dest(\Pi_2(b))),$
