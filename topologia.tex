@@ -1,5 +1,4 @@
 \begin{tadx}{\tadNombre{Topología}}{
-	\begin{tadx}{\tadNombre{Topología}}{
 	\noindent Este TAD modela cómo se conectan las computadoras.
 	Las IP son únicas entre compus de la topología.
 	Las compus tienen interfaces numeradas con los naturales de manera consecutiva
@@ -14,11 +13,11 @@
 	\tadOperacion{Compu}{topologia, nat/ip, nat}{topologia}{$\neg(ip \in compus(t))$}
 	\tadOperacion{Cable}{topologia, nat/ipA, nat/ifA, nat/ipB, nat/ipB}{topologia}{
 		$\neg(ipA \in compus(t) \lor ipB \in compus(t)) \yluego$ \\
-	$(ifA \leq numInterfaces(t, ipA)) \land$ \\
-	$(ifB \leq numInterfaces(t, ipB)) \land$ \\
-	$\neg(ifA \in interfacesOcupadasDe(t, ipA)) \land$ \\
-	$\neg(ifB \in interfacesOcupadasDe(t, ipB)) \land$ \\
-	$\neg(ipA \in vecinasDe(t, ipB))$
+		$(ifA \leq numInterfaces(t, ipA)) \land$ \\
+		$(ifB \leq numInterfaces(t, ipB)) \land$ \\
+		$\neg(ifA \in interfacesOcupadasDe(t, ipA)) \land$ \\
+		$\neg(ifB \in interfacesOcupadasDe(t, ipB)) \land$ \\
+		$\neg(ipA \in vecinasDe(t, ipB))$
 	}
 	\tadObservadores
 	\tadOperacion{compus}{topologia}{conj(nat)}{}
@@ -56,31 +55,31 @@
 	\tadAxioma{vecinasDe($t$, $ipBus$)}{map$\Pi_2$(cablesEn($t$, $ipBus$))}
 	\tadAxioma{conectadas?($t$, $ipA$, $ipB$)}{$ipA$ $\in$ expandirVecinas($t$, Ag($ipB$, $\emptyset$))}
 	\tadAxioma{expandirVecinas($t$, $cs$)}{
-	IF expandirUnPaso($t$, $cs$) = $cs$ THEN
-	$cs$
-	ELSE
-	expandirVecinas($t$, expandirUnPaso($t$, $cs$))
-	FI
+		\IF expandirUnPaso($t$, $cs$) = $cs$ THEN
+			$cs$
+		ELSE
+			expandirVecinas($t$, expandirUnPaso($t$, $cs$))
+		FI
 	}
 	\tadAxioma{expandirUnPaso($t$, $cs$)}{
-	\IF $\emptyset$?($cs$) THEN
-	$\emptyset$
-	ELSE
-	Ag(dameUno($cs$), vecinasDe($t$, dameUno($cs$))) $\cup$ expandirUnPaso($t$, sinUno($cs$))
-	FI
+		\IF $\emptyset$?($cs$) THEN
+			$\emptyset$
+		ELSE
+			Ag(dameUno($cs$), vecinasDe($t$, dameUno($cs$))) $\cup$ expandirUnPaso($t$, sinUno($cs$))
+		FI
 	}
 	\tadAxioma{map$\Pi_1$($ctnn$)}{
-	\IF $\emptyset$?($ctnn$) THEN
-	$\emptyset$
-	ELSE
-	Ag($\Pi_1$(dameUno($ctnn$)), map$\Pi_1$(sinUno($ctnn$)))
-	FI
+		\IF $\emptyset$?($ctnn$) THEN
+			$\emptyset$
+		ELSE
+			Ag($\Pi_1$(dameUno($ctnn$)), map$\Pi_1$(sinUno($ctnn$)))
+		FI
 	}
 	\tadAxioma{map$\Pi_2$($ctnn$)}{
-	\IF $\emptyset$?($ctnn$) THEN
-	$\emptyset$
-	ELSE
-	Ag($\Pi_2$(dameUno($ctnn$)), map$\Pi_2$(sinUno($ctnn$)))
-	FI
+		\IF $\emptyset$?($ctnn$) THEN
+			$\emptyset$
+		ELSE
+			Ag($\Pi_2$(dameUno($ctnn$)), map$\Pi_2$(sinUno($ctnn$)))
+		FI
 	}
 \end{tadx}
