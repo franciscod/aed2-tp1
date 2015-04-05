@@ -6,66 +6,99 @@
 }
 
 	\tadGeneros{topologia}
+	% TODO: exporta?
 
-	\tadAlinearFunciones{todasLasConectadas}{topologia/t, nat/ipA, nat/ipB}
+	%\tadIgualdadObservacional{t}{t'}{topo}{$compus(t) \igobs compus(t')\ \yluego$\\ $(\neg(n=0?) \impluego (\text{pred}(n) \igobs \text{pred}(m)))$}
+
+	\tadAlinearFunciones{interfacesOcupadasDe}{topologia, nat, nat, nat, nat}
 
 	\tadGeneradores
+
 	\tadOperacion{NuevaTopo}{}{topologia}{}
-	\tadOperacion{Compu}{topologia, nat, nat}{topologia}{}
-	\tadOperacion{Cable}{topologia, nat, nat, nat, nat}{topologia}{} % falta restringir cables repetidos (y simetricos) y entre compus que no existen
+	\tadOperacion{Compu}{topologia, nat/ip, nat}{topologia}{$\neg(ip \in compus(t))$}
+	\tadOperacion{Cable}{topologia, nat/ipA, nat/ifA, nat/ipB, nat/ipB}{topologia}{
+		$\neg(ipA \in compus(t) \lor ipB \in compus(t)) \yluego$ \\
+		$(ifA \leq numInterfaces(t, ipA)) \land$ \\
+		$(ifB \leq numInterfaces(t, ipB)) \land$ \\
+		$\neg(ifA \in interfacesOcupadasDe(t, ipA)) \land$ \\
+		$\neg(ifB \in interfacesOcupadasDe(t, ipB)) \land$ \\
+		$\neg(ipA \in vecinasDe(t, ipB))$
+	}
 
 	\tadObservadores
 	\tadOperacion{compus}{topologia}{conj(nat)}{}
-	\tadOperacion{vecinas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
-	\tadOperacion{cables}{topologia/t, nat/ip}{conj(tupla(nat, nat))}{$ip \in compus(t)$}
+	\tadOperacion{cablesEn}{topologia/t, nat/ip}{conj(tupla(nat, nat))}{$ip \in compus(t)$}
+	\tadOperacion{numInterfaces}{topologia/t, nat/ip}{nat}{$ip \in compus(t)$}
 
 	\tadOtrasOperaciones
-	\tadOperacion{seAlcanzan?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
-	\tadOperacion{todasLasQueAlcanza}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
-	\tadOperacion{expandirFull}{topologia/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
-	\tadOperacion{exp1}{topologia/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
+	\tadOperacion{vecinasDe}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
+	\tadOperacion{interfacesOcupadasDe}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
+	\tadOperacion{conectadas?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
+	\tadOperacion{expandirVecinas}{topologia/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
+	\tadOperacion{expandirUnPaso}{topologia/t, conj(nat)/cs}{conj(nat)}{$cs \subseteq compus(t)$}
+	\tadOperacion{map$\Pi_1$}{conj(tupla(nat, nat)}{conj(nat)}{}
+	\tadOperacion{map$\Pi_2$}{conj(tupla(nat, nat)}{conj(nat)}{}
 
-	\tadAlinearAxiomas{vecinas(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}
+	\tadAlinearAxiomas{numInterfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}
 
-	\tadAxiomas[\paratodo{topologia}{t}, \paratodo{nat}{ip, ipBus, ipA, ipB, ifA, ifB, numIfaces}]
+	\tadAxiomas[
+		\paratodo{topologia}{t},
+		\paratodo{nat}{ip, ipBus, ipA, ipB, ifA, ifB, numIfaces},
+		\paratodo{conj(tupla(nat, nat))}{ctnn}, \paratodo{conj(nat)}{cs}
+	]
 
 	\tadAxioma{compus(NuevaTopo)}{$\emptyset$}
 	\tadAxioma{compus(Compu($t$, $ip$, $numIfaces$))}{Ag($ip$, compus($t$))}
 	\tadAxioma{compus(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$))}{compus($t$)}
 
-	\tadAxioma{vecinas(NuevaTopo, $ipBus$)}{$\emptyset$}
-	\tadAxioma{vecinas(Compu($t$, $ip$, $numIfaces$), $ipBus$)}{vecinas($t$, $ipBus$)}
-	\tadAxioma{vecinas(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}{
-		\IF $ipBus$ = $ipA$ THEN Ag($ipB$, $\emptyset$) ELSE $\emptyset$ FI $\cup$ \\
-		\IF $ipBus$ = $ipB$ THEN Ag($ipA$, $\emptyset$) ELSE $\emptyset$ FI	$\cup$ \\
-		vecinas($t$, $ipBus$)
-	}
-
-	\tadAxioma{cables(NuevaTopo, $ipBus$)}{$\emptyset$}
-	\tadAxioma{cables(Compu($t$, $ip$, $numIfaces$), $ipBus$)}{cables($t$, $ipBus$)}
-	\tadAxioma{cables(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}{
+	\tadAxioma{cablesEn(NuevaTopo, $ipBus$)}{$\emptyset$}
+	\tadAxioma{cablesEn(Compu($t$, $ip$, $numIfaces$), $ipBus$)}{cablesEn($t$, $ipBus$)}
+	\tadAxioma{cablesEn(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}{
 		\IF $ipBus$ = $ipA$ THEN Ag($\langle$ $ifA$, $ipB$ $\rangle$, $\emptyset$) ELSE $\emptyset$ FI $\cup$ \\
 		\IF $ipBus$ = $ipB$ THEN Ag($\langle$ $ifB$, $ipA$ $\rangle$, $\emptyset$) ELSE $\emptyset$ FI $\cup$ \\
-		cables($t$, $ipBus$)
+		cablesEn($t$, $ipBus$)
 	}
 
-	\tadAxioma{seAlcanzan?($t$, $ipA$, $ipB$)}{$ipA$ $\in$ todasLasQueAlcanza($t$, $ipB$)}
+	\tadAxioma{numInterfaces(NuevaTopo, $ipBus$)}{0}
+	\tadAxioma{numInterfaces(Compu($t$, $ip$, $numIfaces$), $ipBus$)}{\IF $ipBus$ = $ip$ THEN $numIfaces$ ELSE 0 FI}
+	\tadAxioma{numInterfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}{numInterfaces($t$)}
 
-	\tadAxioma{todasLasQueAlcanza($t$, $ip$)}{expandirFull($t$, Ag($ip$, $\emptyset$))}
+	\tadAlinearAxiomas{interfacesOcupadasDe($t$, $ipBus$)}
 
-	\tadAxioma{expandirFull($t$, $cs$)}{
-		\IF exp1($t$, $cs$) $\subseteq$ $cs$ THEN
+	\tadAxioma{interfacesOcupadasDe($t$, $ipBus$)}{map$\Pi_1$(cablesEn($t$, $ipBus$))}
+	\tadAxioma{vecinasDe($t$, $ipBus$)}{map$\Pi_2$(cablesEn($t$, $ipBus$))}
+
+	\tadAxioma{conectadas?($t$, $ipA$, $ipB$)}{$ipA$ $\in$ expandirVecinas($t$, Ag($ipB$, $\emptyset$))}
+
+	\tadAxioma{expandirVecinas($t$, $cs$)}{
+		\IF expandirUnPaso($t$, $cs$) = $cs$ THEN
 			$cs$
 		ELSE
-			expandirFull($t$, exp1($t$, $cs$))
+			expandirVecinas($t$, expandirUnPaso($t$, $cs$))
 		FI
 	}
 
-	\tadAxioma{exp1($t$, $cs$)}{
+	\tadAxioma{expandirUnPaso($t$, $cs$)}{
 		\IF $\emptyset$?($cs$) THEN
 			$\emptyset$
 		ELSE
-			Ag(dameUno($cs$), vecinas($t$, dameUno($cs$))) $\cup$ exp1($t$, sinUno($cs$))
+			Ag(dameUno($cs$), vecinasDe($t$, dameUno($cs$))) $\cup$ expandirUnPaso($t$, sinUno($cs$))
+		FI
+	}
+
+	\tadAxioma{map$\Pi_1$($ctnn$)}{
+		\IF $\emptyset$?($ctnn$) THEN
+			$\emptyset$
+		ELSE
+			Ag($\Pi_1$(dameUno($ctnn$)),  map$\Pi_1$(sinUno($ctnn$)))
+		FI
+	}
+
+	\tadAxioma{map$\Pi_2$($ctnn$)}{
+		\IF $\emptyset$?($ctnn$) THEN
+			$\emptyset$
+		ELSE
+			Ag($\Pi_2$(dameUno($ctnn$)),  map$\Pi_2$(sinUno($ctnn$)))
 		FI
 	}
 
