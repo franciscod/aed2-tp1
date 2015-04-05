@@ -22,6 +22,8 @@
 
 	\tadOtrasOperaciones
 	\tadOperacion{paqueteEnTransito?}{dcnet,paquete}{bool}{}
+	\tadOperacion{perteneceBuffers?}{paquete,buffers}{bool}{}
+	
 	\tadOperacion{maxPaquetesMandados}{dcnet}{pc}{}
 	\tadOperacion{auxMaxPaquetes}{dcnet,conj(pc)}{pc)}{}
 	
@@ -62,6 +64,20 @@
 													$dameUno(cs)$
 												FI}
 										FI}
+
+	\tadAxioma{paqueteEnTransito?(dcn,p)}{perteneceBuffers?(p,regresion(topo(dcn),vacio,\newline
+											cronoPaquetes(dcn,vacio)))}
+	\tadAxioma{perteneceBuffers?(p,bs)}{\IF $\emptyset?(claves(bs))$ THEN 
+											$false$ 
+										ELSE { \IF $p \in obtener(dameUno(claves(bs)),bs)$ THEN
+													$true$
+												ELSE 
+													$perteneceBuffers?(p,borrar(dameUno(claves(bs)),bs))$
+												FI
+											}	
+										FI}
+
+
 
 	\tadAxioma{cronoPaquetes(crearRed(t),bs)}{<>}
 	\tadAxioma{cronoPaquetes(seg(dcn),bs)}{ bs \puntito cronoPaquetes(dcn,$\emptyset$) }
