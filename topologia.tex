@@ -1,1 +1,133 @@
-\begin{tadx}{\tadNombre{Topología}}{	\noindent Este TAD modela cómo se conectan las computadoras.	Las IP son únicas entre compus de la topología.	Las compus tienen interfaces numeradas con los naturales de manera consecutiva	(todas funcionan perfecto y todo eso, el DC las cuida y mantiene como corresponde).	}	\tadGeneros{topologia}	% TODO: exporta?	%\tadIgualdadObservacional{t}{t'}{topo}{$compus(t) \igobs compus(t')\ \yluego$\\ $(\neg(n=0?) \impluego (\text{pred}(n) \igobs \text{pred}(m)))$}	\tadAlinearFunciones{interfacesOcupadasDe}{topologia, nat, nat, nat, nat}	\tadGeneradores	\tadOperacion{NuevaTopo}{}{topologia}{}	\tadOperacion{Compu}{topologia, nat/ip, nat}{topologia}{$\neg(ip \in compus(t))$}	\tadOperacion{Cable}{topologia, nat/ipA, nat/ifA, nat/ipB, nat/ipB}{topologia}{		$\neg(ipA \in compus(t) \lor ipB \in compus(t)) \yluego$ \\		$(ifA \leq numInterfaces(t, ipA)) \land$ \\		$(ifB \leq numInterfaces(t, ipB)) \land$ \\		$\neg(ifA \in interfacesOcupadasDe(t, ipA)) \land$ \\		$\neg(ifB \in interfacesOcupadasDe(t, ipB)) \land$ \\		$\neg(ipA \in vecinas(t, ipB))$	}	\tadObservadores	\tadOperacion{compus}{topologia}{conj(nat)}{}	\tadOperacion{cablesEn}{topologia/t, nat/ip}{conj(tupla(nat, nat))}{$ip \in compus(t)$}	\tadOperacion{numInterfaces}{topologia/t, nat/ip}{nat}{$ip \in compus(t)$}	\tadOtrasOperaciones	\tadOperacion{vecinas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}	\tadOperacion{interfacesOcupadasDe}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}	\tadOperacion{conectados?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}	\tadOperacion{darCaminoMasCorto}{topologia/t, nat/a, nat/b}{secuencia(nat)}{$conectados?(t, a, b)$}	\tadOperacion{darRutas}{topologia, nat, nat, conj(nat), secuencia(nat)}{conj(secuencia(nat))}{}	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat, conj(nat), secuencia(nat)}{conj(secuencia(nat))}{}	\tadOperacion{longMenorSec}{conj(secuencia($\alpha$))}{nat}{}	\tadOperacion{secusDeLongK}{conj(secuencia($\alpha$)), nat}{conj(secuencia($\alpha$))}{}	\tadOperacion{map$\Pi_1$}{conj(tupla(nat, nat)}{conj(nat)}{}	\tadOperacion{map$\Pi_2$}{conj(tupla(nat, nat)}{conj(nat)}{}	\tadAlinearAxiomas{numInterfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}	\tadAxiomas[	\paratodo{topologia}{t},	\paratodo{nat}{ip, ipBus, ipA, ipB, ifA, ifB, numIfaces, k},	\paratodo{conj(tupla(nat, nat))}{ctnn}, 	\paratodo{conj(nat)}{cs, rec, vecinas},	\paratodo{conj(secuencia($\alpha$))}{secus},	\paratodo{secuencia(nat)}{ruta}	]	\tadAxioma{compus(NuevaTopo)}{$\emptyset$}	\tadAxioma{compus(Compu($t$, $ip$, $numIfaces$))}{Ag($ip$, compus($t$))}	\tadAxioma{compus(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$))}{compus($t$)}	\tadAxioma{cablesEn(NuevaTopo, $ipBus$)}{$\emptyset$}	\tadAxioma{cablesEn(Compu($t$, $ip$, $numIfaces$), $ipBus$)}{cablesEn($t$, $ipBus$)}	\tadAxioma{cablesEn(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}{	\IF $ipBus$ = $ipA$ THEN Ag($\langle$ $ifA$, $ipB$ $\rangle$, $\emptyset$) ELSE $\emptyset$ FI $\cup$ \\	\IF $ipBus$ = $ipB$ THEN Ag($\langle$ $ifB$, $ipA$ $\rangle$, $\emptyset$) ELSE $\emptyset$ FI $\cup$ \\	cablesEn($t$, $ipBus$)	}	\tadAxioma{numInterfaces(NuevaTopo, $ipBus$)}{0}	\tadAxioma{numInterfaces(Compu($t$, $ip$, $numIfaces$), $ipBus$)}{\IF $ipBus$ = $ip$ THEN $numIfaces$ ELSE 0 FI}	\tadAxioma{numInterfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}{numInterfaces($t$)}	\tadAlinearAxiomas{interfacesOcupadasDe($t$, $ipBus$)}	\tadAxioma{interfacesOcupadasDe($t$, $ipBus$)}{map$\Pi_1$(cablesEn($t$, $ipBus$))}	\tadAxioma{vecinas($t$, $ipBus$)}{map$\Pi_2$(cablesEn($t$, $ipBus$))}	\tadAxioma{conectados?($t$, $ipA$, $ipB$)}{		$\neg$ $\emptyset$?(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>))	}	\tadAxioma{darRutas($t$, $ipA$, $ipB$, $rec$, $ruta$)}{		\IF $ipB$ $\in$ vecinas($t$, $ipA$) THEN			Ag($ruta$ \& ($ipA$ · $ipB$ · <>), $\emptyset$)		ELSE{			\IF $\emptyset$?(vecinas($t$, $ipA$) - $rec$) THEN 				$\emptyset$			ELSE				darRutas($t$, dameUno(vecinas($t$, $ipA$) - $rec$), $ipB$, Ag($ipA$, $rec$), $ruta$ o $ipA$) $\cup$ \\				darRutasVecinas($t$, sinUno(vecinas($t$, $ipA$) - $rec$), $ipB$, Ag($ipA$, $rec$), $ruta$ o $ipA$)			FI		}		FI	}	\tadAxioma{darRutasVecinas($t$, $vecinas$, $ipB$, $rec$, $ruta$)}{		\IF $\emptyset$?($vecinas$) THEN			$\emptyset$		ELSE			darRutas($t$, dameUno($vecinas$), $ipB$, $rec$, $ruta$) $\cup$			darRutasVecinas($t$, sinUno($vecinas$), $ipB$, $rec$, $ruta$)		FI	}	\tadAxioma{darCaminoMasCorto($t$, $ipA$, $ipB$)}{dameUno(secusDeLongK(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>), longMenorSec(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>)))}		\tadAxioma{secusDeLongK($secus$, $k$)}{		\IF $\emptyset$?($secus$) THEN 			$\emptyset$ 		ELSE{			\IF long(dameUno($secus$)) = $k$ THEN				dameUno($secus$) $\cup$ secusDeLongK(sinUno($secus$), $k$)			ELSE 				secusDeLongK(sinUno($secus$), $k$)			FI		}		FI 	}	\tadAxioma{longMenorSec($secus$)}{		\IF $\emptyset$($secus$) THEN			0		ELSE			min(long(dameUno($secus$)), longMenorSec(sinUno($secus$)))		FI	}	\tadAxioma{map$\Pi_1$($ctnn$)}{		\IF $\emptyset$?($ctnn$) THEN			$\emptyset$		ELSE			Ag($\Pi_1$(dameUno($ctnn$)), map$\Pi_1$(sinUno($ctnn$)))		FI	}	\tadAxioma{map$\Pi_2$($ctnn$)}{		\IF $\emptyset$?($ctnn$) THEN			$\emptyset$		ELSE			Ag($\Pi_2$(dameUno($ctnn$)), map$\Pi_2$(sinUno($ctnn$)))		FI	}\end{tadx}
+
+\begin{tadx}{\tadNombre{Topología}}{
+	\noindent Este TAD modela cómo se conectan las computadoras.
+	Las IP son únicas entre compus de la topología.
+	Las compus tienen interfaces numeradas con los naturales de manera consecutiva
+	(todas funcionan perfecto y todo eso, el DC las cuida y mantiene como corresponde).
+	}
+	\tadGeneros{topologia}
+	% TODO: exporta?
+	%\tadIgualdadObservacional{t}{t'}{topo}{$compus(t) \igobs compus(t')\ \yluego$\\ $(\neg(n=0?) \impluego (\text{pred}(n) \igobs \text{pred}(m)))$}
+	\tadAlinearFunciones{interfacesOcupadasDe}{topologia, nat, nat, nat, nat}
+	\tadGeneradores
+	\tadOperacion{NuevaTopo}{}{topologia}{}
+	\tadOperacion{Compu}{topologia, nat/ip, nat}{topologia}{$\neg(ip \in compus(t))$}
+	\tadOperacion{Cable}{topologia, nat/ipA, nat/ifA, nat/ipB, nat/ipB}{topologia}{
+		$\neg(ipA \in compus(t) \lor ipB \in compus(t)) \yluego$ \\
+		$(ifA \leq numInterfaces(t, ipA)) \land$ \\
+		$(ifB \leq numInterfaces(t, ipB)) \land$ \\
+		$\neg(ifA \in interfacesOcupadasDe(t, ipA)) \land$ \\
+		$\neg(ifB \in interfacesOcupadasDe(t, ipB)) \land$ \\
+		$\neg(ipA \in vecinas(t, ipB))$
+	}
+	\tadObservadores
+
+	\tadOperacion{compus}{topologia}{conj(nat)}{}
+	\tadOperacion{cablesEn}{topologia/t, nat/ip}{conj(tupla(nat, nat))}{$ip \in compus(t)$}
+	\tadOperacion{numInterfaces}{topologia/t, nat/ip}{nat}{$ip \in compus(t)$}
+
+	\tadOtrasOperaciones
+
+	\tadOperacion{vecinas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
+	\tadOperacion{interfacesOcupadasDe}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
+	\tadOperacion{conectados?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
+	\tadOperacion{darCaminoMasCorto}{topologia/t, nat/a, nat/b}{secuencia(nat)}{$conectados?(t, a, b)$}
+	\tadOperacion{darRutas}{topologia, nat, nat, conj(nat), secuencia(nat)}{conj(secuencia(nat))}{}
+	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat, conj(nat), secuencia(nat)}{conj(secuencia(nat))}{}
+	\tadOperacion{longMenorSec}{conj(secuencia($\alpha$))}{nat}{}
+	\tadOperacion{secusDeLongK}{conj(secuencia($\alpha$)), nat}{conj(secuencia($\alpha$))}{}
+	\tadOperacion{map$\Pi_1$}{conj(tupla(nat, nat)}{conj(nat)}{}
+	\tadOperacion{map$\Pi_2$}{conj(tupla(nat, nat)}{conj(nat)}{}
+
+	\tadAlinearAxiomas{numInterfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}
+
+	\tadAxiomas[
+	\paratodo{topologia}{t},
+	\paratodo{nat}{ip, ipBus, ipA, ipB, ifA, ifB, numIfaces, k},
+	\paratodo{conj(tupla(nat, nat))}{ctnn}, 
+	\paratodo{conj(nat)}{cs, rec, vecinas},
+	\paratodo{conj(secuencia($\alpha$))}{secus},
+	\paratodo{secuencia(nat)}{ruta}
+	]
+
+	\tadAxioma{compus(NuevaTopo)}{$\emptyset$}
+	\tadAxioma{compus(Compu($t$, $ip$, $numIfaces$))}{Ag($ip$, compus($t$))}
+	\tadAxioma{compus(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$))}{compus($t$)}
+	\tadAxioma{cablesEn(NuevaTopo, $ipBus$)}{$\emptyset$}
+	\tadAxioma{cablesEn(Compu($t$, $ip$, $numIfaces$), $ipBus$)}{cablesEn($t$, $ipBus$)}
+	\tadAxioma{cablesEn(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}{
+	\IF $ipBus$ = $ipA$ THEN Ag($\langle$ $ifA$, $ipB$ $\rangle$, $\emptyset$) ELSE $\emptyset$ FI $\cup$ \\
+	\IF $ipBus$ = $ipB$ THEN Ag($\langle$ $ifB$, $ipA$ $\rangle$, $\emptyset$) ELSE $\emptyset$ FI $\cup$ \\
+	cablesEn($t$, $ipBus$)
+	}
+	\tadAxioma{numInterfaces(NuevaTopo, $ipBus$)}{0}
+	\tadAxioma{numInterfaces(Compu($t$, $ip$, $numIfaces$), $ipBus$)}{\IF $ipBus$ = $ip$ THEN $numIfaces$ ELSE 0 FI}
+	\tadAxioma{numInterfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}{numInterfaces($t$)}
+	\tadAlinearAxiomas{interfacesOcupadasDe($t$, $ipBus$)}
+	\tadAxioma{interfacesOcupadasDe($t$, $ipBus$)}{map$\Pi_1$(cablesEn($t$, $ipBus$))}
+	\tadAxioma{vecinas($t$, $ipBus$)}{map$\Pi_2$(cablesEn($t$, $ipBus$))}
+	\tadAxioma{conectados?($t$, $ipA$, $ipB$)}{
+		$\neg$ $\emptyset$?(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>))
+	}
+
+	\tadAxioma{darRutas($t$, $ipA$, $ipB$, $rec$, $ruta$)}{
+		\IF $ipB$ $\in$ vecinas($t$, $ipA$) THEN
+			Ag($ruta$ \& ($ipA$ · $ipB$ · <>), $\emptyset$)
+		ELSE{
+			\IF $\emptyset$?(vecinas($t$, $ipA$) - $rec$) THEN 
+				$\emptyset$
+			ELSE
+				darRutas($t$, dameUno(vecinas($t$, $ipA$) - $rec$), $ipB$, Ag($ipA$, $rec$), $ruta$ o $ipA$) $\cup$ \\
+				darRutasVecinas($t$, sinUno(vecinas($t$, $ipA$) - $rec$), $ipB$, Ag($ipA$, $rec$), $ruta$ o $ipA$)
+			FI
+		}
+		FI
+	}
+
+	\tadAxioma{darRutasVecinas($t$, $vecinas$, $ipB$, $rec$, $ruta$)}{
+		\IF $\emptyset$?($vecinas$) THEN
+			$\emptyset$
+		ELSE
+			darRutas($t$, dameUno($vecinas$), $ipB$, $rec$, $ruta$) $\cup$
+			darRutasVecinas($t$, sinUno($vecinas$), $ipB$, $rec$, $ruta$)
+		FI
+	}
+
+	\tadAxioma{darCaminoMasCorto($t$, $ipA$, $ipB$)}{dameUno(secusDeLongK(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>), longMenorSec(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>)))}
+	
+	\tadAxioma{secusDeLongK($secus$, $k$)}{
+		\IF $\emptyset$?($secus$) THEN 
+			$\emptyset$ 
+		ELSE{
+			\IF long(dameUno($secus$)) = $k$ THEN
+				dameUno($secus$) $\cup$ secusDeLongK(sinUno($secus$), $k$)
+			ELSE 
+				secusDeLongK(sinUno($secus$), $k$)
+			FI
+		}
+		FI 
+	}
+
+	\tadAxioma{longMenorSec($secus$)}{
+		\IF $\emptyset$($secus$) THEN
+			0
+		ELSE
+			min(long(dameUno($secus$)), longMenorSec(sinUno($secus$)))
+		FI
+	}
+
+	\tadAxioma{map$\Pi_1$($ctnn$)}{
+		\IF $\emptyset$?($ctnn$) THEN
+			$\emptyset$
+		ELSE
+			Ag($\Pi_1$(dameUno($ctnn$)), map$\Pi_1$(sinUno($ctnn$)))
+		FI
+	}
+	\tadAxioma{map$\Pi_2$($ctnn$)}{
+		\IF $\emptyset$?($ctnn$) THEN
+			$\emptyset$
+		ELSE
+			Ag($\Pi_2$(dameUno($ctnn$)), map$\Pi_2$(sinUno($ctnn$)))
+		FI
+	}
+\end{tadx}
