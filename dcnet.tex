@@ -23,16 +23,16 @@
 	\tadOtrasOperaciones
 	\tadOperacion{paqueteEnTransito?}{dcnet,paquete}{bool}{}
 	\tadOperacion{perteneceBuffers?}{paquete,buffers}{bool}{}
-
+	
 	\tadOperacion{maxPaquetesMandados}{dcnet}{pc}{}
 	\tadOperacion{auxMaxPaquetes}{dcnet,conj(pc)}{pc)}{}
-
+	
 	\tadOperacion{pasoSeg}{topo,buffers,buffers}{buffers}{}
 	\tadOperacion{regresion}{topo,buffers,secu(buffers)}{buffers}{}
 	\tadOperacion{cronoPaquetes}{dcnet,diccionario(pc,conj(paquete))}{secu(buffers)}{}
 	\tadOperacion{auxDefinir}{buffers,pc,conj(paquete),conj(paquete)}{buffers}{}
 	\tadOperacion{auxBorrar}{buffers,pc,conj(paquete),conj(paquete)}{buffers}{}
-	\tadOperacion{envioYReciboPaquetes}{topo,buffers,conj(pc)}{buffers}{}
+	\tadOperacion{transacion}{topo,buffers,conj(pc)}{buffers}{}
 	\tadOperacion{envio}{topo,buffers,buffer}{buffers}{}
 	\tadOperacion{nuevosPaquetes}{buffers,buffers}{buffers}{}
 	\tadOperacion{damePaquete}{buffer}{paquete}{}
@@ -54,8 +54,8 @@
 	\tadAxioma{dcNetBuffer(dcn,c)}{obtener(c,regresion(topo(dcn),vacio,cronoPaquetes(dcn,vacio)))}
 
 	\tadAxioma{maxPaquetesMandados(dcn)}{auxMaxPaquetes(dcn,pcs(topo(dcn)))}
-	\tadAxioma{auxMaxPaquetes(dcn,cs)}{\IF $\emptyset?(sinUno(cs))$ THEN
-											$dameUno(cs)$
+	\tadAxioma{auxMaxPaquetes(dcn,cs)}{\IF $\emptyset?(sinUno(cs))$ THEN 
+											$dameUno(cs)$ 
 										ELSE { \IF $paquetesMandados(dcn,dameUno(cs)<$
 													$paquetesMandados(dcn,auxMaxPaquetes$
 													$(dcn,sinUno(cs))) $ THEN
@@ -67,46 +67,54 @@
 
 	\tadAxioma{paqueteEnTransito?(dcn,p)}{perteneceBuffers?(p,regresion(topo(dcn),vacio,\newline
 											cronoPaquetes(dcn,vacio)))}
-	\tadAxioma{perteneceBuffers?(p,bs)}{\IF $\emptyset?(claves(bs))$ THEN
-											$false$
+	\tadAxioma{perteneceBuffers?(p,bs)}{\IF $\emptyset?(claves(bs))$ THEN 
+											$false$ 
 										ELSE { \IF $p \in obtener(dameUno(claves(bs)),bs)$ THEN
 													$true$
-												ELSE
+												ELSE 
 													$perteneceBuffers?(p,borrar(dameUno(claves(bs)),bs))$
 												FI
-											}
+											}	
 										FI}
 
 
 
 	\tadAxioma{cronoPaquetes(crearRed(t),bs)}{<bs>}
 	\tadAxioma{cronoPaquetes(seg(dcn),bs)}{ bs \puntito cronoPaquetes(dcn,$\emptyset$) }
-	\tadAxioma{cronoPaquetes(paquetePendiente(dcn,o,d,p),bs)}{ $auxDefinir(bs,o,Ag(p,\emptyset),obtener(o,bs))$
-																$cronoPaquetes(dcn,bs) $}
-	\tadAxioma{auxDefinir(bs,c,n,v)}{\IF $def?(c,bs)$ THEN $borrar(c,bs) \ \ definir(c,n \cup v,bs)$
-										ELSE $definir(c,n)$ FI
-	}
-	\tadAxioma{auxBorrar(bs,c,b,p)}{\IF $\emptyset?(p - \{ b \})$ THEN $borrar(c,n)$
-										ELSE $borrar(c,bs) \ \ definir(c,p - \{ b \},bs)$  FI
+	\tadAxioma{cronoPaquetes(paquetePendiente(dcn,o,d,p),bs)}{ \IF $def?(c,bs)$ THEN 
+																	$cronoPaquetes(dcn,definir(c,n \cup obtener(o,bs),bs))$
+																ELSE 
+																	$cronoPaquetes(dcn,definir(c,n))$ 
+																FI}
+
+	\tadAxioma{auxBorrar(bs,c,b,p)}{\IF $\emptyset?(p - \{ b \})$ THEN $borrar(c,n)$ 
+										ELSE $borrar(c,bs) \ \ definir(c,p - \{ b \},bs)$  FI 
 	}
 
 	\tadAxioma{regresion(t,bs,cbs)}{\IF $vacia?(fin(cbs))$ THEN $ pasoSeg(bs,t,prim(cbs))$ ELSE $ regresion(t,pasoSeg(bs,t,prim(cbs)),fin(cbs))$ FI}
-	\tadAxioma{pasoSeg(t,bs,nbs)}{envioYReciboPaquetes(t,bs,claves(bs)) \ \ nuevosPaquetes(bs,nbs)}
-	\tadAxioma{envioYReciboPaquetes(t,bs,cp)}{\IF $\emptyset?(cp)$ THEN $bs$ ELSE $ envioYReciboPaquetes(t,envio(t,bs,dameUno(cp)),$
-													$sinUno(cp))$ FI}
-	\tadAxioma{pasarA(t,o,d)}{$prim(caminoMin(t,o,d))$}
-	\tadAxioma{envio(t,bs,b)}{$ auxDefinir(bs,pasarA(t,\Pi_1(b),dest(\Pi_2(b))),$
-							$ Ag(damePaquete(b),\emptyset),$
-							$obtener\newline$
-							$(pasarA(t,\Pi_1(b),dest(\Pi_2(b))),bs) \newline$
-							$auxBorrar(bs,\Pi_1(b),damePaquete(b),$
-							$obtener(bs,\Pi_1(b))$
-							}
-	\tadAxioma{nuevosPaquetes(bs,nbs)}{\IF $\emptyset?(claves(nbs))$ THEN
-										 $bs$
-										ELSE
-										 	$auxDefinir(bs,dameUno(claves(nbs),obtener$
-										 	$(dameUno(claves(nbs),nbs),obtener(dameUno$
+	\tadAxioma{pasoSeg(t,bs,nbs)}{nuevosPaquetes(transacion(t,bs,claves(bs)) ,nbs)}
+	\tadAxioma{transacion(t,bs,cp)}{\IF $\emptyset?(cp)$ THEN 
+												$bs$ 
+											ELSE 
+												$transacion(t,envio(t,bs,dameUno(cp)),$
+												$sinUno(cp))$ 
+											FI}
+	\tadAxioma{pasarA(t,o,d)}{$prim(caminoMin(t,o,d))$}												
+	\tadAxioma{envio(t,bs,b)}{\IF $\emptyset?(damePaquete(b))$ THEN
+								$bs$
+								ELSE{ \IF $pasarA(t,\Pi_1(b),dest(\Pi_2(b))) = destino(damePaquete(b)))$ THEN
+											$envio(t,quitarPaquete(bs,\Pi_1(b)),(\Pi_1(b),\Pi_2(b) -{damePaquete(b)}))$
+									    ELSE
+											$envio(t,quitarPaquete(pasarPaquete(bs,\Pi_1(b),damePaquete(b)),\Pi_1(b))$
+											$,(\Pi_1(b),\Pi_2(b) -{damePaquete(b)} ))$
+										FI}
+								FI}
+
+	\tadAxioma{nuevosPaquetes(bs,nbs)}{\IF $\emptyset?(claves(nbs))$ THEN 
+										 $bs$  
+										ELSE  
+										 	$auxDefinir(bs,dameUno(claves(nbs),obtener$ 
+										 	$(dameUno(claves(nbs),nbs),obtener(dameUno$  
 										 	$(claves(nbs),bs))) \newline$
 										 	$nuevosPaquetes(bs,sinUno(nbs))$
 										FI }
