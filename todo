@@ -16,7 +16,6 @@ dcnet:
 	- pasarA retoma ivan en topo
 
 topologia:
-	ctnn -> conjDups
 	ip, ipbus -> ipnueva, ip
 	numInterfaces -> #interfaces
 	numIfaces -> cantIfaces
