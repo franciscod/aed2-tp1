@@ -1,0 +1,27 @@
+dcnet:
+	- alinear igobs
+	- generadores EnMayus
+	- recorridoPaquete ==> al freezer
+
+	- paquetesMandados -> #paquetesEnviados
+	- dcNetBuffer -> buffer
+	- maxPaquetesMandados -> compuQueMasEnvio 
+	- auxMaxPaquetes -> ?
+	- pasoSeg -> ?
+	- regresion -> ?
+	- cronoPaquetes -> generarHistoria
+	- auxDefinir refactor
+	- auxBorrar refactor
+	- damePaquete recibe dcnet y nat (pc)
+	- pasarA retoma ivan en topo
+
+topologia:
+	ctnn -> conjDups
+	ip, ipbus -> ipnueva, ip
+	numInterfaces -> #interfaces
+	numIfaces -> cantIfaces
+	puntos en dar rutas -> \puntito
+
+
+las parabolas de maxi:
+ -  redefinir #paquetesEnviados, damePaquete (de mayor prioridad), recorridoPaquete
