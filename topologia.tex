@@ -13,8 +13,8 @@
 	\tadOperacion{Compu}{topologia, nat/ip, nat}{topologia}{$\neg(ip \in compus(t))$}
 	\tadOperacion{Cable}{topologia, nat/ipA, nat/ifA, nat/ipB, nat/ifB}{topologia}{
 		$\neg(ipA \in compus(t) \lor ipB \in compus(t)) \yluego$ \\
-		$(ifA \leq numInterfaces(t, ipA)) \land$ \\
-		$(ifB \leq numInterfaces(t, ipB)) \land$ \\
+		$(ifA \leq \#interfaces(t, ipA)) \land$ \\
+		$(ifB \leq \#interfaces(t, ipB)) \land$ \\
 		$\neg(ifA \in interfacesOcupadasDe(t, ipA)) \land$ \\
 		$\neg(ifB \in interfacesOcupadasDe(t, ipB)) \land$ \\
 		$\neg(ipA \in vecinas(t, ipB))$
@@ -23,7 +23,7 @@
 
 	\tadOperacion{compus}{topologia}{conj(nat)}{}
 	\tadOperacion{cablesEn}{topologia/t, nat/ip}{conj(tupla(nat, nat))}{$ip \in compus(t)$}
-	\tadOperacion{numInterfaces}{topologia/t, nat/ip}{nat}{$ip \in compus(t)$}
+	\tadOperacion{\#interfaces}{topologia/t, nat/ip}{nat}{$ip \in compus(t)$}
 
 	\tadOtrasOperaciones
 
@@ -38,11 +38,11 @@
 	\tadOperacion{map$\Pi_1$}{conj(tupla(nat, nat)}{conj(nat)}{}
 	\tadOperacion{map$\Pi_2$}{conj(tupla(nat, nat)}{conj(nat)}{}
 
-	\tadAlinearAxiomas{cablesEn(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}
+	\tadAlinearAxiomas{cablesEn(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}
 
 	\tadAxiomas[
 	\paratodo{topologia}{t},
-	\paratodo{nat}{ip, ipBus, ipA, ipB, ifA, ifB, numIfaces, k},
+	\paratodo{nat}{ipNueva, ip, ipA, ipB, ifA, ifB, cantIfaces, k},
 	\paratodo{conj(tupla(nat, nat))}{conjDuplas},
 	\paratodo{conj(nat)}{cs, rec, vecinas},
 	\paratodo{conj(secu($\alpha$))}{secus},
@@ -52,31 +52,31 @@
 
 
 	\tadAxioma{compus(NuevaTopo)}{$\emptyset$}
-	\tadAxioma{compus(Compu($t$, $ip$, $numIfaces$))}{Ag($ip$, compus($t$))}
+	\tadAxioma{compus(Compu($t$, $ipNueva$, $cantIfaces$))}{Ag($ipNueva$, compus($t$))}
 	\tadAxioma{compus(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$))}{compus($t$)}
-	\tadAxioma{cablesEn(NuevaTopo, $ipBus$)}{$\emptyset$}
-	\tadAxioma{cablesEn(Compu($t$, $ip$, $numIfaces$), $ipBus$)}{cablesEn($t$, $ipBus$)}
-	\tadAxioma{cablesEn(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}{
-	\IF $ipBus$ = $ipA$ THEN Ag($\langle$ $ifA$, $ipB$ $\rangle$, $\emptyset$) ELSE $\emptyset$ FI $\cup$ \\
-	\IF $ipBus$ = $ipB$ THEN Ag($\langle$ $ifB$, $ipA$ $\rangle$, $\emptyset$) ELSE $\emptyset$ FI $\cup$ \\
-	cablesEn($t$, $ipBus$)
+	\tadAxioma{cablesEn(NuevaTopo, $ip$)}{$\emptyset$}
+	\tadAxioma{cablesEn(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}{cablesEn($t$, $ip$)}
+	\tadAxioma{cablesEn(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ip$)}{
+	\IF $ip$ = $ipA$ THEN Ag($\langle$ $ifA$, $ipB$ $\rangle$, $\emptyset$) ELSE $\emptyset$ FI $\cup$ \\
+	\IF $ip$ = $ipB$ THEN Ag($\langle$ $ifB$, $ipA$ $\rangle$, $\emptyset$) ELSE $\emptyset$ FI $\cup$ \\
+	cablesEn($t$, $ip$)
 	}
 
-	\tadAlinearAxiomas{numInterfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}
+	\tadAlinearAxiomas{\#interfaces(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}
 
-	\tadAxioma{numInterfaces(NuevaTopo, $ipBus$)}{0}
-	\tadAxioma{numInterfaces(Compu($t$, $ip$, $numIfaces$), $ipBus$)}{\IF $ipBus$ = $ip$ THEN $numIfaces$ ELSE 0 FI}
-	\tadAxioma{numInterfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ipBus$)}{numInterfaces($t$)}
+	\tadAxioma{\#interfaces(NuevaTopo, $ip$)}{0}
+	\tadAxioma{\#interfaces(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}{\IF $ip$ = $ipNueva$ THEN $cantIfaces$ ELSE \#interfaces($t$) FI}
+	\tadAxioma{\#interfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ip$)}{\#interfaces($t$)}
 	\tadAlinearAxiomas{darRutasVecinas($t$, $vecinas$, $ipB$, $rec$, $ruta$)}
-	\tadAxioma{interfacesOcupadasDe($t$, $ipBus$)}{map$\Pi_1$(cablesEn($t$, $ipBus$))}
-	\tadAxioma{vecinas($t$, $ipBus$)}{map$\Pi_2$(cablesEn($t$, $ipBus$))}
+	\tadAxioma{interfacesOcupadasDe($t$, $ip$)}{map$\Pi_1$(cablesEn($t$, $ip$))}
+	\tadAxioma{vecinas($t$, $ip$)}{map$\Pi_2$(cablesEn($t$, $ip$))}
 	\tadAxioma{conectados?($t$, $ipA$, $ipB$)}{
 		$\neg$ $\emptyset$?(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>))
 	}
 
 	\tadAxioma{darRutas($t$, $ipA$, $ipB$, $rec$, $ruta$)}{
 		\IF $ipB$ $\in$ vecinas($t$, $ipA$) THEN
-			Ag($ruta$ \& ($ipA$ · $ipB$ · <>), $\emptyset$)
+			Ag($ruta$ \& ($ipA$ \puntito $ipB$ \puntito <>), $\emptyset$)
 		ELSE{
 			\IF $\emptyset$?(vecinas($t$, $ipA$) - $rec$) THEN
 				$\emptyset$
