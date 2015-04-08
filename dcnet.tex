@@ -83,7 +83,7 @@
 
 
 	\tadAxioma{generarHistoria(crearRed(t),bs)}{bs \puntito <>}
-	\tadAxioma{generarHistoria(seg(dcn),bs)}{ bs \puntito generarHistoria(dcn,$\emptyset$) }
+	\tadAxioma{generarHistoria(seg(dcn),bs)}{ bs \puntito generarHistoria(dcn,$vacío$) }
 	\tadAxioma{generarHistoria(paquetePendiente(dcn,o,d,p),bs)}{ \IF $def?(c,bs)$ THEN 
 																	$generarHistoria(dcn,definir(c,n \cup obtener(o,bs),bs))$
 																ELSE 
