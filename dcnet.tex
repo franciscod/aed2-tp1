@@ -1,22 +1,25 @@
 \begin{tad}{\tadNombre{DCNet}}
 	\tadGeneros{dcnet}
 
-	\tadAlinearFunciones{maxPaquetesMandados}{dcnet/dcn,pc/p1,pc/p2,paquete}
-	\tadIgualdadObservacional{d}{d'}{dcnet}{$ (topo(d) \igobs topo(d')) \land
-		((\forall p: pc)(p \in pcs(topo(d)) \land p \in pcs(topo(d')) \impluego (dcNetBuffer(d,p) \igobs dcNetBuffer(d',p) \land paquetesMandados(d,p) \igobs paquetesMandados(d',p) )
-		\land ((\forall p: paquetes)
-		((\exists  c: pc )(c \in pcs(topo(d') \land  c \in pcs(topo(d') ) \yluego(p \in dcNetBuffer(d,c) \land p \in dcNetBuffer(d',c) ) )
-		\impluego( recorridoPaquete(d,p) \igobs recorridoPaquete(d',p) ) ) $}
+	\tadAlinearFunciones{compuQueMasEnvio}{dcnet/dcn,pc/p1,pc/p2,paquete}
+	\tadIgualdadObservacional{d}{d'}{dcnet}{$ (topo(d) \igobs topo(d')) \land \newline
+		((\forall p: pc)(p \in pcs(topo(d)) \land   p \in pcs(topo(d')) \impluego  \newline
+		(buffer(d,p) \igobs buffer(d',p) \land \newline
+		\#paquetesEnviados(d,p) \igobs \#paquetesEnviados(d',p) )\land \newline
+		((\forall p: paquetes)((\exists  c: pc )(c \in pcs(topo(d') \land \newline 
+		c \in pcs(topo(d') ) \yluego(p \in buffer(d,c) \land \newline
+		p \in buffer(d',c) ) )\impluego \newline
+		( recorridoPaquete(d,p) \igobs recorridoPaquete(d',p) ) ) $}
 	\tadGeneradores
-	\tadOperacion{crearRed}{topo}{dcnet}{}
-	\tadOperacion{seg}{dcnet}{dcnet}{}
-	\tadOperacion{paquetePendiente}{dcnet/dcn,pc/p1,pc/p2,paquete}{dcnet}
+	\tadOperacion{CrearRed}{topo}{dcnet}{}
+	\tadOperacion{Seg}{dcnet}{dcnet}{}
+	\tadOperacion{PaquetePendiente}{dcnet/dcn,pc/p1,pc/p2,paquete}{dcnet}
 	{$(p_1 \in pcs(topo(dcn)) \land  p_2 \in pcs(topo(dcn))) \yluego  conectadas?(topo(dcn) , p_1 , p_2)$}
 
 	\tadObservadores
-	\tadOperacion{recorridoPaquete}{dcnet/dcn,paquete/p}{secu((ip,interface)))}{$(\exists  c: pc )(c \in pcs(topo(dcn)) \yluego (p \in dcNetBuffer(dcn,c))$}
-	\tadOperacion{dcNetBuffer}{dcnet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))}
-	\tadOperacion{paquetesMandados}{dcnet/dcn,pc/p}{nat}{$p$ $\in$ pcs(topo($dcn$))}
+	\tadOperacion{recorridoPaquete}{dcnet/dcn,paquete/p}{secu((ip,interface)))}{$(\exists  c: pc )(c \in pcs(topo(dcn)) \yluego (p \in buffer(dcn,c))$}
+	\tadOperacion{buffer}{dcnet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))}
+	\tadOperacion{$\#$paquetesEnviados}{dcnet/dcn,pc/p}{nat}{$p$ $\in$ pcs(topo($dcn$))}
 
 	\tadOperacion{topo}{dcnet}{topologia}{}
 
@@ -24,22 +27,22 @@
 	\tadOperacion{paqueteEnTransito?}{dcnet,paquete}{bool}{}
 	\tadOperacion{perteneceBuffers?}{paquete,buffers}{bool}{}
 	
-	\tadOperacion{maxPaquetesMandados}{dcnet}{pc}{}
+	\tadOperacion{compuQueMasEnvio}{dcnet}{pc}{}
 	\tadOperacion{auxMaxPaquetes}{dcnet,conj(pc)}{pc)}{}
 	
 	\tadOperacion{pasoSeg}{topo,buffers,buffers}{buffers}{}
 	\tadOperacion{regresion}{topo,buffers,secu(buffers)}{buffers}{}
-	\tadOperacion{cronoPaquetes}{dcnet,diccionario(pc,conj(paquete))}{secu(buffers)}{}
+	\tadOperacion{generarHistoria}{dcnet,diccionario(pc,conj(paquete))}{secu(buffers)}{}
 	\tadOperacion{auxDefinir}{buffers,pc,conj(paquete),conj(paquete)}{buffers}{}
 	\tadOperacion{auxBorrar}{buffers,pc,conj(paquete),conj(paquete)}{buffers}{}
 	\tadOperacion{transacion}{topo,buffers,conj(pc)}{buffers}{}
-	\tadOperacion{envio}{topo,buffers,buffer}{buffers}{}
+	\tadOperacion{envio}{topo,buffers,ip,conj(paquete)}{buffers}{}
 	\tadOperacion{nuevosPaquetes}{buffers,buffers}{buffers}{}
-	\tadOperacion{damePaquete}{buffer}{paquete}{}
+	\tadOperacion{damePaquete}{conj(paquete)}{paquete}{}
 	\tadOperacion{pasarA}{topologia,pc,pc}{pc}{}
 
 
-	\tadAlinearAxiomas{paquetesMandados(paquetePendiente(dcn,o,d,p),c)}
+	\tadAlinearAxiomas{$\#$paquetesEnviados(paquetePendiente(dcn,o,d,p),c)}
 
 	\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c,c'},\paratodo{dcnet}{dcn},\paratodo{topologia}{t}]
 
@@ -47,17 +50,17 @@
 	\tadAxioma{topo(seg(dcn))}{topo(dcn)}
 	\tadAxioma{topo(paquetePendiente(dcn,c,c',p))}{topo(dcn)}
 
-	\tadAxioma{paquetesMandados(crearRed(t),c)}{0}
-	\tadAxioma{paquetesMandados(seg(dcn),c)}{paquetesMandados(dcn)}
-	\tadAxioma{paquetesMandados(paquetePendiente(dcn,o,d,p),c)}{\IF $c = o$ THEN $paquetesMandados(dcn,c) + 1$ ELSE $paquetesMandados(dcn,c)$ FI}
+	\tadAxioma{$\#$paquetesEnviados(crearRed(t),c)}{0}
+	\tadAxioma{$\#$paquetesEnviados(seg(dcn),c)}{$\#$paquetesEnviados(dcn)}
+	\tadAxioma{$\#$paquetesEnviados(paquetePendiente(dcn,o,d,p),c)}{\IF $c = o$ THEN $\#paquetesEnviados(dcn,c) + 1$ ELSE $\#paquetesEnviados(dcn,c)$ FI}
 
-	\tadAxioma{dcNetBuffer(dcn,c)}{obtener(c,regresion(topo(dcn),vacio,cronoPaquetes(dcn,vacio)))}
+	\tadAxioma{buffer(dcn,c)}{obtener(c,regresion(topo(dcn),vacio,generarHistoria(dcn,vacio)))}
 
-	\tadAxioma{maxPaquetesMandados(dcn)}{auxMaxPaquetes(dcn,pcs(topo(dcn)))}
+	\tadAxioma{compuQueMasEnvio(dcn)}{auxMaxPaquetes(dcn,pcs(topo(dcn)))}
 	\tadAxioma{auxMaxPaquetes(dcn,cs)}{\IF $\emptyset?(sinUno(cs))$ THEN 
 											$dameUno(cs)$ 
-										ELSE { \IF $paquetesMandados(dcn,dameUno(cs)<$
-													$paquetesMandados(dcn,auxMaxPaquetes$
+										ELSE { \IF $\#paquetesEnviados(dcn,dameUno(cs)<$
+													$\#paquetesEnviados(dcn,auxMaxPaquetes$
 													$(dcn,sinUno(cs))) $ THEN
 													$auxMaxPaquetes(dcn,sinUno(cs))$
 												ELSE
@@ -66,7 +69,7 @@
 										FI}
 
 	\tadAxioma{paqueteEnTransito?(dcn,p)}{perteneceBuffers?(p,regresion(topo(dcn),vacio,\newline
-											cronoPaquetes(dcn,vacio)))}
+											generarHistoria(dcn,vacio)))}
 	\tadAxioma{perteneceBuffers?(p,bs)}{\IF $\emptyset?(claves(bs))$ THEN 
 											$false$ 
 										ELSE { \IF $p \in obtener(dameUno(claves(bs)),bs)$ THEN
@@ -79,12 +82,12 @@
 
 
 
-	\tadAxioma{cronoPaquetes(crearRed(t),bs)}{<bs>}
-	\tadAxioma{cronoPaquetes(seg(dcn),bs)}{ bs \puntito cronoPaquetes(dcn,$\emptyset$) }
-	\tadAxioma{cronoPaquetes(paquetePendiente(dcn,o,d,p),bs)}{ \IF $def?(c,bs)$ THEN 
-																	$cronoPaquetes(dcn,definir(c,n \cup obtener(o,bs),bs))$
+	\tadAxioma{generarHistoria(crearRed(t),bs)}{<bs>}
+	\tadAxioma{generarHistoria(seg(dcn),bs)}{ bs \puntito generarHistoria(dcn,$\emptyset$) }
+	\tadAxioma{generarHistoria(paquetePendiente(dcn,o,d,p),bs)}{ \IF $def?(c,bs)$ THEN 
+																	$generarHistoria(dcn,definir(c,n \cup obtener(o,bs),bs))$
 																ELSE 
-																	$cronoPaquetes(dcn,definir(c,n))$ 
+																	$generarHistoria(dcn,definir(c,n))$ 
 																FI}
 
 	\tadAxioma{auxBorrar(bs,c,b,p)}{\IF $\emptyset?(p - \{ b \})$ THEN $borrar(c,n)$ 
@@ -100,25 +103,23 @@
 												$sinUno(cp))$ 
 											FI}
 	\tadAxioma{pasarA(t,o,d)}{$prim(caminoMin(t,o,d))$}												
-	\tadAxioma{envio(t,bs,b)}{\IF $\emptyset?(damePaquete(b))$ THEN
+	\tadAxioma{envio(t,bs,ip,cp)}{\IF $\emptyset?(damePaquete(cp))$ THEN
 								$bs$
-								ELSE{ \IF $pasarA(t,\Pi_1(b),dest(\Pi_2(b))) = destino(damePaquete(b)))$ THEN
-											$envio(t,quitarPaquete(bs,\Pi_1(b)),(\Pi_1(b),\Pi_2(b) -{damePaquete(b)}))$
+								ELSE{ \IF $pasarA(t,ip,destino(damePaquete(cp))) = destino(damePaquete(cp)))$ THEN
+											$envio(t,quitarPaquete(bs,ip),ip,cp -{damePaquete(cp)}))$
 									    ELSE
-											$envio(t,quitarPaquete(pasarPaquete(bs,\Pi_1(b),damePaquete(b)),\Pi_1(b))$
-											$,(\Pi_1(b),\Pi_2(b) -{damePaquete(b)} ))$
+											$envio(t,quitarPaquete(pasarPaquete(bs,ip,damePaquete(cp)),ip)$
+											$,ip,cp -{damePaquete(b)} ))$
 										FI}
 								FI}
 
 	\tadAxioma{nuevosPaquetes(bs,nbs)}{\IF $\emptyset?(claves(nbs))$ THEN 
 										 $bs$  
 										ELSE  
-										 	$auxDefinir(bs,dameUno(claves(nbs),obtener$ 
+										 	$nuevosPaquetes(auxDefinir(bs,dameUno(claves(nbs),obtener$ 
 										 	$(dameUno(claves(nbs),nbs),obtener(dameUno$  
-										 	$(claves(nbs),bs))) \newline$
-										 	$nuevosPaquetes(bs,sinUno(nbs))$
-										FI }
+										 	$(claves(nbs),bs))),sinUno(nbs))$	
+										FI}
 
-	\noindent TAD buffers es diccionario(pc,conj(paquete)) $\newline$
- 	\noindent TAD buffer es tupla(pc,conj(paquete)) $\newline$
+	\noindent TAD buffers es diccionario(pc,conj(paquete)) 
 \end{tad}

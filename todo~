@@ -4,7 +4,7 @@ dcnet:
 	- recorridoPaquete ==> al freezer
 
 	- paquetesMandados -> #paquetesEnviados(Done)
-	- dcNetBuffer -> buffer (Done)
+	- dcNetBuffer -> buffer
 	- maxPaquetesMandados -> compuQueMasEnvio(Done)
 	- auxMaxPaquetes -> ?
 	- pasoSeg -> ?
