@@ -12,9 +12,9 @@
 	\tadOperacion{NuevaTopo}{}{topologia}{}
 	\tadOperacion{Compu}{topologia, nat/ip, nat}{topologia}{$\neg(ip \in compus(t))$}
 	\tadOperacion{Cable}{topologia, nat/ipA, nat/ifA, nat/ipB, nat/ifB}{topologia}{
-		$\neg(ipA \in compus(t) \lor ipB \in compus(t)) \yluego$ \\
-		$(ifA \leq \#interfaces(t, ipA)) \land$ \\
-		$(ifB \leq \#interfaces(t, ipB)) \land$ \\
+		$(ipA \in compus(t) \land ipB \in compus(t)) \yluego$ \\
+		$(ifA < \#interfaces(t, ipA)) \land$ \\
+		$(ifB < \#interfaces(t, ipB)) \land$ \\
 		$\neg(ifA \in interfacesOcupadasDe(t, ipA)) \land$ \\
 		$\neg(ifB \in interfacesOcupadasDe(t, ipB)) \land$ \\
 		$\neg(ipA \in vecinas(t, ipB))$
