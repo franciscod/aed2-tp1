@@ -35,8 +35,8 @@
 	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat, conj(nat), secu(nat)}{conj(secu(nat))}{}
 	\tadOperacion{longMenorSec}{conj(secu($\alpha$))}{nat}{}
 	\tadOperacion{secusDeLongK}{conj(secu($\alpha$)), nat}{conj(secu($\alpha$))}{}
-	\tadOperacion{map$\Pi_1$}{conj(tupla(nat, nat)}{conj(nat)}{}
-	\tadOperacion{map$\Pi_2$}{conj(tupla(nat, nat)}{conj(nat)}{}
+	\tadOperacion{map$\Pi_1$}{conj(tupla(nat, nat))}{conj(nat))}{}
+	\tadOperacion{map$\Pi_2$}{conj(tupla(nat, nat))}{conj(nat))}{}
 
 	\tadAlinearAxiomas{cablesEn(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}
 
@@ -124,14 +124,14 @@
 		\IF $\emptyset$?($conjDuplas$) THEN
 			$\emptyset$
 		ELSE
-			Ag($\Pi_1$(dameUno($conjDuplas$)), map$\Pi_1$(sinUno($conjDuplas$)))
+			Ag($\pi_1$(dameUno($conjDuplas$)), map$\Pi_1$(sinUno($conjDuplas$)))
 		FI
 	}
 	\tadAxioma{map$\Pi_2$($conjDuplas$)}{
 		\IF $\emptyset$?($conjDuplas$) THEN
 			$\emptyset$
 		ELSE
-			Ag($\Pi_2$(dameUno($conjDuplas$)), map$\Pi_2$(sinUno($conjDuplas$)))
+			Ag($\pi_2$(dameUno($conjDuplas$)), map$\Pi_2$(sinUno($conjDuplas$)))
 		FI
 	}
 \end{tadx}
