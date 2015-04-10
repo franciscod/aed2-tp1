@@ -31,12 +31,12 @@
 	\tadOperacion{interfacesOcupadasDe}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
 	\tadOperacion{conectados?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
 	\tadOperacion{darCaminoMasCorto}{topologia/t, nat/a, nat/b}{secu(nat)}{$conectados?(t, a, b)$}
-	\tadOperacion{darRutas}{topologia, nat, nat, conj(nat), secu(nat)}{conj(secu(nat))}{}
-	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat, conj(nat), secu(nat)}{conj(secu(nat))}{}
+	\tadOperacion{darRutas}{topologia, nat, nat, conj(nat), secu(nat)}{conj(secu(tupla(nat, nat)))}{}
+	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat, conj(nat), secu(nat)}{conj(secu(tupla(nat, nat))}{}
 	\tadOperacion{longMenorSec}{conj(secu($\alpha$))}{nat}{}
 	\tadOperacion{secusDeLongK}{conj(secu($\alpha$)), nat}{conj(secu($\alpha$))}{}
-	\tadOperacion{map$\Pi_1$}{conj(tupla(nat, nat))}{conj(nat))}{}
-	\tadOperacion{map$\Pi_2$}{conj(tupla(nat, nat))}{conj(nat))}{}
+	\tadOperacion{$\pi_1$Conj}{{conj(tupla(nat, nat))}}{conj(nat))}{}
+	\tadOperacion{$\pi_2$Conj}{{conj(tupla(nat, nat))}}{conj(nat))}{}
 
 	\tadAlinearAxiomas{cablesEn(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}
 
@@ -68,8 +68,8 @@
 	\tadAxioma{\#interfaces(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}{\IF $ip$ = $ipNueva$ THEN $cantIfaces$ ELSE \#interfaces($t$) FI}
 	\tadAxioma{\#interfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ip$)}{\#interfaces($t$)}
 	\tadAlinearAxiomas{darRutasVecinas($t$, $vecinas$, $ipB$, $rec$, $ruta$)}
-	\tadAxioma{interfacesOcupadasDe($t$, $ip$)}{map$\Pi_1$(cablesEn($t$, $ip$))}
-	\tadAxioma{vecinas($t$, $ip$)}{map$\Pi_2$(cablesEn($t$, $ip$))}
+	\tadAxioma{interfacesOcupadasDe($t$, $ip$)}{$\pi_1$Conj(cablesEn($t$, $ip$))}
+	\tadAxioma{vecinas($t$, $ip$)}{$\pi_2$Conj(cablesEn($t$, $ip$))}
 	\tadAxioma{conectados?($t$, $ipA$, $ipB$)}{
 		$\neg$ $\emptyset$?(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>))
 	}
@@ -120,18 +120,18 @@
 		FI
 	}
 
-	\tadAxioma{map$\Pi_1$($conjDuplas$)}{
+	\tadAxioma{$\pi_1$Conj($conjDuplas$)}{
 		\IF $\emptyset$?($conjDuplas$) THEN
 			$\emptyset$
 		ELSE
-			Ag($\pi_1$(dameUno($conjDuplas$)), map$\Pi_1$(sinUno($conjDuplas$)))
+			Ag($\pi_1$(dameUno($conjDuplas$)), $\pi_1$Conj(sinUno($conjDuplas$)))
 		FI
 	}
-	\tadAxioma{map$\Pi_2$($conjDuplas$)}{
+	\tadAxioma{$\pi_2$Conj($conjDuplas$)}{
 		\IF $\emptyset$?($conjDuplas$) THEN
 			$\emptyset$
 		ELSE
-			Ag($\pi_2$(dameUno($conjDuplas$)), map$\Pi_2$(sinUno($conjDuplas$)))
+			Ag($\pi_2$(dameUno($conjDuplas$)), $\pi_2$Conj(sinUno($conjDuplas$)))
 		FI
 	}
 \end{tadx}
