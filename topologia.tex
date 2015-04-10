@@ -30,7 +30,8 @@
 	\tadOperacion{vecinas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
 	\tadOperacion{interfacesOcupadasDe}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
 	\tadOperacion{conectados?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
-	\tadOperacion{darCaminoMasCorto}{topologia/t, nat/a, nat/b}{secu(nat)}{$conectados?(t, a, b)$}
+        \tadOperacion{darInterfazConectada}{topologia/t, {conj(tupla(nat, nat))}/cablesA, nat/ipB}{nat}{$ipB \in \pi_2Conj(cablesA)$}
+	\tadOperacion{darCaminoMasCorto}{topologia/t, nat/ipA, nat/ipB}{secu(nat)}{$ipA \in compus(t)$ $\land$ $ipB \in compus(t)$ $\yluego conectados?(t, ipA, ipB)$}
 	\tadOperacion{darRutas}{topologia, nat, nat, conj(nat), secu(nat)}{conj(secu(tupla(nat, nat)))}{}
 	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat, conj(nat), secu(nat)}{conj(secu(tupla(nat, nat))}{}
 	\tadOperacion{longMenorSec}{conj(secu($\alpha$))}{nat}{}
@@ -73,6 +74,9 @@
 	\tadAxioma{conectados?($t$, $ipA$, $ipB$)}{
 		$\neg$ $\emptyset$?(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>))
 	}
+        \tadAxioma{darInterfazConectada($t$, $conjDuplas$, $ipB$)}{
+            \IF $ipB$ = $\pi_2$(dameUno($conjDuplas$)) THEN $\pi_1$(dameUno($conjDuplas$)) ELSE darInterfazConectada($t$, sinUno($conjDuplas$), $ipB$) FI
+        }
 
 	\tadAxioma{darRutas($t$, $ipA$, $ipB$, $rec$, $ruta$)}{
 		\IF $ipB$ $\in$ vecinas($t$, $ipA$) THEN
