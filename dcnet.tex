@@ -28,9 +28,11 @@
 
 	\tadOperacion{recorridoPaquete}{dcnet/dcn,nat/id}{secu(tupla(nat, nat, nat, nat)))}{$(paqueteEnTransito?(dcn, id)$}
 	\tadOperacion{cortarRecHasta}{sec(tupla(nat, nat, nat, nat)), nat}{sec(tupla(nat, nat, nat, nat))}{}
-	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(nat)/compus, nat/id}{nat}{compus = compus(topo(dcn)) $\land$ ($\exists$ ip : nat)(ip $\in$ compus $\land$ id $\in$ buffer(dcn, ip))}
+	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(nat)/pcs, nat/id}{nat}{pcs = compus(topo(dcn)) $\land$ ($\exists$ ip : nat)(ip $\in$ pcs $\land$ id $\in$ buffer(dcn, ip))}
 
 	\tadOperacion{paqueteEnTransito?}{dcnet, nat}{bool}{}
+	\tadOperacion{existePaqEnBuffers?}{dcnet/dcn, conj(nat)/pcs, nat/id}{bool}{pcs = compus(topo(dcn))}
+
 	\tadOperacion{perteneceBuffers?}{paquete,buffers}{bool}{}
 	
 	\tadOperacion{compuQueMasEnvio}{dcnet}{pc}{}
@@ -82,13 +84,13 @@
 	}
 	
 	\tadAxioma{paqueteEnTransito?(dcn, id)}{
-		existePaqueteEnBuffers?(dcn, compus(topo(dcn)), id)
+		existePaqEnBuffers?(dcn, compus(topo(dcn)), id)
 	}
-	\tadAxioma{existePaqueteEnBuffers?(dcn, pcs, id)}{
+	\tadAxioma{existePaqEnBuffers?(dcn, pcs, id)}{
 		\IF $\emptyset$?(pcs) THEN false
 		ELSE {
 			\IF id $\in$ buffer(dcn, dameUno(pcs)) THEN true
-			ELSE existePaqueteEnBuffers?(dcn, sinUno(pcs), id)
+			ELSE existePaqEnBuffers?(dcn, sinUno(pcs), id)
 			FI
 		}
 		FI
