@@ -30,7 +30,7 @@
 	\tadOperacion{cortarRecHasta}{sec(tupla(nat, nat, nat, nat)), nat}{sec(tupla(nat, nat, nat, nat))}{}
 	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(nat)/compus, nat/id}{nat}{compus = compus(topo(dcn)) $\land$ ($\exists$ ip : nat)(ip $\in$ compus $\land$ id $\in$ buffer(dcn, ip))}
 
-	\tadOperacion{paqueteEnTransito?}{dcnet,paquete}{bool}{}
+	\tadOperacion{paqueteEnTransito?}{dcnet, nat}{bool}{}
 	\tadOperacion{perteneceBuffers?}{paquete,buffers}{bool}{}
 	
 	\tadOperacion{compuQueMasEnvio}{dcnet}{pc}{}
@@ -71,7 +71,7 @@
 		cortarRecHasta(darCaminoMasCorto(topo(dcn), \\origen(p), destino(p)), buscar(compus(topo(dcn)), p))
 	}
 	\tadAxioma{cortarRecHasta(s, ip)}{
-		\IF vacia?(s) $\oluego$ ip = ipOrigen(prim(s)) THEN <> 		% ipOrigen es el primer elemento de la tupla
+		\IF vacia?(s) $\oluego$ ip = ipOrigen(prim(s)) THEN <> 		% ipOrigen es el primer elemento del segmento
 		ELSE prim(s) \puntito cortarRecHasta(fin(s), ip)
 		FI
 	}
@@ -80,8 +80,20 @@
 		ELSE buscarPaquete(sinUno(compus), id)
 		FI
 	}
-
-
+	
+	\tadAxioma{paqueteEnTransito?(dcn, id)}{
+		existePaqueteEnBuffers?(dcn, compus(topo(dcn)), id)
+	}
+	\tadAxioma{existePaqueteEnBuffers?(dcn, pcs, id)}{
+		\IF $\emptyset$?(pcs) THEN false
+		ELSE {
+			\IF id $\in$ buffer(dcn, dameUno(pcs)) THEN true
+			ELSE existePaqueteEnBuffers?(dcn, sinUno(pcs), id)
+			FI
+		}
+		FI
+	}
+	
 	\tadAxioma{darPaqueteEnviado(cp)}{dameUno(PaquetesConPriopedadK(cp,maxPrioridad(cp)))}
 	\tadAxioma{maxPrioridad(cp)}{max(darPrioridad(dameUno(cp),maxPrioridad(sinUno(cp)))}
 	\tadAxioma{PaquetesConPriopedadK(cp,k)}{	\IF $\emptyset?cp)$ THEN 
@@ -105,8 +117,7 @@
 												FI}
 										FI}
 
-	\tadAxioma{paqueteEnTransito?(dcn,p)}{perteneceBuffers?(p,regresion(topo(dcn),vacio,\newline
-											generarHistoria(dcn,vacio)))}
+	
 	\tadAxioma{perteneceBuffers?(p,bs)}{\IF $\emptyset?(claves(bs))$ THEN 
 											$false$ 
 										ELSE { \IF $p \in obtener(dameUno(claves(bs)),bs)$ THEN
