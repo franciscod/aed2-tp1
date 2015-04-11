@@ -31,10 +31,10 @@
 	\tadOperacion{interfacesOcupadasDe}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
 	\tadOperacion{conectados?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
         \tadOperacion{darInterfazConectada}{{conj(tupla(nat, nat))}/cablesA, nat/ipB}{nat}{$ipB \in \pi_2Conj(cablesA)$}
-        \tadOperacion{darSegmento}{topologia/t, nat/ipA, nat/ipB}{segmento}{$ipA \in compus(t)$ $\land$ $ipB \in vecinas(t, ipA)$}
+        \tadOperacion{darSegmento}{topologia/t, nat/ipA, nat/ipB}{segmento}{$ipA \in compus(t) \yluego ipB \in vecinas(t, ipA)$}
 	\tadOperacion{darCaminoMasCorto}{topologia/t, nat/ipA, nat/ipB}{secu(segmento)}{$ipA \in compus(t)$ $\land$ $ipB \in compus(t)$ $\yluego conectados?(t, ipA, ipB)$}
-	\tadOperacion{darRutas}{topologia, nat, nat, conj(nat), {secu(segmento))}}{conj(secu(segmento)))}{}
-	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat, conj(nat), secu(segmento)}{conj(secu(segmento))}{}
+	\tadOperacion{darRutas}{topologia, nat/ipA, nat/ipB, conj(nat), {secu(segmento))}}{conj(secu(segmento)))}{$ipA \in compus(t) \land ipB \in compus(t)$}
+	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat/ip, conj(nat), secu(segmento)}{conj(secu(segmento))}{$ip \in compus(t)$}
 	\tadOperacion{longMenorSec}{conj(secu($\alpha$))}{nat}{}
 	\tadOperacion{secusDeLongK}{conj(secu($\alpha$)), nat}{conj(secu($\alpha$))}{}
 	\tadOperacion{$\pi_1$Conj}{{conj(tupla(nat, nat))}}{conj(nat))}{}
