@@ -3,36 +3,38 @@
 
 	\tadAlinearFunciones{compuQueMasEnvio}{dcnet/dcn,pc/p1,pc/p2,paquete}
 	\tadIgualdadObservacional{d}{d'}{dcnet}{$ (topo(d) \igobs topo(d')) \land \newline
-		((\forall p: pc)(p \in pcs(topo(d)) \land   p \in pcs(topo(d')) \impluego  \newline
+		((\forall p: pc)(p \in compus(topo(d)) \land   p \in compus(topo(d')) \impluego  \newline
 		(buffer(d,p) \igobs buffer(d',p) \land \newline
 		\#paquetesEnviados(d,p) \igobs \#paquetesEnviados(d',p) )\land \newline
-		((\forall p: paquetes)((\exists  c: pc )(c \in pcs(topo(d') \land \newline 
-		c \in pcs(topo(d') ) \yluego(p \in buffer(d,c) \land \newline
+		((\forall p: paquetes)((\exists  c: pc )(c \in compus(topo(d') \land \newline 
+		c \in compus(topo(d') ) \yluego(p \in buffer(d,c) \land \newline
 		p \in buffer(d',c) ) )\impluego \newline
 		( recorridoPaquete(d,p) \igobs recorridoPaquete(d',p) ) ) $}
 	\tadGeneradores
 	\tadOperacion{CrearRed}{topo}{dcnet}{}
 	\tadOperacion{Seg}{dcnet}{dcnet}{}
-	\tadOperacion{PaquetePendiente}{dcnet/dcn,pc/p1,pc/p2,paquete}{dcnet}
-	{$(p_1 \in pcs(topo(dcn)) \land  p_2 \in pcs(topo(dcn))) \yluego  conectadas?(topo(dcn) , p_1 , p_2)$}
+	\tadOperacion{CrearPaquete}{dcnet/dcn,pc/p1,pc/p2,paquete}{dcnet}
+	{$(p_1 \in compus(topo(dcn)) \land  p_2 \in compus(topo(dcn))) \yluego  conectadas?(topo(dcn) , p_1 , p_2)$}
 
 	\tadObservadores
 	
 	\tadOperacion{topo}{dcnet}{topologia}{}
-	\tadOperacion{$\#$paquetesEnviados}{dcnet/dcn,pc/p}{nat}{$p$ $\in$ pcs(topo($dcn$))}
-	\tadOperacion{buffer}{dcnet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))}
+	\tadOperacion{$\#$paquetesEnviados}{dcnet/dcn,pc/p}{nat}{$p$ $\in$ compus(topo($dcn$))}
+	\tadOperacion{buffer}{dcnet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ compus(topo($dcn$))}
+	\tadOperacion{darPrioridad}{nat id}{nat}{$id \in buffers(dcn)$ }
+
 
 	\tadOtrasOperaciones
 
 	\tadOperacion{recorridoPaquete}{dcnet/dcn,nat/id}{secu(tupla(nat, nat, nat, nat)))}{$(paqueteEnTransito?(dcn, id)$}
 	\tadOperacion{cortarRecHasta}{sec(tupla(nat, nat, nat, nat)), nat}{sec(tupla(nat, nat, nat, nat))}{}
-	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(nat)/pcs, nat/id}{nat}{pcs = compus(topo(dcn)) $\land$ ($\exists$ ip : nat)(ip $\in$ pcs $\land$ id $\in$ buffer(dcn, ip))}
+	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(nat)/compus, nat/id}{nat}{compus = compus(topo(dcn)) $\land$ ($\exists$ ip : nat)(ip $\in$ compus $\land$ id $\in$ buffer(dcn, ip))}
 
 	\tadOperacion{paqueteEnTransito?}{dcnet,paquete}{bool}{}
 	\tadOperacion{perteneceBuffers?}{paquete,buffers}{bool}{}
 	
 	\tadOperacion{compuQueMasEnvio}{dcnet}{pc}{}
-	\tadOperacion{auxMaxPaquetes}{dcnet,conj(pc)}{pc)}{}
+	\tadOperacion{laQueMasEnvio}{dcnet,conj(pc)}{pc)}{}
 	
 	\tadOperacion{pasoSeg}{topo,buffers,buffers}{buffers}{}
 	\tadOperacion{regresion}{topo,buffers,secu(buffers)}{buffers}{}
@@ -42,21 +44,26 @@
 	\tadOperacion{transacion}{topo,buffers,conj(pc)}{buffers}{}
 	\tadOperacion{envio}{topo,buffers,ip,conj(paquete)}{buffers}{}
 	\tadOperacion{nuevosPaquetes}{buffers,buffers}{buffers}{}
-	\tadOperacion{damePaquete}{conj(paquete)}{paquete}{}
+	\tadOperacion{darPaqueteEnviado}{conj(paquete)}{paquete}{}
+
 	\tadOperacion{pasarA}{topologia,pc,pc}{pc}{}
 
 
-	\tadAlinearAxiomas{$\#$paquetesEnviados(paquetePendiente(dcn,o,d,p),c)}
+	\tadAlinearAxiomas{$\#$paquetesEnviados(CrearPaquete(dcn,o,d,p),c)}
 
 	\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c,c'},\paratodo{dcnet}{dcn},\paratodo{topologia}{t}]
 
 	\tadAxioma{topo(crearRed(t))}{t}
 	\tadAxioma{topo(seg(dcn))}{topo(dcn)}
-	\tadAxioma{topo(paquetePendiente(dcn,c,c',p))}{topo(dcn)}
+	\tadAxioma{topo(CrearPaquete(dcn,c,c',p))}{topo(dcn)}
+
+
+	\tadAxioma{darPrioridad(seg(dcn,id))}{darPrioridad(dcn,id)}
+	\tadAxioma{darPrioridad(CrearPaquete(dcn,c,c',p),id)}{\IF $id = \Pi_1(p)$ THEN $\Pi_4(p)$ ELSE $darPrioridad(dcn,id)$ FI}
 
 	\tadAxioma{$\#$paquetesEnviados(crearRed(t),c)}{0}
 	\tadAxioma{$\#$paquetesEnviados(seg(dcn),c)}{$\#$paquetesEnviados(dcn)}
-	\tadAxioma{$\#$paquetesEnviados(paquetePendiente(dcn,o,d,p),c)}{\IF $c = o$ THEN $\#paquetesEnviados(dcn,c) + 1$ ELSE $\#paquetesEnviados(dcn,c)$ FI}
+	\tadAxioma{$\#$paquetesEnviados(CrearPaquete(dcn,o,d,p),c)}{\IF $c = o$ THEN $\#paquetesEnviados(dcn,c) + 1$ ELSE $\#paquetesEnviados(dcn,c)$ FI}
 
 	\tadAxioma{buffer(dcn,c)}{obtener(c,regresion(topo(dcn),vacio,generarHistoria(dcn,vacio)))}
 
@@ -74,13 +81,25 @@
 		FI
 	}
 
-	\tadAxioma{compuQueMasEnvio(dcn)}{auxMaxPaquetes(dcn,pcs(topo(dcn)))}
-	\tadAxioma{auxMaxPaquetes(dcn,cs)}{\IF $\emptyset?(sinUno(cs))$ THEN 
+
+	\tadAxioma{darPaqueteEnviado(cp)}{dameUno(PaquetesConPriopedadK(cp,maxPrioridad(cp)))}
+	\tadAxioma{maxPrioridad(cp)}{max(darPrioridad(dameUno(cp),maxPrioridad(sinUno(cp)))}
+	\tadAxioma{PaquetesConPriopedadK(cp,k)}{	\IF $\emptyset?cp)$ THEN 
+													$\emptyset$
+												ELSE{\IF $ darPrioridad(dameUno(cp)) = k$ THEN 	
+														$ Ag(dameUno(cp),PaquetesConPriopedadK(sinUno(cp),k))$
+													ELSE
+														$PaquetesConPriopedadK(sinUno(cp),k)$
+													FI}		
+											FI}
+
+	\tadAxioma{compuQueMasEnvio(dcn)}{laQueMasEnvio(dcn,compus(topo(dcn)))}
+	\tadAxioma{laQueMasEnvio(dcn,cs)}{\IF $\emptyset?(sinUno(cs))$ THEN 
 											$dameUno(cs)$ 
 										ELSE { \IF $\#paquetesEnviados(dcn,dameUno(cs)<$
-													$\#paquetesEnviados(dcn,auxMaxPaquetes$
+													$\#paquetesEnviados(dcn,laQueMasEnvio$
 													$(dcn,sinUno(cs))) $ THEN
-													$auxMaxPaquetes(dcn,sinUno(cs))$
+													$laQueMasEnvio(dcn,sinUno(cs))$
 												ELSE
 													$dameUno(cs)$
 												FI}
@@ -102,7 +121,7 @@
 
 	\tadAxioma{generarHistoria(crearRed(t),bs)}{bs \puntito <>}
 	\tadAxioma{generarHistoria(seg(dcn),bs)}{ bs \puntito generarHistoria(dcn,$vacío$) }
-	\tadAxioma{generarHistoria(paquetePendiente(dcn,o,d,p),bs)}{ \IF $def?(c,bs)$ THEN 
+	\tadAxioma{generarHistoria(CrearPaquete(dcn,o,d,p),bs)}{ \IF $def?(c,bs)$ THEN 
 																	$generarHistoria(dcn,definir(c,n \cup obtener(o,bs),bs))$
 																ELSE 
 																	$generarHistoria(dcn,definir(c,n))$ 
@@ -121,13 +140,13 @@
 												$sinUno(cp))$ 
 											FI}
 	\tadAxioma{pasarA(t,o,d)}{$prim(caminoMin(t,o,d))$}												
-	\tadAxioma{envio(t,bs,ip,cp)}{\IF $\emptyset?(damePaquete(cp))$ THEN
+	\tadAxioma{envio(t,bs,ip,cp)}{\IF $\emptyset?(darPaqueteEnviado(cp))$ THEN
 								$bs$
-								ELSE{ \IF $pasarA(t,ip,destino(damePaquete(cp))) = destino(damePaquete(cp)))$ THEN
-											$envio(t,quitarPaquete(bs,ip),ip,cp -{damePaquete(cp)}))$
+								ELSE{ \IF $pasarA(t,ip,destino(darPaqueteEnviado(cp))) = destino(darPaqueteEnviado(cp)))$ THEN
+											$envio(t,quitarPaquete(bs,ip),ip,cp -{darPaqueteEnviado(cp)}))$
 									    ELSE
-											$envio(t,quitarPaquete(pasarPaquete(bs,ip,damePaquete(cp)),ip)$
-											$,ip,cp -{damePaquete(b)} ))$
+											$envio(t,quitarPaquete(pasarPaquete(bs,ip,darPaqueteEnviado(cp)),ip)$
+											$,ip,cp -{darPaqueteEnviado(b)} ))$
 										FI}
 								FI}
 
