@@ -17,13 +17,17 @@
 	{$(p_1 \in pcs(topo(dcn)) \land  p_2 \in pcs(topo(dcn))) \yluego  conectadas?(topo(dcn) , p_1 , p_2)$}
 
 	\tadObservadores
-	\tadOperacion{recorridoPaquete}{dcnet/dcn,paquete/p}{secu((ip,interface)))}{$(\exists  c: pc )(c \in pcs(topo(dcn)) \yluego (p \in buffer(dcn,c))$}
-	\tadOperacion{buffer}{dcnet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))}
-	\tadOperacion{$\#$paquetesEnviados}{dcnet/dcn,pc/p}{nat}{$p$ $\in$ pcs(topo($dcn$))}
-
+	
 	\tadOperacion{topo}{dcnet}{topologia}{}
+	\tadOperacion{$\#$paquetesEnviados}{dcnet/dcn,pc/p}{nat}{$p$ $\in$ pcs(topo($dcn$))}
+	\tadOperacion{buffer}{dcnet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ pcs(topo($dcn$))}
 
 	\tadOtrasOperaciones
+
+	\tadOperacion{recorridoPaquete}{dcnet/dcn,nat/id}{secu(tupla(nat, nat, nat, nat)))}{$(paqueteEnTransito?(dcn, id)$}
+	\tadOperacion{cortarRecHasta}{sec(tupla(nat, nat, nat, nat)), nat}{sec(tupla(nat, nat, nat, nat))}{}
+	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(nat)/pcs, nat/id}{nat}{pcs = compus(topo(dcn)) $\land$ ($\exists$ ip : nat)(ip $\in$ pcs $\land$ id $\in$ buffer(dcn, ip))}
+
 	\tadOperacion{paqueteEnTransito?}{dcnet,paquete}{bool}{}
 	\tadOperacion{perteneceBuffers?}{paquete,buffers}{bool}{}
 	
@@ -55,6 +59,20 @@
 	\tadAxioma{$\#$paquetesEnviados(paquetePendiente(dcn,o,d,p),c)}{\IF $c = o$ THEN $\#paquetesEnviados(dcn,c) + 1$ ELSE $\#paquetesEnviados(dcn,c)$ FI}
 
 	\tadAxioma{buffer(dcn,c)}{obtener(c,regresion(topo(dcn),vacio,generarHistoria(dcn,vacio)))}
+
+	\tadAxioma{recorridoPaquete(dcn, p)}{
+		cortarRecHasta(darCaminoMasCorto(topo(dcn), \\origen(p), destino(p)), buscar(compus(topo(dcn)), p))
+	}
+	\tadAxioma{cortarRecHasta(s, ip)}{
+		\IF vacia?(s) $\oluego$ ip = ipOrigen(prim(s)) THEN <> 		% ipOrigen es el primer elemento de la tupla
+		ELSE prim(s) \puntito cortarRecHasta(fin(s), ip)
+		FI
+	}
+	\tadAxioma{buscarPaquete(dcn, compus, id)}{
+		\IF id $\in$ buffer(dcn, dameUno(compus)) THEN dameUno(compus)
+		ELSE buscarPaquete(sinUno(compus), id)
+		FI
+	}
 
 	\tadAxioma{compuQueMasEnvio(dcn)}{auxMaxPaquetes(dcn,pcs(topo(dcn)))}
 	\tadAxioma{auxMaxPaquetes(dcn,cs)}{\IF $\emptyset?(sinUno(cs))$ THEN 
