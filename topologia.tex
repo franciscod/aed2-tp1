@@ -30,10 +30,11 @@
 	\tadOperacion{vecinas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
 	\tadOperacion{interfacesOcupadasDe}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
 	\tadOperacion{conectados?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
-        \tadOperacion{darInterfazConectada}{topologia/t, {conj(tupla(nat, nat))}/cablesA, nat/ipB}{nat}{$ipB \in \pi_2Conj(cablesA)$}
-	\tadOperacion{darCaminoMasCorto}{topologia/t, nat/ipA, nat/ipB}{secu(nat)}{$ipA \in compus(t)$ $\land$ $ipB \in compus(t)$ $\yluego conectados?(t, ipA, ipB)$}
-	\tadOperacion{darRutas}{topologia, nat, nat, conj(nat), secu(nat)}{conj(secu(tupla(nat, nat)))}{}
-	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat, conj(nat), secu(nat)}{conj(secu(tupla(nat, nat))}{}
+        \tadOperacion{darInterfazConectada}{{conj(tupla(nat, nat))}/cablesA, nat/ipB}{nat}{$ipB \in \pi_2Conj(cablesA)$}
+        \tadOperacion{darSegmento}{topologia/t, nat/ipA, nat/ipB}{segmento}{$ipA \in compus(t)$ $\land$ $ipB \in vecinas(t, ipA)$}
+	\tadOperacion{darCaminoMasCorto}{topologia/t, nat/ipA, nat/ipB}{secu(segmento)}{$ipA \in compus(t)$ $\land$ $ipB \in compus(t)$ $\yluego conectados?(t, ipA, ipB)$}
+	\tadOperacion{darRutas}{topologia, nat, nat, conj(nat), {secu(segmento))}}{conj(secu(segmento)))}{}
+	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat, conj(nat), secu(segmento)}{conj(secu(segmento))}{}
 	\tadOperacion{longMenorSec}{conj(secu($\alpha$))}{nat}{}
 	\tadOperacion{secusDeLongK}{conj(secu($\alpha$)), nat}{conj(secu($\alpha$))}{}
 	\tadOperacion{$\pi_1$Conj}{{conj(tupla(nat, nat))}}{conj(nat))}{}
@@ -45,10 +46,11 @@
 	\paratodo{topologia}{t},
 	\paratodo{nat}{ipNueva, ip, ipA, ipB, ifA, ifB, cantIfaces, k},
 	\paratodo{conj(tupla(nat, nat))}{conjDuplas},
-	\paratodo{conj(nat)}{cs, rec, vecinas},
+	\paratodo{conj(tupla(nat, nat))}{conjCablesIpA},
+        \paratodo{conj(nat)}{cs, rec, vecinas},
 	\paratodo{conj(secu($\alpha$))}{secus},
 	\paratodo{conj(secu($\alpha$))}{sc},
-	\paratodo{secu(nat)}{ruta}
+	\paratodo{secu(segmento)}{ruta}
 	]
 
 
@@ -68,35 +70,44 @@
 	\tadAxioma{\#interfaces(NuevaTopo, $ip$)}{0}
 	\tadAxioma{\#interfaces(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}{\IF $ip$ = $ipNueva$ THEN $cantIfaces$ ELSE \#interfaces($t$) FI}
 	\tadAxioma{\#interfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ip$)}{\#interfaces($t$)}
-	\tadAlinearAxiomas{darRutasVecinas($t$, $vecinas$, $ipB$, $rec$, $ruta$)}
 	\tadAxioma{interfacesOcupadasDe($t$, $ip$)}{$\pi_1$Conj(cablesEn($t$, $ip$))}
 	\tadAxioma{vecinas($t$, $ip$)}{$\pi_2$Conj(cablesEn($t$, $ip$))}
 	\tadAxioma{conectados?($t$, $ipA$, $ipB$)}{
 		$\neg$ $\emptyset$?(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>))
 	}
-        \tadAxioma{darInterfazConectada($t$, $conjDuplas$, $ipB$)}{
-            \IF $ipB$ = $\pi_2$(dameUno($conjDuplas$)) THEN $\pi_1$(dameUno($conjDuplas$)) ELSE darInterfazConectada($t$, sinUno($conjDuplas$), $ipB$) FI
+        \tadAxioma{darInterfazConectada($conjCablesIpA$, $ipB$)}{
+            \IF $ipB$ = $\pi_2$(dameUno($conjCablesIpA$)) THEN $\pi_1$(dameUno($conjCablesIpA$)) ELSE darInterfazConectada(sinUno($conjCablesIpA$), $ipB$) FI
         }
+        \tadAxioma{darSegmento($t$, $ipA$, $ipB$)}{
+            <$ipA$, darInterfazConectada(cablesEn($t$, $ipA$), $ipB$), \\ $ipB$, darInterfazConectada(cablesEn($t$, $ipB$), $ipA$)>
+        }
+	
+        \tadAxioma{darCaminoMasCorto($t$, $ipA$, $ipB$)}{dameUno(secusDeLongK(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>), longMenorSec(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>)))}
+	
+        \tadAlinearAxiomas{darRutas($t$, $ipA$, $ipB$, $rec$, $ruta$)}
 
 	\tadAxioma{darRutas($t$, $ipA$, $ipB$, $rec$, $ruta$)}{
 		\IF $ipB$ $\in$ vecinas($t$, $ipA$) THEN
-			Ag($ruta$ \& ($ipA$ \puntito $ipB$ \puntito <>), $\emptyset$)
+			Ag($ruta$ \circulito darSegmento($t$, $ipA$, $ipB$) , $\emptyset$)
 		ELSE{
 			\IF $\emptyset$?(vecinas($t$, $ipA$) - $rec$) THEN
 				$\emptyset$
 			ELSE
-				darRutas($t$, dameUno(vecinas($t$, $ipA$) - $rec$), $ipB$, Ag($ipA$, $rec$), $ruta$ \circulito $ipA$) $\cup$ \\
-				darRutasVecinas($t$, sinUno(vecinas($t$, $ipA$) - $rec$), $ipB$, Ag($ipA$, $rec$), $ruta$ \circulito $ipA$)
+				darRutas($t$, dameUno(vecinas($t$, $ipA$) - $rec$), \\ $ipB$, Ag($ipA$, $rec$),\\
+                                $ruta$ \circulito darSegmento($t$, $ipA$, dameUno(vecinas($t$, $ipA$) - $rec$))) $\cup$ \\
+				darRutasVecinas($t$, sinUno(vecinas($t$, $ipA$) - $rec$), \\ $ipB$, Ag($ipA$, $rec$), \\
+                                $ruta$ \circulito darSegmento($t$, $ipA$, dameUno(vecinas($t$, $ipA$) - $rec$))) 
 			FI
 		}
 		FI
 	}
 
+	\tadAlinearAxiomas{darRutasVecinas($t$, $vecinas$, $ipB$, $rec$, $ruta$)}
 	\tadAxioma{darRutasVecinas($t$, $vecinas$, $ipB$, $rec$, $ruta$)}{
 		\IF $\emptyset$?($vecinas$) THEN
 			$\emptyset$
 		ELSE
-			darRutas($t$, dameUno($vecinas$), $ipB$, $rec$, $ruta$) $\cup$
+			darRutas($t$, dameUno($vecinas$), $ipB$, $rec$, $ruta$) $\cup$ \\
 			darRutasVecinas($t$, sinUno($vecinas$), $ipB$, $rec$, $ruta$)
 		FI
 	}
@@ -138,4 +149,5 @@
 			Ag($\pi_2$(dameUno($conjDuplas$)), $\pi_2$Conj(sinUno($conjDuplas$)))
 		FI
 	}
+        \noindent TAD segmento es tupla(nat, nat, nat ,nat) 
 \end{tadx}
