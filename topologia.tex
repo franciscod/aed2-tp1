@@ -87,7 +87,7 @@
 			\IF $ipB$ = $\Pi_2$(dameUno($conjCablesIpA$)) THEN $\Pi_1$(dameUno($conjCablesIpA$)) ELSE darInterfazConectada(sinUno($conjCablesIpA$), $ipB$) FI
 		}
 		\tadAxioma{darSegmento($t$, $ipA$, $ipB$)}{
-			<$ipA$, darInterfazConectada(cablesEn($t$, $ipA$), $ipB$), \\ $ipB$, darInterfazConectada(cablesEn($t$, $ipB$), $ipA$)>
+			$\langle$ $ipA$, darInterfazConectada(cablesEn($t$, $ipA$), $ipB$), \\ $ipB$, darInterfazConectada(cablesEn($t$, $ipB$), $ipA$) $\rangle$
 		}
 		\tadAxioma{estáEnRuta?($ruta$, $ip$)}{
 					\IF vacía?($ruta$) THEN
