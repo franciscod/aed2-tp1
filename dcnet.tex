@@ -27,7 +27,7 @@
 	\tadOperacion{recorridoPaquete}{dcnet/dcn,nat/id}{secu(segmento))}{$(paqueteEnTransito?(dcn, id)$}
 	\tadOperacion{cortarRecHasta}{sec(segmento), pc}{sec(segmento)}{}
 
-	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(pc)/pcs, nat/id}{pc}{pcs $\subseteq$ compus(topo(dcn)) $\land$ ($\exists$ ip : pc)(ip $\in$ pcs $\land$ id $\in$ buffer(dcn, ip))}
+	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(pc)/pcs, nat/id}{pc}{pcs $\subseteq$ compus(topo(dcn)) $\land$ id $\in$ ids(paquetesEnLaRed(dcn))}
 	\tadOperacion{ids}{{conj(paquete)}}{conj(nat))}{}
 
 	\tadOperacion{paqueteEnTransito?}{dcnet, nat}{bool}{}
@@ -37,7 +37,7 @@
 	\tadOperacion{rutaPaqueteEnviado}{dcnet/dcn, pc/compu}{secu(segmento)}{$compu \in compus(topo(dcn))$}
 	\tadOperacion{paquetesRecibidos}{dcnet, conj(pc)/vecinasPc, pc/compu}{conj(paquete)}{$compu \in compus(topo(dcn)) \yluego vecinasPc \subseteq vecinas(topo(dcnet), compu)$}
 
-	\tadOperacion{darPrioridad}{dcnet/dcn,nat/id}{nat}{id $\in$ paquetesEnLaRed(dcn)}
+	\tadOperacion{darPrioridad}{dcnet/dcn,nat/id}{nat}{id $\in$ ids(paquetesEnLaRed(dcn))}
 	\tadOperacion{buscarPrioridad}{nat,conj(paquetes)}{nat}{}
 	\tadOperacion{maxPrioridad}{dcnet,conj(pc)}{nat}{}
 	\tadOperacion{PaquetesConPrioridadK}{dcnet,conj(pc),nat}{paquete}{}
