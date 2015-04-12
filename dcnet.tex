@@ -18,24 +18,20 @@
 	\tadObservadores
 
 	\tadOperacion{topo}{dcnet}{topologia}{}
-	\tadOperacion{$\#$enviados}{dcnet/dcn, pc/p}{nat}{$p$ $\in$ compus($dcn$)}
-	\tadOperacion{buffer}{dcnet/dcn, pc/p}{conj(paquete)}{$p \in compus(dcn)$}
+	\tadOperacion{$\#$enviados}{dcnet/dcn, pc/ip}{nat}{ip $\in$ compus(dcn)}
+	\tadOperacion{buffer}{dcnet/dcn, pc/ip}{conj(paquete)}{ip $\in$ compus(dcn)}
 
 
 	\tadOtrasOperaciones
 
 	\tadOperacion{recorridoPaquete}{dcnet/dcn,nat/id}{secu(segmento))}{$(paqueteEnTransito?(dcn, id)$}
-	\tadOperacion{cortarRecHasta}{sec(segmento), nat}{sec(segmento)}{}
+	\tadOperacion{cortarRecHasta}{sec(segmento), pc}{sec(segmento)}{}
 
-	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(nat)/pcs, nat/id}{nat}{pcs $\subseteq$ compus(topo(dcn)) $\land$ ($\exists$ ip : nat)(ip $\in$ pcs $\land$ id $\in$ buffer(dcn, ip))}
-	\tadOperacion{$\pi_1$Conj}{{conj(tupla(nat, nat, nat, nat))}}{conj(nat))}{}
+	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(pc)/pcs, nat/id}{pc}{pcs $\subseteq$ compus(topo(dcn)) $\land$ ($\exists$ ip : pc)(ip $\in$ pcs $\land$ id $\in$ buffer(dcn, ip))}
+	\tadOperacion{ids}{{conj(paquete)}}{conj(nat))}{}
 
 	\tadOperacion{paqueteEnTransito?}{dcnet, nat}{bool}{}
 	\tadOperacion{existePaqEnBuffers?}{dcnet/dcn, conj(nat)/pcs, nat/id}{bool}{pcs $\subseteq$ compus(topo(dcn))}
-
-
-	\tadOperacion{perteneceBuffers?}{paquete,buffers}{bool}{}
-
 
 	\tadOperacion{darPaqueteEnviado}{conj(paquete)}{paquete}{}
 
@@ -49,11 +45,11 @@
 	\tadOperacion{buscarPaquetesEnLaRed}{dcnet, conj(pc))}{conj(paquete)}{}
 
 	\tadOperacion{compuQueMasEnvio}{dcnet}{pc}{}
-	\tadOperacion{laQueMasEnvio}{dcnet,conj(pc)}{pc)}{}
+	\tadOperacion{laQueMasEnvio}{dcnet,conj(pc)}{pc}{}
 
 	\tadOperacion{compus}{dcnet}{conj(pc)}{}
 
-	\tadAlinearAxiomas{$\#$enviados(CrearPaquete(dcn, p), c)}
+	\tadAlinearAxiomas{$\#$enviados(CrearPaquete(dcn, p), ip)}
 
 	\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c, c'},\paratodo{dcnet}{dcn, d},\paratodo{topologia}{t}]
 
@@ -61,13 +57,13 @@
 	\tadAxioma{topo(seg(dcn))}{topo(dcn)}
 	\tadAxioma{topo(CrearPaquete(dcn, p))}{topo(dcn)}
 
-	\tadAxioma{$\#$enviados(crearRed(t),compu)}{0}
-	\tadAxioma{$\#$enviados(seg(dcn),compu)}{
-		\IF $\emptyset$?(buffer(dcn, compu)) THEN $\#$enviados(dcn, compu) + 1 
-		ELSE $\#$enviados(dcn, compu) 
+	\tadAxioma{$\#$enviados(crearRed(t),ip)}{0}
+	\tadAxioma{$\#$enviados(seg(dcn),ip)}{
+		\IF $\emptyset$?(buffer(dcn, ip)) THEN $\#$enviados(dcn, ip) + 1 
+		ELSE $\#$enviados(dcn, ip) 
 		FI
 	}
-	\tadAxioma{$\#$enviados(CrearPaquete($dcn$, $p$), $c$)}{$\#$enviados(dcn, compu)}
+	\tadAxioma{$\#$enviados(CrearPaquete(dcn, p), ip)}{$\#$enviados(dcn, ip)}
 	\tadAxioma{buffer(CrearRed($t$), $c$)}{$\emptyset$}
         \tadAxioma{buffer(CrearPaquete($dcn$, $p$), $c$)}{
             \IF $\pi_2$($p$) = $c$ THEN
@@ -89,16 +85,16 @@
 		ELSE prim(s) \puntito cortarRecHasta(fin(s), ip)
 		FI
 	}
-	\tadAxioma{buscarPaquete(dcn, compus, id)}{
-		\IF id $\in$ $\pi_1$Conj(buffer(dcn, dameUno(compus))) THEN dameUno(compus)
-		ELSE buscarPaquete(dcn, sinUno(compus), id)
+	\tadAxioma{buscarPaquete(dcn, pcs, id)}{
+		\IF id $\in$ ids(buffer(dcn, dameUno(pcs))) THEN dameUno(pcs)
+		ELSE buscarPaquete(dcn, sinUno(pcs), id)
 		FI
 	}
-	\tadAxioma{$\pi_1$Conj($conjTuplas$)}{
-		\IF $\emptyset$?($conjTuplas$) THEN
+	\tadAxioma{ids($paquetes$)}{
+		\IF $\emptyset$?($paquetes$) THEN
 			$\emptyset$
 		ELSE
-			Ag($\pi_1$(dameUno($conjTuplas$)), $\pi_1$Conj(sinUno($conjTuplas$)))
+			Ag($\pi_1$(dameUno($paquetes$)), ids(sinUno($paquetes$)))
 		FI
 	}
 
@@ -108,7 +104,7 @@
 	\tadAxioma{existePaqEnBuffers?(dcn, pcs, id)}{
 		\IF $\emptyset$?(pcs) THEN false
 		ELSE {
-			\IF id $\in$ $\pi_1$Conj(buffer(dcn, dameUno(pcs))) THEN true
+			\IF id $\in$ ids(buffer(dcn, dameUno(pcs))) THEN true
 			ELSE existePaqEnBuffers?(dcn, sinUno(pcs), id)
 			FI
 		}
