@@ -27,11 +27,11 @@
 	\tadOperacion{recorridoPaquete}{dcnet/dcn,nat/id}{secu(segmento))}{$(paqueteEnTransito?(dcn, id)$}
 	\tadOperacion{cortarRecHasta}{sec(segmento), nat}{sec(segmento)}{}
 
-	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(nat)/pcs, nat/id}{nat}{pcs = compus(dcn) $\land$ ($\exists$ ip : nat)(ip $\in$ pcs $\land$ id $\in$ buffer(dcn, ip))}
+	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(nat)/pcs, nat/id}{nat}{pcs $\subseteq$ compus(topo(dcn)) $\land$ ($\exists$ ip : nat)(ip $\in$ pcs $\land$ id $\in$ buffer(dcn, ip))}
 	\tadOperacion{$\pi_1$Conj}{{conj(tupla(nat, nat, nat, nat))}}{conj(nat))}{}
 
 	\tadOperacion{paqueteEnTransito?}{dcnet, nat}{bool}{}
-	\tadOperacion{existePaqEnBuffers?}{dcnet/dcn, conj(nat)/pcs, nat/id}{bool}{pcs = compus(dcn)}
+	\tadOperacion{existePaqEnBuffers?}{dcnet/dcn, conj(nat)/pcs, nat/id}{bool}{pcs $\subseteq$ compus(topo(dcn))}
 
 
 	\tadOperacion{perteneceBuffers?}{paquete,buffers}{bool}{}
@@ -39,14 +39,14 @@
 
 	\tadOperacion{darPaqueteEnviado}{conj(paquete)}{paquete}{}
 
-	\tadOperacion{darPrioridad}{dcnet/dcn,nat/id}{nat}{$id \in paquetesEnLaRed(dcn)$ }
+	\tadOperacion{darPrioridad}{dcnet/dcn,nat/id}{nat}{id $\in$ paquetesEnLaRed(dcn)}
 	\tadOperacion{buscarPrioridad}{nat,conj(paquetes)}{nat}{}
 	\tadOperacion{maxPrioridad}{dcnet,conj(pc)}{nat}{}
 	\tadOperacion{PaquetesConPrioridadK}{dcnet,conj(pc),nat}{paquete}{}
 
 
-	\tadOperacion{paquetesEnLaRed}{dcnet)}{conj(paquete)}{}
-	\tadOperacion{buscarPaquetesEnLaRed}{dcnet,conj(pc))}{conj(paquete)}{}
+	\tadOperacion{paquetesEnLaRed}{dcnet}{conj(paquete)}{}
+	\tadOperacion{buscarPaquetesEnLaRed}{dcnet, conj(pc))}{conj(paquete)}{}
 
 	\tadOperacion{compuQueMasEnvio}{dcnet}{pc}{}
 	\tadOperacion{laQueMasEnvio}{dcnet,conj(pc)}{pc)}{}
@@ -82,7 +82,7 @@
 	}
 
 	\tadAxioma{recorridoPaquete(dcn, p)}{
-		cortarRecHasta(darCaminoMasCorto(topo(dcn), \\origen(p), destino(p)), buscar(compus(dcn), p))
+		cortarRecHasta(darCaminoMasCorto(topo(dcn), \\origen(p), destino(p)), buscarPaquete(compus(dcn), p))
 	}
 	\tadAxioma{cortarRecHasta(s, ip)}{
 		\IF vacia?(s) $\oluego$ ip = ipOrigen(prim(s)) THEN <> 		% ipOrigen es el primer elemento del segmento
@@ -91,7 +91,7 @@
 	}
 	\tadAxioma{buscarPaquete(dcn, compus, id)}{
 		\IF id $\in$ $\pi_1$Conj(buffer(dcn, dameUno(compus))) THEN dameUno(compus)
-		ELSE buscarPaquete(sinUno(compus), id)
+		ELSE buscarPaquete(dcn, sinUno(compus), id)
 		FI
 	}
 	\tadAxioma{$\pi_1$Conj($conjTuplas$)}{
