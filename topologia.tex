@@ -16,8 +16,8 @@
 	\tadAlinearFunciones{interfacesOcupadasDe}{topologia, conj(nat), nat, conj(nat), secu(nat)	}
 	\tadGeneradores
 	\tadOperacion{NuevaTopo}{}{topologia}{}
-	\tadOperacion{Compu}{topologia, nat/ip, nat}{topologia}{$\neg(ip \in compus(t))$}
-	\tadOperacion{Cable}{topologia, nat/ipA, nat/ifA, nat/ipB, nat/ifB}{topologia}{
+	\tadOperacion{Compu}{topologia, pc/ip, nat}{topologia}{$\neg(ip \in compus(t))$}
+	\tadOperacion{Cable}{topologia, pc/ipA, nat/ifA, pc/ipB, nat/ifB}{topologia}{
 		$(ipA \in compus(t) \land ipB \in compus(t)) \yluego$ \\
 		$(ifA < \#interfaces(t, ipA)) \land$ \\
 		$(ifB < \#interfaces(t, ipB)) \land$ \\
@@ -27,35 +27,35 @@
 	}
 	\tadObservadores
 
-	\tadOperacion{compus}{topologia}{conj(nat)}{}
-	\tadOperacion{cablesEn}{topologia/t, nat/ip}{conj(tupla(nat, nat))}{$ip \in compus(t)$}
-	\tadOperacion{\#interfaces}{topologia/t, nat/ip}{nat}{$ip \in compus(t)$}
+	\tadOperacion{compus}{topologia}{conj(pc)}{}
+	\tadOperacion{cablesEn}{topologia/t, pc/ip}{conj(tupla(pc, nat))}{$ip \in compus(t)$}
+	\tadOperacion{\#interfaces}{topologia/t, pc/ip}{nat}{$ip \in compus(t)$}
 
 	\tadOtrasOperaciones
 
-	\tadOperacion{vecinas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
-	\tadOperacion{interfacesOcupadasDe}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
-	\tadOperacion{conectados?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
-	\tadOperacion{darInterfazConectada}{{conj(tupla(nat, nat))}/cablesA, nat/ipB}{nat}{$ipB \in \pi_2Conj(cablesA)$}
-	\tadOperacion{darSegmento}{topologia/t, nat/ipA, nat/ipB}{segmento}{$ipA \in compus(t) \yluego ipB \in vecinas(t, ipA)$}
-	\tadOperacion{estáEnRuta?}{secu(segmento)/ruta, nat/ip}{bool}{}
-	\tadOperacion{darSiguientePc}{secu(segmento)/ruta, nat/ip}{nat}{$est\acute{a}EnRuta?(ruta, ip)$}
-	\tadOperacion{darCaminoMasCorto}{topologia/t, nat/ipA, nat/ipB}{secu(segmento)}{$ipA \in compus(t)$ $\land$ $ipB \in compus(t)$ $\yluego conectados?(t, ipA, ipB)$}
-	\tadOperacion{darRutas}{topologia, nat/ipA, nat/ipB, conj(nat), {secu(segmento))}}{conj(secu(segmento)))}{$ipA \in compus(t) \land ipB \in compus(t)$}
-	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat/ip, conj(nat), secu(segmento)}{conj(secu(segmento))}{$ip \in compus(t)$}
-	\tadOperacion{longMenorSec}{conj(secu($\alpha$))/secus}{nat}{$neg$$\emptyset$?($secus$)}
+	\tadOperacion{vecinas}{topologia/t, pc/ip}{conj(pc)}{$ip \in compus(t)$}
+	\tadOperacion{interfacesOcupadasDe}{topologia/t, pc/ip}{conj(nat)}{$ip \in compus(t)$}
+	\tadOperacion{conectados?}{topologia/t, pc/ipA, pc/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
+	\tadOperacion{darInterfazConectada}{{conj(tupla(pc, nat))}/cablesA, pc/ipB}{nat}{$ipB \in \pi_2Conj(cablesA)$}
+	\tadOperacion{darSegmento}{topologia/t, pc/ipA, pc/ipB}{segmento}{$ipA \in compus(t) \yluego ipB \in vecinas(t, ipA)$}
+	\tadOperacion{estáEnRuta?}{secu(segmento)/ruta, pc/ip}{bool}{}
+	\tadOperacion{darSiguientePc}{secu(segmento)/ruta, pc/ip}{pc}{$est\acute{a}EnRuta?(ruta, ip)$}
+	\tadOperacion{darCaminoMasCorto}{topologia/t, pc/ipA, pc/ipB}{secu(segmento)}{$ipA \in compus(t)$ $\land$ $ipB \in compus(t)$ $\yluego conectados?(t, ipA, ipB)$}
+	\tadOperacion{darRutas}{topologia, pc/ipA, pc/ipB, conj(nat), {secu(segmento))}}{conj(secu(segmento)))}{$ipA \in compus(t) \land ipB \in compus(t)$}
+	\tadOperacion{darRutasVecinas}{topologia, conj(pc), pc/ip, conj(pc), secu(segmento)}{conj(secu(segmento))}{$ip \in compus(t)$}
+	\tadOperacion{longMenorSec}{conj(secu($\alpha$))/secus}{nat}{$\neg \emptyset?(secus)$}
 	\tadOperacion{secusDeLongK}{conj(secu($\alpha$)), nat}{conj(secu($\alpha$))}{}
-	\tadOperacion{$\pi_1$Conj}{conj(tupla(nat, nat))}{conj(nat)}{}
-	\tadOperacion{$\pi_2$Conj}{conj(tupla(nat, nat))}{conj(nat)}{}
+	\tadOperacion{$\pi_1$Conj}{conj({tupla(pc, nat)})}{conj(pc)}{}
+	\tadOperacion{$\pi_2$Conj}{conj({tupla(pc, nat)})}{conj(nat)}{}
 
 	\tadAlinearAxiomas{cablesEn(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}
 
 	\tadAxiomas[
 	\paratodo{topologia}{t},
 	\paratodo{nat}{ipNueva, ip, ipA, ipB, ifA, ifB, cantIfaces, k},
-	\paratodo{conj(tupla(nat, nat))}{conjDuplas},
-	\paratodo{conj(tupla(nat, nat))}{conjCablesIpA},
-	\paratodo{conj(nat)}{cs, rec, vecinas},
+	\paratodo{conj(tupla(pc, nat))}{conjDuplas},
+	\paratodo{conj(tupla(pc, nat))}{conjCablesIpA},
+	\paratodo{conj(pc)}{rec, vecinas},
 	\paratodo{conj(secu($\alpha$))}{secus},
 	\paratodo{conj(secu($\alpha$))}{sc},
 	\paratodo{secu(segmento)}{ruta}
