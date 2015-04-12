@@ -50,7 +50,7 @@
 
 	\tadAlinearAxiomas{$\#$paquetesEnviados(CrearPaquete(dcn, p), c)}
 
-	\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c, c'},\paratodo{dcnet}{dcn},\paratodo{topologia}{t}]
+	\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c, c'},\paratodo{dcnet}{dcn, d},\paratodo{topologia}{t}]
 
 	\tadAxioma{topo(crearRed(t))}{t}
 	\tadAxioma{topo(seg(dcn))}{topo(dcn)}
@@ -115,10 +115,11 @@
 												FI}
 
 	\tadAxioma{paquetesEnLaRed(dcn)}{$buscarPaquetesEnLaRed(dcn,compus(topo(dcn)))$}
-	\tadAxioma{buscarPrioridad(id,cp)}{\IF $i = \Pi_1(dameUno(cp))$ THEN $\Pi_4(dameUno(cp))$ ELSE $ darPrioridad(id,sinUno(cp))$ FI}
 
-	\tadAxioma{darPrioridad(dcn,id)}{$buscarPrioridad(id,compus(dcn))$}
-	
+	\tadAxioma{buscarPrioridad($idPaq$, $cs$)}{\IF $idPaq$ = $\Pi_1$(dameUno($cs$)) THEN $\Pi_4$(dameUno($cs$)) ELSE buscarPrioridad($idPaq$, sinUno($cs$)) FI}
+
+	\tadAxioma{darPrioridad($d$, $idPaq$)}{buscarPrioridad($idPaq$, compus($dcn$))}
+
 	\tadAxioma{darPaqueteEnviado(dcn,cp)}{$dameUno(PaquetesConPrioridadK$
 											$(dcn,cp,maxPrioridad(dcn,cp)))$}
 	\tadAxioma{maxPrioridad(dcn,cp)}{\IF $\emptyset?(sinUno(cp))$ THEN 
