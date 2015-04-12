@@ -4,7 +4,7 @@
 	\tadAlinearFunciones{buscarPaquetesEnLaRed}{dcnet/dcn,pc/p1,pc/p2,paquete}
 	\tadIgualdadObservacional{d}{d'}{dcnet}{$ (topo(d) \igobs topo(d')) \land \newline
 		((\forall p: pc)(p \in compus(topo(d)) \land   p \in compus(topo(d')) \impluego  \newline
-		(buffer(d,p) \igobs buffer(d',p) \land 
+		(buffer(d,p) \igobs buffer(d',p) \land
 		\#paquetesEnviados(d,p) \newline \igobs \#paquetesEnviados(d',p) )\land $}
 	\tadGeneradores
 	\tadOperacion{CrearRed}{topo}{dcnet}{}
@@ -13,7 +13,7 @@
 	{$(\pi_2(p) \in compus(topo(dcn)) \land  \pi_3(p) \in compus(topo(dcn))) \yluego  conectadas?(topo(dcn) , \pi_2(p) , \pi_3(p)$}
 
 	\tadObservadores
-	
+
 	\tadOperacion{topo}{dcnet}{topologia}{}
 	\tadOperacion{$\#$paquetesEnviados}{dcnet/dcn, pc/p}{nat}{$p$ $\in$ compus(topo($dcn$))}
 	\tadOperacion{buffer}{dcnet/dcn, pc/p}{conj(paquete)}{$p \in compus(topo(dcn))$}
@@ -108,9 +108,9 @@
 	}
 
 
-	\tadAxioma{buscarPaquetesEnLaRed(dcn,cc)}{\IF $\emptyset?(cc)$ THEN 
-													$\emptyset$ 
-												ELSE 
+	\tadAxioma{buscarPaquetesEnLaRed(dcn,cc)}{\IF $\emptyset?(cc)$ THEN
+													$\emptyset$
+												ELSE
 													$ buffer(dcn,dameUno(cc)) \cup buscarPaquetesEnLaRed(dcn,sinUno(cc))$
 												FI}
 
@@ -122,28 +122,28 @@
 
 	\tadAxioma{darPaqueteEnviado(dcn,cp)}{$dameUno(PaquetesConPrioridadK$
 											$(dcn,cp,maxPrioridad(dcn,cp)))$}
-	\tadAxioma{maxPrioridad(dcn,cp)}{\IF $\emptyset?(sinUno(cp))$ THEN 
+	\tadAxioma{maxPrioridad(dcn,cp)}{\IF $\emptyset?(sinUno(cp))$ THEN
 											$darPrioridad(dcn,dameUno(cp)$
-										ELSE 
+										ELSE
 											$max(darPrioridad(dcn,dameUno(cp),$
 											$maxPrioridad(dcn,sinUno(cp)))$
 										FI}
-	
-	\tadAxioma{PaquetesConPrioridadK(dcn,cp,k)}{	\IF $\emptyset?(cp)$ THEN 
+
+	\tadAxioma{PaquetesConPrioridadK(dcn,cp,k)}{	\IF $\emptyset?(cp)$ THEN
 													$\emptyset$
-												ELSE{\IF $ darPrioridad(dcn,dameUno(cp)) = k$ THEN 	
+												ELSE{\IF $ darPrioridad(dcn,dameUno(cp)) = k$ THEN
 														$ Ag(dameUno(cp),PaquetesConPrioridadK$
 														$(dcn,sinUno(cp),k))$
 													ELSE
 														$PaquetesConPrioridadK(dcn,sinUno(cp),k)$
-													FI}		
+													FI}
 											FI}
 
 
 
 	\tadAxioma{compuQueMasEnvio(dcn)}{laQueMasEnvio(dcn,compus(topo(dcn)))}
-	\tadAxioma{laQueMasEnvio(dcn,cs)}{\IF $\emptyset?(sinUno(cs))$ THEN 
-											$dameUno(cs)$ 
+	\tadAxioma{laQueMasEnvio(dcn,cs)}{\IF $\emptyset?(sinUno(cs))$ THEN
+											$dameUno(cs)$
 										ELSE { \IF $\#paquetesEnviados(dcn,dameUno(cs)<$
 													$\#paquetesEnviados(dcn,laQueMasEnvio$
 													$(dcn,sinUno(cs))) $ THEN
@@ -153,14 +153,14 @@
 												FI}
 										FI}
 
-	
-	\tadAxioma{perteneceBuffers?(p,bs)}{\IF $\emptyset?(claves(bs))$ THEN 
-											$false$ 
+
+	\tadAxioma{perteneceBuffers?(p,bs)}{\IF $\emptyset?(claves(bs))$ THEN
+											$false$
 										ELSE { \IF $p \in obtener(dameUno(claves(bs)),bs)$ THEN
 													$true$
-												ELSE 
+												ELSE
 													$perteneceBuffers?(p,borrar(dameUno(claves(bs)),bs))$
 												FI
-											}	
+											}
 										FI}
 \end{tad}
