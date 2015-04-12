@@ -2,10 +2,13 @@
 	\tadGeneros{dcnet}
 
 	\tadAlinearFunciones{buscarPaquetesEnLaRed}{dcnet/dcn,pc/p1,pc/p2,paquete}
-	\tadIgualdadObservacional{d}{d'}{dcnet}{$ (topo(d) \igobs topo(d')) \land \newline
-		((\forall p: pc)(p \in compus(d) \land   p \in compus(d') \impluego  \newline
-		(buffer(d,p) \igobs buffer(d',p) \land
-		\#enviados(d,p) \newline \igobs \#enviados(d',p) )\land $}
+	\tadIgualdadObservacional{d}{d'}{dcnet}{
+		(topo($d$) \igobs topo($d'$)) \yluego ( \\
+			\- ($\forall p: pc$)($p$ $\in$ compus($d$) ) \impluego ( \\
+			\- \- \- \- (buffer($d$,$p$) \igobs buffer($d'$, $p$)) $\land$ \\
+			\- \- \- \- (\#enviados($d$, $p$) \igobs \#enviados($d'$, $p$)) \\
+		))
+	}
 	\tadGeneradores
 	\tadOperacion{CrearRed}{topo}{dcnet}{}
 	\tadOperacion{Seg}{dcnet}{dcnet}{}
