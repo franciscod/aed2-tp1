@@ -38,6 +38,8 @@
 
 
 	\tadOperacion{darPaqueteEnviado}{conj(paquete)}{paquete}{}
+	\tadOperacion{rutaPaqueteEnviado}{dcnet/dcn, pc/compu}{secu(segmento)}{$compu \in compus(topo(dcn))$}
+	\tadOperacion{paquetesRecibidos}{dcnet, conj(pc)/vecinasPc, pc/compu}{conj(paquete)}{$compu \in compus(topo(dcn)) \yluego vecinasPc \subseteq vecinas(topo(dcnet), compu)$}
 
 	\tadOperacion{darPrioridad}{dcnet/dcn,nat/id}{nat}{id $\in$ paquetesEnLaRed(dcn)}
 	\tadOperacion{buscarPrioridad}{nat,conj(paquetes)}{nat}{}
@@ -55,7 +57,7 @@
 
 	\tadAlinearAxiomas{$\#$enviados(CrearPaquete(dcn, p), c)}
 
-	\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c, c'},\paratodo{dcnet}{dcn, d},\paratodo{topologia}{t}]
+	\tadAxiomas[\paratodo{paquete}{p,p'}, \paratodo{pc}{c, c'}, \paratodo{dcnet}{dcn, d}, \paratodo{topologia}{t}, \paratodo{conj(pc)}{vecinasPc}]
 
 	\tadAxioma{topo(crearRed(t))}{t}
 	\tadAxioma{topo(seg(dcn))}{topo(dcn)}
@@ -130,6 +132,18 @@
 
 	\tadAxioma{darPaqueteEnviado(dcn,cp)}{$dameUno(PaquetesConPrioridadK$
 											$(dcn,cp,maxPrioridad(dcn,cp)))$}
+	\tadAlinearAxiomas{paquetesRecibidos($dcn$, $vecinasPc$, $c$)}
+	\tadAxioma{rutaPaqueteEnviado($dcn$, $c$)}{
+		darCaminoMasCorto(topo($dcn$), \\ $\pi_2$(darPaqueteEnviado($dcn$, buffer($dcn$, $c$))), \\ $\pi_3$(darPaqueteEnviado($dcn$, buffer($dcn$, $c$))))
+	}
+	\tadAxioma{paquetesRecibidos($dcn$, $vecinasPc$, $c$)}{
+		\IF darSiguientePc( \\ rutaPaqueteEnviado($dcn$, dameUno($vecinasPc$)), \\ dameUno($vecinasPc$)) = $c$ THEN
+			Ag(darPaqueteEnviado($dcn$, \\ buffer($dcn$, dameUno($vecinasPc$))), $\emptyset$) $\cup$ \\
+			paquetesRecibidos($dcn$, sinUno($vecinasPc$), $c$)
+		ELSE
+			paquetesRecibidos($dcn$, sinUno($vecinasPc$), $c$)
+		FI
+	}
 	\tadAxioma{maxPrioridad(dcn,cp)}{\IF $\emptyset?(sinUno(cp))$ THEN
 											$darPrioridad(dcn,dameUno(cp)$
 										ELSE
