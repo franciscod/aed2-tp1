@@ -13,15 +13,14 @@
 	\tadGeneradores
 	\tadOperacion{CrearRed}{topo}{dcnet}{}
 	\tadOperacion{Seg}{dcnet}{dcnet}{}
-	\tadOperacion{CrearPaquete}{dcnet/dcn,pc/p1,pc/p2,paquete}{dcnet}
-	{$(p_1 \in compus(topo(dcn)) \land  p_2 \in compus(topo(dcn))) \yluego  conectadas?(topo(dcn) , p_1 , p_2)$}
+	\tadOperacion{CrearPaquete}{dcnet/dcn, paquete/p}{dcnet}
+	{$(\pi_2(p) \in compus(topo(dcn)) \land  \pi_3(p) \in compus(topo(dcn))) \yluego  conectadas?(topo(dcn) , \pi_2(p) , \pi_3(p)$}
 
 	\tadObservadores
 	
 	\tadOperacion{topo}{dcnet}{topologia}{}
-	\tadOperacion{$\#$paquetesEnviados}{dcnet/dcn,pc/p}{nat}{$p$ $\in$ compus(topo($dcn$))}
-	\tadOperacion{buffer}{dcnet/dcn,pc/p}{conj(paquete)}{$p$ $\in$ compus(topo($dcn$))}
-	
+	\tadOperacion{$\#$paquetesEnviados}{dcnet/dcn, pc/p}{nat}{$p$ $\in$ compus(topo($dcn$))}
+	\tadOperacion{buffer}{dcnet/dcn, pc/p}{conj(paquete)}{$p \in compus(topo(dcn))$}
 
 
 	\tadOtrasOperaciones
@@ -34,8 +33,6 @@
 
 	\tadOperacion{paqueteEnTransito?}{dcnet, nat}{bool}{}
 	\tadOperacion{existePaqEnBuffers?}{dcnet/dcn, conj(nat)/pcs, nat/id}{bool}{pcs = compus(topo(dcn))}
-
-	
 
 
 	\tadOperacion{perteneceBuffers?}{paquete,buffers}{bool}{}
@@ -55,38 +52,30 @@
 	\tadOperacion{compuQueMasEnvio}{dcnet}{pc}{}
 	\tadOperacion{laQueMasEnvio}{dcnet,conj(pc)}{pc)}{}
 
-	
+	\tadAlinearAxiomas{$\#$paquetesEnviados(CrearPaquete(dcn, p), c)}
 
-	
-	\tadOperacion{pasoSeg}{topo,buffers,buffers}{buffers}{}
-	\tadOperacion{regresion}{topo,buffers,secu(buffers)}{buffers}{}
-	\tadOperacion{generarHistoria}{dcnet,diccionario(pc,conj(paquete))}{secu(buffers)}{}
-	\tadOperacion{auxDefinir}{buffers,pc,conj(paquete),conj(paquete)}{buffers}{}
-	\tadOperacion{auxBorrar}{buffers,pc,conj(paquete),conj(paquete)}{buffers}{}
-	\tadOperacion{transacion}{topo,buffers,conj(pc)}{buffers}{}
-	\tadOperacion{envio}{topo,buffers,ip,conj(paquete)}{buffers}{}
-	\tadOperacion{nuevosPaquetes}{buffers,buffers}{buffers}{}
-	
-
-	\tadOperacion{pasarA}{topologia,pc,pc}{pc}{}
-
-	\tadAlinearAxiomas{$\#$paquetesEnviados(CrearPaquete(dcn,o,d,p),c)}
-
-	\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c,c'},\paratodo{dcnet}{dcn},\paratodo{topologia}{t}]
+	\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c, c'},\paratodo{dcnet}{dcn},\paratodo{topologia}{t}]
 
 	\tadAxioma{topo(crearRed(t))}{t}
 	\tadAxioma{topo(seg(dcn))}{topo(dcn)}
-	\tadAxioma{topo(CrearPaquete(dcn,c,c',p))}{topo(dcn)}
-
-
-	
-	
+	\tadAxioma{topo(CrearPaquete(dcn, p))}{topo(dcn)}
 
 	\tadAxioma{$\#$paquetesEnviados(crearRed(t),c)}{0}
 	\tadAxioma{$\#$paquetesEnviados(seg(dcn),c)}{$\#$paquetesEnviados(dcn)}
-	\tadAxioma{$\#$paquetesEnviados(CrearPaquete(dcn,o,d,p),c)}{\IF $c = o$ THEN $\#paquetesEnviados(dcn,c) + 1$ ELSE $\#paquetesEnviados(dcn,c)$ FI}
+	\tadAxioma{$\#$paquetesEnviados(CrearPaquete($dcn$, $p$), $c$)}{\IF $c$ = $\pi_2$($p$) THEN \#paquetesEnviados($dcn$, $c$) + 1 ELSE \#paquetesEnviados($dcn$, $c$) FI}
 
-	\tadAxioma{buffer(dcn,c)}{obtener(c,regresion(topo(dcn),vacio,generarHistoria(dcn,vacio)))}
+	\tadAxioma{buffer(CrearRed($t$), $c$)}{$\emptyset$}
+        \tadAxioma{buffer(CrearPaquete($dcn$, $p$), $c$)}{
+            \IF $\pi_2$($p$) = $c$ THEN
+                Ag($p$, $\emptyset$) $\cup$ buffer($dcn$, $c$)
+            ELSE
+                buffer($dcn$, $c$)
+            FI
+        }
+	\tadAxioma{buffer(segundo($dcn$), $c$)}{
+		(buffer($dcn$, $c$) - darPaqueteEnviado(buffer($dcn$, $c$))) $\cup$ \\
+		paquetesRecibidos($dcn$, vecinas($c$), $c$)
+	}
 
 	\tadAxioma{recorridoPaquete(dcn, p)}{
 		cortarRecHasta(darCaminoMasCorto(topo(dcn), \\origen(p), destino(p)), buscar(compus(topo(dcn)), p))
@@ -123,13 +112,13 @@
 	}
 
 
-	\tadAxioma{buscarpaquetesEnLaRed(dcn,cc)}{\IF $\emptyset?(cc)$ THEN 
+	\tadAxioma{buscarPaquetesEnLaRed(dcn,cc)}{\IF $\emptyset?(cc)$ THEN 
 													$\emptyset$ 
 												ELSE 
-													$ buffer(dcn,dameUno(cc)) \cup buscarpaquetesEnLaRed(dcn,sinUno(cc))$
+													$ buffer(dcn,dameUno(cc)) \cup buscarPaquetesEnLaRed(dcn,sinUno(cc))$
 												FI}
 
-	\tadAxioma{paquetesEnLaRed(dcn)}{$buscarpaquetesEnLaRed(dcn,compus(topo(dcn)))$}
+	\tadAxioma{paquetesEnLaRed(dcn)}{$buscarPaquetesEnLaRed(dcn,compus(topo(dcn)))$}
 	\tadAxioma{buscarPrioridad(id,cp)}{\IF $i = \Pi_1(dameUno(cp))$ THEN $\Pi_4(dameUno(cp))$ ELSE $ darPrioridad(id,sinUno(cp))$ FI}
 
 	\tadAxioma{darPrioridad(dcn,id)}{$buscarPrioridad(id,compus(dcn))$}
@@ -176,46 +165,5 @@
 													$perteneceBuffers?(p,borrar(dameUno(claves(bs)),bs))$
 												FI
 											}	
-										FI}
-
-
-
-	\tadAxioma{generarHistoria(crearRed(t),bs)}{bs \puntito <>}
-	\tadAxioma{generarHistoria(seg(dcn),bs)}{ bs \puntito generarHistoria(dcn,$vacío$) }
-	\tadAxioma{generarHistoria(CrearPaquete(dcn,o,d,p),bs)}{ \IF $def?(c,bs)$ THEN 
-																	$generarHistoria(dcn,definir(c,n \cup obtener(o,bs),bs))$
-																ELSE 
-																	$generarHistoria(dcn,definir(c,n))$ 
-																FI}
-
-	\tadAxioma{auxBorrar(bs,c,b,p)}{\IF $\emptyset?(p - \{ b \})$ THEN $borrar(c,n)$ 
-										ELSE $borrar(c,bs) \ \ definir(c,p - \{ b \},bs)$  FI 
-	}
-
-	\tadAxioma{regresion(t,bs,cbs)}{\IF $vacia?(fin(cbs))$ THEN $ pasoSeg(bs,t,prim(cbs))$ ELSE $ regresion(t,pasoSeg(bs,t,prim(cbs)),fin(cbs))$ FI}
-	\tadAxioma{pasoSeg(t,bs,nbs)}{nuevosPaquetes(transacion(t,bs,claves(bs)) ,nbs)}
-	\tadAxioma{transacion(t,bs,cp)}{\IF $\emptyset?(cp)$ THEN 
-												$bs$ 
-											ELSE 
-												$transacion(t,envio(t,bs,dameUno(cp)),$
-												$sinUno(cp))$ 
-											FI}
-	\tadAxioma{pasarA(t,o,d)}{$prim(caminoMin(t,o,d))$}												
-	\tadAxioma{envio(t,bs,ip,cp)}{\IF $\emptyset?(darPaqueteEnviado(cp))$ THEN
-								$bs$
-								ELSE{ \IF $pasarA(t,ip,destino(darPaqueteEnviado(cp))) = destino(darPaqueteEnviado(cp)))$ THEN
-											$envio(t,quitarPaquete(bs,ip),ip,cp -{darPaqueteEnviado(cp)}))$
-									    ELSE
-											$envio(t,quitarPaquete(pasarPaquete(bs,ip,darPaqueteEnviado(cp)),ip)$
-											$,ip,cp -{darPaqueteEnviado(b)} ))$
-										FI}
-								FI}
-
-	\tadAxioma{nuevosPaquetes(bs,nbs)}{\IF $\emptyset?(claves(nbs))$ THEN 
-										 $bs$  
-										ELSE  
-										 	$nuevosPaquetes(auxDefinir(bs,dameUno(claves(nbs),obtener$ 
-										 	$(dameUno(claves(nbs),nbs),obtener(dameUno$  
-										 	$(claves(nbs),bs))),sinUno(nbs))$	
 										FI}
 \end{tad}
