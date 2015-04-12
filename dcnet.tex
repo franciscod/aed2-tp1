@@ -1,15 +1,11 @@
 \begin{tad}{\tadNombre{DCNet}}
 	\tadGeneros{dcnet}
 
-	\tadAlinearFunciones{compuQueMasEnvio}{dcnet/dcn,pc/p1,pc/p2,paquete}
+	\tadAlinearFunciones{buscarPaquetesEnLaRed}{dcnet/dcn,pc/p1,pc/p2,paquete}
 	\tadIgualdadObservacional{d}{d'}{dcnet}{$ (topo(d) \igobs topo(d')) \land \newline
 		((\forall p: pc)(p \in compus(topo(d)) \land   p \in compus(topo(d')) \impluego  \newline
-		(buffer(d,p) \igobs buffer(d',p) \land \newline
-		\#paquetesEnviados(d,p) \igobs \#paquetesEnviados(d',p) )\land \newline
-		((\forall p: paquetes)((\exists  c: pc )(c \in compus(topo(d') \land \newline 
-		c \in compus(topo(d') ) \yluego(p \in buffer(d,c) \land \newline
-		p \in buffer(d',c) ) )\impluego \newline
-		( recorridoPaquete(d,p) \igobs recorridoPaquete(d',p) ) ) $}
+		(buffer(d,p) \igobs buffer(d',p) \land 
+		\#paquetesEnviados(d,p) \newline \igobs \#paquetesEnviados(d',p) )\land $}
 	\tadGeneradores
 	\tadOperacion{CrearRed}{topo}{dcnet}{}
 	\tadOperacion{Seg}{dcnet}{dcnet}{}
