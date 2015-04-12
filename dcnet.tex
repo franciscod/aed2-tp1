@@ -4,7 +4,7 @@
 	\tadAlinearFunciones{buscarPaquetesEnLaRed}{dcnet/dcn,pc/p1,pc/p2,paquete}
 	\tadIgualdadObservacional{d}{d'}{dcnet}{
 		(topo($d$) \igobs topo($d'$)) \yluego ( \\
-			\- ($\forall p: pc$)($p$ $\in$ compus($d$) ) \impluego ( \\
+			\- ($\forall p: pc$)($p$ $\in$ compus(topo($d$)) ) \impluego ( \\
 			\- \- \- \- (buffer($d$,$p$) \igobs buffer($d'$, $p$)) $\land$ \\
 			\- \- \- \- (\#enviados($d$, $p$) \igobs \#enviados($d'$, $p$)) \\
 		))
@@ -13,13 +13,13 @@
 	\tadOperacion{CrearRed}{topo}{dcnet}{}
 	\tadOperacion{Seg}{dcnet}{dcnet}{}
 	\tadOperacion{CrearPaquete}{dcnet/dcn, paquete/p}{dcnet}
-	{$(\pi_2(p) \in compus(dcn) \land  \pi_3(p) \in compus(dcn)) \yluego  conectadas?(topo(dcn) , \pi_2(p) , \pi_3(p)$}
+	{$(\pi_2(p) \in compus(topo(dcn)) \land  \pi_3(p) \in compus(topo(dcn)) \yluego  conectadas?(topo(dcn) , \pi_2(p) , \pi_3(p)$}
 
 	\tadObservadores
 
 	\tadOperacion{topo}{dcnet}{topologia}{}
-	\tadOperacion{$\#$enviados}{dcnet/dcn, pc/ip}{nat}{ip $\in$ compus(dcn)}
-	\tadOperacion{buffer}{dcnet/dcn, pc/ip}{conj(paquete)}{ip $\in$ compus(dcn)}
+	\tadOperacion{$\#$enviados}{dcnet/dcn, pc/ip}{nat}{ip $\in$ compus(topo(dcn))}
+	\tadOperacion{buffer}{dcnet/dcn, pc/ip}{conj(paquete)}{ip $\in$ compus(topo(dcn))}
 
 
 	\tadOtrasOperaciones
@@ -48,8 +48,6 @@
 	\tadOperacion{compuQueMasEnvio}{dcnet}{pc}{}
 	\tadOperacion{maxEnviado}{dcnet,conj(pc)}{nat}{}
 	\tadOperacion{enviaronK}{dcnet,conj(pc),nat}{conj(pc)}{}
-
-	\tadOperacion{compus}{dcnet}{conj(pc)}{}
 
 	\tadAlinearAxiomas{$\#$enviados(CrearPaquete(dcn, p), ip)}
 
@@ -80,7 +78,7 @@
 	}
 
 	\tadAxioma{recorridoPaquete(dcn, p)}{
-		cortarRecHasta(darCaminoMasCorto(topo(dcn), \\origen(p), destino(p)), buscarPaquete(compus(dcn), p))
+		cortarRecHasta(darCaminoMasCorto(topo(dcn), \\origen(p), destino(p)), buscarPaquete(compus(topo(dcn)), p))
 	}
 	\tadAxioma{cortarRecHasta(s, ip)}{
 		\IF vacia?(s) $\oluego$ ip = ipOrigen(prim(s)) THEN <> 		% ipOrigen es el primer elemento del segmento
@@ -111,11 +109,11 @@
 													$ buffer(dcn,dameUno(cc)) \cup buscarPaquetesEnLaRed(dcn,sinUno(cc))$
 												FI}
 
-	\tadAxioma{paquetesEnLaRed($d$)}{buscarPaquetesEnLaRed($d$, compus($d$))}
+	\tadAxioma{paquetesEnLaRed($d$)}{buscarPaquetesEnLaRed($d$, compus(topo($d$)))}
 
 	\tadAxioma{buscarPrioridad($idPaq$, $cs$)}{\IF $idPaq$ = $\pi_1$(dameUno($cs$)) THEN $\pi_4$(dameUno($cs$)) ELSE buscarPrioridad($idPaq$, sinUno($cs$)) FI}
 
-	\tadAxioma{darPrioridad($d$, $idPaq$)}{buscarPrioridad($idPaq$, compus($dcn$))}
+	\tadAxioma{darPrioridad($d$, $idPaq$)}{buscarPrioridad($idPaq$, compus(topo($dcn$)))}
 
 	\tadAxioma{darPaqueteEnviado(dcn,cp)}{$dameUno(PaquetesConPrioridadK$
 											$(dcn,cp,maxPrioridad(dcn,cp)))$}
@@ -172,16 +170,4 @@
 
 
 
-
-	\tadAxioma{perteneceBuffers?(p,bs)}{\IF $\emptyset?(claves(bs))$ THEN
-											$false$
-										ELSE { \IF $p \in obtener(dameUno(claves(bs)),bs)$ THEN
-													$true$
-												ELSE
-													$perteneceBuffers?(p,borrar(dameUno(claves(bs)),bs))$
-												FI
-											}
-										FI}
-
-	\tadAxioma{compus($d$)}{compus(topo($d$))}
 \end{tad}
