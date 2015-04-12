@@ -34,20 +34,21 @@
 	\tadOperacion{existePaqEnBuffers?}{dcnet/dcn, conj(nat)/pcs, nat/id}{bool}{pcs $\subseteq$ compus(topo(dcn))}
 
 	\tadOperacion{darPaqueteEnviado}{conj(paquete)}{paquete}{}
-	\tadOperacion{rutaPaqueteEnviado}{dcnet/dcn, pc/compu}{secu(segmento)}{$compu \in compus(topo(dcn))$}
+	\tadOperacion{rutaPaqueteEnviado}{dcnet/dcn, pc/compu}{secu(segmento)}{$compu \in compus(topo(dcn)$}
 	\tadOperacion{paquetesRecibidos}{dcnet, conj(pc)/vecinasPc, pc/compu}{conj(paquete)}{$compu \in compus(topo(dcn)) \yluego vecinasPc \subseteq vecinas(topo(dcnet), compu)$}
 
 	\tadOperacion{darPrioridad}{dcnet/dcn,nat/id}{nat}{id $\in$ ids(paquetesEnLaRed(dcn))}
 	\tadOperacion{buscarPrioridad}{nat,conj(paquetes)}{nat}{}
 	\tadOperacion{maxPrioridad}{dcnet,conj(pc)}{nat}{}
-	\tadOperacion{PaquetesConPrioridadK}{dcnet,conj(pc),nat}{paquete}{}
+	\tadOperacion{PaquetesConPrioridadK}{dcnet,conj(pc),nat}{conj(paquete)}{}
 
 
 	\tadOperacion{paquetesEnLaRed}{dcnet}{conj(paquete)}{}
 	\tadOperacion{buscarPaquetesEnLaRed}{dcnet, conj(pc))}{conj(paquete)}{}
 
 	\tadOperacion{compuQueMasEnvio}{dcnet}{pc}{}
-	\tadOperacion{laQueMasEnvio}{dcnet,conj(pc)}{pc}{}
+	\tadOperacion{maxEnviado}{dcnet,conj(pc)}{nat}{}
+	\tadOperacion{enviaronK}{dcnet,conj(pc),nat}{conj(pc)}{}
 
 	\tadOperacion{compus}{dcnet}{conj(pc)}{}
 
@@ -159,17 +160,27 @@
 
 
 
-	\tadAxioma{compuQueMasEnvio($d$)}{laQueMasEnvio($d$, compus($d$))}
-	\tadAxioma{laQueMasEnvio(dcn,cs)}{\IF $\emptyset?(sinUno(cs))$ THEN
-											$dameUno(cs)$
-										ELSE { \IF $\#enviados(dcn,dameUno(cs)<$
-													$\#enviados(dcn,laQueMasEnvio$
-													$(dcn,sinUno(cs))) $ THEN
-													$laQueMasEnvio(dcn,sinUno(cs))$
-												ELSE
-													$dameUno(cs)$
-												FI}
+	\tadAxioma{compuQueMasEnvio($dcn$)}{dameUno(enviaronK(dcn,compus(topo(dcn)) , \newline  
+											maxEnviado(dcn,compus(topo(dcn))) ))}
+
+	\tadAxioma{maxEnviado(dcn,cc)}{\IF $\emptyset?(sinUno(cc))$ THEN
+											$\#enviados(dcn,dameUno(cc))$
+										ELSE
+											$max(\#enviados(dcn,dameUno(cc),$
+											$maxEnviado(dcn,sinUno(cc)))$
 										FI}
+
+	\tadAxioma{enviaronK(dcn,cc,k)}{	\IF $\emptyset?(cc)$ THEN
+													$\emptyset$
+												ELSE{\IF $ \#enviados(dcn,dameUno(cc)) = k$ THEN
+														$ Ag(dameUno(cc),enviaronK$
+														$(dcn,sinUno(cc),k))$
+													ELSE
+														$enviaronK(dcn,sinUno(c),k)$
+													FI}
+											FI}
+
+
 
 
 	\tadAxioma{perteneceBuffers?(p,bs)}{\IF $\emptyset?(claves(bs))$ THEN
