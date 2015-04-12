@@ -6,7 +6,13 @@
 	}
 	\tadGeneros{topologia}
 	% TODO: exporta?
-	%\tadIgualdadObservacional{t}{t'}{topo}{$compus(t) \igobs compus(t')\ \yluego$\\ $(\neg(n=0?) \impluego (\text{pred}(n) \igobs \text{pred}(m)))$}
+	\tadIgualdadObservacional{t}{t'}{topo}{
+		(compus($t$) \igobs compus($t'$)) \yluego \\
+		(($\forall$ p : pc) (p $\in$ compus($t$) \impluego ( \\
+			\-  $\qquad$ (cablesEn($t$, $p$) \igobs cablesEn($t'$, $p$)) $ \land $ \\
+			\- $\quad$ (\#interfaces($t$, $p$) \igobs \#interfaces($t'$, $p$)) \\
+		)))
+	}
 	\tadAlinearFunciones{interfacesOcupadasDe}{topologia, conj(nat), nat, conj(nat), secu(nat)	}
 	\tadGeneradores
 	\tadOperacion{NuevaTopo}{}{topologia}{}
