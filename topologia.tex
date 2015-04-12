@@ -43,7 +43,7 @@
 	\tadOperacion{darCaminoMasCorto}{topologia/t, nat/ipA, nat/ipB}{secu(segmento)}{$ipA \in compus(t)$ $\land$ $ipB \in compus(t)$ $\yluego conectados?(t, ipA, ipB)$}
 	\tadOperacion{darRutas}{topologia, nat/ipA, nat/ipB, conj(nat), {secu(segmento))}}{conj(secu(segmento)))}{$ipA \in compus(t) \land ipB \in compus(t)$}
 	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat/ip, conj(nat), secu(segmento)}{conj(secu(segmento))}{$ip \in compus(t)$}
-	\tadOperacion{longMenorSec}{conj(secu($\alpha$))}{nat}{}
+	\tadOperacion{longMenorSec}{conj(secu($\alpha$))/secus}{nat}{$neg$$\emptyset$?($secus$)}
 	\tadOperacion{secusDeLongK}{conj(secu($\alpha$)), nat}{conj(secu($\alpha$))}{}
 	\tadOperacion{$\pi_1$Conj}{conj(tupla(nat, nat))}{conj(nat)}{}
 	\tadOperacion{$\pi_2$Conj}{conj(tupla(nat, nat))}{conj(nat)}{}
@@ -155,8 +155,8 @@
 	}
 
 	\tadAxioma{longMenorSec($secus$)}{
-		\IF $\emptyset$?($secus$) THEN
-			0
+		\IF $\emptyset$?(sinUno($secus$)) THEN
+			long(dameUno($secus$))
 		ELSE
 			min(long(dameUno($secus$)), longMenorSec(sinUno($secus$)))
 		FI
