@@ -74,12 +74,12 @@
 	}
 
 	\tadAlinearAxiomas{\#interfaces(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}
-
 	\tadAxioma{\#interfaces(NuevaTopo, $ip$)}{0}
-	\tadAxioma{interfacesOcupadasDe($t$, $ip$)}{$\pi_1$Conj(cablesEn($t$, $ip$))}
-	\tadAxioma{vecinas($t$, $ip$)}{$\pi_2$Conj(cablesEn($t$, $ip$))}
 	\tadAxioma{\#interfaces(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}{\IF $ip$ = $ipNueva$ THEN $cantIfaces$ ELSE \#interfaces($t$, $ip$) FI}
 	\tadAxioma{\#interfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ip$)}{\#interfaces($t$, $ip$)}
+
+	\tadAxioma{interfacesOcupadasDe($t$, $ip$)}{$\pi_1$Conj(cablesEn($t$, $ip$))}
+	\tadAxioma{vecinas($t$, $ip$)}{$\pi_2$Conj(cablesEn($t$, $ip$))}
 	\tadAxioma{conectados?($t$, $ipA$, $ipB$)}{
 		$\neg$ $\emptyset$?(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>))
 	}
