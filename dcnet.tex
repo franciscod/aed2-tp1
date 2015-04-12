@@ -24,20 +24,19 @@
 
 	\tadOtrasOperaciones
 
-	\tadOperacion{recorridoPaquete}{dcnet/dcn,nat/id}{secu(segmento))}{$(paqueteEnTransito?(dcn, id)$}
+	\tadOperacion{recorridoPaquete}{dcnet/dcn,nat/id}{secu(segmento))}{paqueteEnTransito?(dcn, id)}
 	\tadOperacion{cortarRecHasta}{sec(segmento), pc}{sec(segmento)}{}
 
-	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(pc)/pcs, nat/id}{pc}{pcs $\subseteq$ compus(topo(dcn)) $\land$ id $\in$ ids(paquetesEnLaRed(dcn))}
+	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(pc)/pcs, nat/id}{pc}{pcs $\subseteq$ compus(topo(dcn)) $\land$ paqueteEnTransito?(dcn, id)}
 	\tadOperacion{ids}{{conj(paquete)}}{conj(nat))}{}
 
 	\tadOperacion{paqueteEnTransito?}{dcnet, nat}{bool}{}
-	\tadOperacion{existePaqEnBuffers?}{dcnet/dcn, conj(nat)/pcs, nat/id}{bool}{pcs $\subseteq$ compus(topo(dcn))}
 
 	\tadOperacion{darPaqueteEnviado}{conj(paquete)}{paquete}{}
 	\tadOperacion{rutaPaqueteEnviado}{dcnet/dcn, pc/compu}{secu(segmento)}{$compu \in compus(topo(dcn)$}
 	\tadOperacion{paquetesRecibidos}{dcnet, conj(pc)/vecinasPc, pc/compu}{conj(paquete)}{$compu \in compus(topo(dcn)) \yluego vecinasPc \subseteq vecinas(topo(dcnet), compu)$}
 
-	\tadOperacion{darPrioridad}{dcnet/dcn,nat/id}{nat}{id $\in$ ids(paquetesEnLaRed(dcn))}
+	\tadOperacion{darPrioridad}{dcnet/dcn,nat/id}{nat}{paqueteEnTransito?(dcn, id)}
 	\tadOperacion{buscarPrioridad}{nat,conj(paquetes)}{nat}{}
 	\tadOperacion{maxPrioridad}{dcnet,conj(pc)}{nat}{}
 	\tadOperacion{PaquetesConPrioridadK}{dcnet,conj(pc),nat}{conj(paquete)}{}
@@ -102,18 +101,9 @@
 	}
 
 	\tadAxioma{paqueteEnTransito?(dcn, id)}{
-		existePaqEnBuffers?(dcn, compus(dcn), id)
+		id $\in$ ids(paquetesEnLaRed(dcn))
 	}
-	\tadAxioma{existePaqEnBuffers?(dcn, pcs, id)}{
-		\IF $\emptyset$?(pcs) THEN false
-		ELSE {
-			\IF id $\in$ ids(buffer(dcn, dameUno(pcs))) THEN true
-			ELSE existePaqEnBuffers?(dcn, sinUno(pcs), id)
-			FI
-		}
-		FI
-	}
-
+	
 
 	\tadAxioma{buscarPaquetesEnLaRed(dcn,cc)}{\IF $\emptyset?(cc)$ THEN
 													$\emptyset$
