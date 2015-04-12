@@ -58,7 +58,7 @@
 
 	\tadAxioma{$\#$paquetesEnviados(crearRed(t),c)}{0}
 	\tadAxioma{$\#$paquetesEnviados(seg(dcn),c)}{$\#$paquetesEnviados(dcn)}
-	\tadAxioma{$\#$paquetesEnviados(CrearPaquete($dcn$, $p$), $c$)}{\IF $c$ = $\pi_2$($p$) THEN \#paquetesEnviados($dcn$, $c$) + 1 ELSE \#paquetesEnviados($dcn$, $c$) FI}
+	\tadAxioma{$\#$paquetesEnviados(CrearPaquete($dcn$, $p$), $c$)}{\#paquetesEnviados($dcn$, $c$) + \IF $c$ = $\pi_2$($p$) THEN 1 ELSE 0 FI}
 
 	\tadAxioma{buffer(CrearRed($t$), $c$)}{$\emptyset$}
         \tadAxioma{buffer(CrearPaquete($dcn$, $p$), $c$)}{
