@@ -5,7 +5,7 @@
 	\tadIgualdadObservacional{d}{d'}{dcnet}{$ (topo(d) \igobs topo(d')) \land \newline
 		((\forall p: pc)(p \in compus(d) \land   p \in compus(d') \impluego  \newline
 		(buffer(d,p) \igobs buffer(d',p) \land
-		\#paquetesEnviados(d,p) \newline \igobs \#paquetesEnviados(d',p) )\land $}
+		\#enviados(d,p) \newline \igobs \#enviados(d',p) )\land $}
 	\tadGeneradores
 	\tadOperacion{CrearRed}{topo}{dcnet}{}
 	\tadOperacion{Seg}{dcnet}{dcnet}{}
@@ -15,7 +15,7 @@
 	\tadObservadores
 
 	\tadOperacion{topo}{dcnet}{topologia}{}
-	\tadOperacion{$\#$paquetesEnviados}{dcnet/dcn, pc/p}{nat}{$p$ $\in$ compus($dcn$)}
+	\tadOperacion{$\#$enviados}{dcnet/dcn, pc/p}{nat}{$p$ $\in$ compus($dcn$)}
 	\tadOperacion{buffer}{dcnet/dcn, pc/p}{conj(paquete)}{$p \in compus(dcn)$}
 
 
@@ -50,7 +50,7 @@
 
 	\tadOperacion{compus}{dcnet}{conj(pc)}{}
 
-	\tadAlinearAxiomas{$\#$paquetesEnviados(CrearPaquete(dcn, p), c)}
+	\tadAlinearAxiomas{$\#$enviados(CrearPaquete(dcn, p), c)}
 
 	\tadAxiomas[\paratodo{paquete}{p,p'},\paratodo{pc}{c, c'},\paratodo{dcnet}{dcn, d},\paratodo{topologia}{t}]
 
@@ -58,10 +58,13 @@
 	\tadAxioma{topo(seg(dcn))}{topo(dcn)}
 	\tadAxioma{topo(CrearPaquete(dcn, p))}{topo(dcn)}
 
-	\tadAxioma{$\#$paquetesEnviados(crearRed(t),c)}{0}
-	\tadAxioma{$\#$paquetesEnviados(seg(dcn),c)}{$\#$paquetesEnviados(dcn)}
-	\tadAxioma{$\#$paquetesEnviados(CrearPaquete($dcn$, $p$), $c$)}{\#paquetesEnviados($dcn$, $c$) + \IF $c$ = $\pi_2$($p$) THEN 1 ELSE 0 FI}
-
+	\tadAxioma{$\#$enviados(crearRed(t),compu)}{0}
+	\tadAxioma{$\#$enviados(seg(dcn),compu)}{
+		\IF $\emptyset$?(buffer(dcn, compu)) THEN $\#$enviados(dcn, compu) + 1 
+		ELSE $\#$enviados(dcn, compu) 
+		FI
+	}
+	\tadAxioma{$\#$enviados(CrearPaquete($dcn$, $p$), $c$)}{$\#$enviados(dcn, compu)}
 	\tadAxioma{buffer(CrearRed($t$), $c$)}{$\emptyset$}
         \tadAxioma{buffer(CrearPaquete($dcn$, $p$), $c$)}{
             \IF $\pi_2$($p$) = $c$ THEN
@@ -146,8 +149,8 @@
 	\tadAxioma{compuQueMasEnvio($d$)}{laQueMasEnvio($d$, compus($d$))}
 	\tadAxioma{laQueMasEnvio(dcn,cs)}{\IF $\emptyset?(sinUno(cs))$ THEN
 											$dameUno(cs)$
-										ELSE { \IF $\#paquetesEnviados(dcn,dameUno(cs)<$
-													$\#paquetesEnviados(dcn,laQueMasEnvio$
+										ELSE { \IF $\#enviados(dcn,dameUno(cs)<$
+													$\#enviados(dcn,laQueMasEnvio$
 													$(dcn,sinUno(cs))) $ THEN
 													$laQueMasEnvio(dcn,sinUno(cs))$
 												ELSE
