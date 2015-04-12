@@ -30,7 +30,7 @@
 	\tadOperacion{cortarRecHasta}{sec(tupla(nat, nat, nat, nat)), nat}{sec(tupla(nat, nat, nat, nat))}{}
 
 	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(nat)/pcs, nat/id}{nat}{pcs = compus(topo(dcn)) $\land$ ($\exists$ ip : nat)(ip $\in$ pcs $\land$ id $\in$ buffer(dcn, ip))}
-	\tadOperacion{$\pi_1$Conj}{{conj(tupla(nat, nat, nat, nat))}}{conj(nat))}{}
+	\tadOperacion{$\Pi_1$Conj}{{conj(tupla(nat, nat, nat, nat))}}{conj(nat))}{}
 
 	\tadOperacion{paqueteEnTransito?}{dcnet, nat}{bool}{}
 	\tadOperacion{existePaqEnBuffers?}{dcnet/dcn, conj(nat)/pcs, nat/id}{bool}{pcs = compus(topo(dcn))}
@@ -97,25 +97,25 @@
 		FI
 	}
 	\tadAxioma{buscarPaquete(dcn, compus, id)}{
-		\IF id $\in$ $\pi_1$Conj(buffer(dcn, dameUno(compus))) THEN dameUno(compus)
+		\IF id $\in$ $\Pi_1$Conj(buffer(dcn, dameUno(compus))) THEN dameUno(compus)
 		ELSE buscarPaquete(sinUno(compus), id)
 		FI
 	}
-	\tadAxioma{$\pi_1$Conj($conjTuplas$)}{
+	\tadAxioma{$\Pi_1$Conj($conjTuplas$)}{
 		\IF $\emptyset$?($conjTuplas$) THEN
 			$\emptyset$
 		ELSE
-			Ag($\pi_1$(dameUno($conjTuplas$)), $\pi_1$Conj(sinUno($conjTuplas$)))
+			Ag($\Pi_1$(dameUno($conjTuplas$)), $\Pi_1$Conj(sinUno($conjTuplas$)))
 		FI
 	}
-	
+
 	\tadAxioma{paqueteEnTransito?(dcn, id)}{
 		existePaqEnBuffers?(dcn, compus(topo(dcn)), id)
 	}
 	\tadAxioma{existePaqEnBuffers?(dcn, pcs, id)}{
 		\IF $\emptyset$?(pcs) THEN false
 		ELSE {
-			\IF id $\in$ $\pi_1$Conj(buffer(dcn, dameUno(pcs))) THEN true
+			\IF id $\in$ $\Pi_1$Conj(buffer(dcn, dameUno(pcs))) THEN true
 			ELSE existePaqEnBuffers?(dcn, sinUno(pcs), id)
 			FI
 		}
