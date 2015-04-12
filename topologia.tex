@@ -36,7 +36,7 @@
 	\tadOperacion{vecinas}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
 	\tadOperacion{interfacesOcupadasDe}{topologia/t, nat/ip}{conj(nat)}{$ip \in compus(t)$}
 	\tadOperacion{conectados?}{topologia/t, nat/ipA, nat/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
-	\tadOperacion{darInterfazConectada}{{conj(tupla(nat, nat))}/cablesA, nat/ipB}{nat}{$ipB \in \Pi_2Conj(cablesA)$}
+	\tadOperacion{darInterfazConectada}{{conj(tupla(nat, nat))}/cablesA, nat/ipB}{nat}{$ipB \in \pi_2Conj(cablesA)$}
 	\tadOperacion{darSegmento}{topologia/t, nat/ipA, nat/ipB}{segmento}{$ipA \in compus(t) \yluego ipB \in vecinas(t, ipA)$}
 	\tadOperacion{estáEnRuta?}{secu(segmento)/ruta, nat/ip}{bool}{}
 	\tadOperacion{darSiguientePc}{secu(segmento)/ruta, nat/ip}{nat}{$est\acute{a}EnRuta?(ruta, ip)$}
@@ -45,8 +45,8 @@
 	\tadOperacion{darRutasVecinas}{topologia, conj(nat), nat/ip, conj(nat), secu(segmento)}{conj(secu(segmento))}{$ip \in compus(t)$}
 	\tadOperacion{longMenorSec}{conj(secu($\alpha$))}{nat}{}
 	\tadOperacion{secusDeLongK}{conj(secu($\alpha$)), nat}{conj(secu($\alpha$))}{}
-	\tadOperacion{$\Pi_1$Conj}{conj(tupla(nat, nat))}{conj(nat)}{}
-	\tadOperacion{$\Pi_2$Conj}{conj(tupla(nat, nat))}{conj(nat)}{}
+	\tadOperacion{$\pi_1$Conj}{conj(tupla(nat, nat))}{conj(nat)}{}
+	\tadOperacion{$\pi_2$Conj}{conj(tupla(nat, nat))}{conj(nat)}{}
 
 	\tadAlinearAxiomas{cablesEn(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}
 
@@ -78,13 +78,13 @@
 	\tadAxioma{\#interfaces(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}{\IF $ip$ = $ipNueva$ THEN $cantIfaces$ ELSE \#interfaces($t$, $ip$) FI}
 	\tadAxioma{\#interfaces(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$), $ip$)}{\#interfaces($t$, $ip$)}
 
-	\tadAxioma{interfacesOcupadasDe($t$, $ip$)}{$\Pi_1$Conj(cablesEn($t$, $ip$))}
-	\tadAxioma{vecinas($t$, $ip$)}{$\Pi_2$Conj(cablesEn($t$, $ip$))}
+	\tadAxioma{interfacesOcupadasDe($t$, $ip$)}{$\pi_1$Conj(cablesEn($t$, $ip$))}
+	\tadAxioma{vecinas($t$, $ip$)}{$\pi_2$Conj(cablesEn($t$, $ip$))}
 	\tadAxioma{conectados?($t$, $ipA$, $ipB$)}{
 		$\neg$ $\emptyset$?(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>))
 	}
 		\tadAxioma{darInterfazConectada($conjCablesIpA$, $ipB$)}{
-			\IF $ipB$ = $\Pi_2$(dameUno($conjCablesIpA$)) THEN $\Pi_1$(dameUno($conjCablesIpA$)) ELSE darInterfazConectada(sinUno($conjCablesIpA$), $ipB$) FI
+			\IF $ipB$ = $\pi_2$(dameUno($conjCablesIpA$)) THEN $\pi_1$(dameUno($conjCablesIpA$)) ELSE darInterfazConectada(sinUno($conjCablesIpA$), $ipB$) FI
 		}
 		\tadAxioma{darSegmento($t$, $ipA$, $ipB$)}{
 			$\langle$ $ipA$, darInterfazConectada(cablesEn($t$, $ipA$), $ipB$), \\ $ipB$, darInterfazConectada(cablesEn($t$, $ipB$), $ipA$) $\rangle$
@@ -93,7 +93,7 @@
 					\IF vacía?($ruta$) THEN
 						false
 					ELSE{
-						\IF $\Pi_1$(prim($ruta$))=$ip$ THEN
+						\IF $\pi_1$(prim($ruta$))=$ip$ THEN
 							true
 						ELSE
 							estáEnRuta?(fin($rutas$), $ip$)
@@ -102,8 +102,8 @@
 					FI
 		}
 	\tadAxioma{darSiguientePc($ruta$, $ip$)}{
-					\IF $\Pi_1$(prim($ruta$))=$ip$ THEN
-						$\Pi_3$(prim($ruta$))
+					\IF $\pi_1$(prim($ruta$))=$ip$ THEN
+						$\pi_3$(prim($ruta$))
 					ELSE
 						darSiguientePc(fin($rutas$), $ip$)
 					FI
@@ -162,18 +162,18 @@
 		FI
 	}
 
-	\tadAxioma{$\Pi_1$Conj($conjDuplas$)}{
+	\tadAxioma{$\pi_1$Conj($conjDuplas$)}{
 		\IF $\emptyset$?($conjDuplas$) THEN
 			$\emptyset$
 		ELSE
-			Ag($\Pi_1$(dameUno($conjDuplas$)), $\Pi_1$Conj(sinUno($conjDuplas$)))
+			Ag($\pi_1$(dameUno($conjDuplas$)), $\pi_1$Conj(sinUno($conjDuplas$)))
 		FI
 	}
-	\tadAxioma{$\Pi_2$Conj($conjDuplas$)}{
+	\tadAxioma{$\pi_2$Conj($conjDuplas$)}{
 		\IF $\emptyset$?($conjDuplas$) THEN
 			$\emptyset$
 		ELSE
-			Ag($\Pi_2$(dameUno($conjDuplas$)), $\Pi_2$Conj(sinUno($conjDuplas$)))
+			Ag($\pi_2$(dameUno($conjDuplas$)), $\pi_2$Conj(sinUno($conjDuplas$)))
 		FI
 	}
 \end{tadx}
