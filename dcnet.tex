@@ -32,21 +32,21 @@
 
 	\tadOperacion{paqueteEnTransito?}{dcnet, nat}{bool}{}
 
-	\tadOperacion{darPaqueteEnviado}{conj(paquete)}{paquete}{}
+	\tadOperacion{darPaqueteEnviado}{conj(paquete)/cp}{paquete}{$\neg \emptyset$?(cp)}
 	\tadOperacion{rutaPaqueteEnviado}{dcnet/dcn, pc/compu}{secu(segmento)}{$compu \in compus(topo(dcn)$}
 	\tadOperacion{paquetesRecibidos}{dcnet, conj(pc)/vecinasPc, pc/compu}{conj(paquete)}{$compu \in compus(topo(dcn)) \yluego vecinasPc \subseteq vecinas(topo(dcnet), compu)$}
 
 	\tadOperacion{darPrioridad}{dcnet/dcn,nat/id}{nat}{paqueteEnTransito?(dcn, id)}
-	\tadOperacion{buscarPrioridad}{nat,conj(paquetes)}{nat}{}
-	\tadOperacion{maxPrioridad}{dcnet,conj(pc)}{nat}{}
-	\tadOperacion{PaquetesConPrioridadK}{dcnet,conj(pc),nat}{conj(paquete)}{}
+	\tadOperacion{buscarPrioridad}{nat,conj(paquetes)/cp}{nat}{$\neg \emptyset$?(cp)}
+	\tadOperacion{maxPrioridad}{dcnet,conj(pc) c}{nat}{$\neg \emptyset$?(cc)}
+	\tadOperacion{PaquetesConPrioridadK}{dcnet,conj(pc),nat}{conj(paquete)}{ k > 0 $\land$ $\neg \emptyset$?(cc)}
 
 
-	\tadOperacion{paquetesEnLaRed}{dcnet}{conj(paquete)}{}
+	\tadOperacion{paquetesEnLaRed}{dcnet dcn}{conj(paquete)}{$\neg \emptyset$?(compus(topo(dcn)))}
 	\tadOperacion{buscarPaquetesEnLaRed}{dcnet, conj(pc))}{conj(paquete)}{}
 
-	\tadOperacion{compuQueMasEnvio}{dcnet}{pc}{}
-	\tadOperacion{maxEnviado}{dcnet,conj(pc)}{nat}{}
+	\tadOperacion{compuQueMasEnvio}{dcnet dcn}{pc}{$\neg \emptyset$?(compus(topo(dcn)))}
+	\tadOperacion{maxEnviado}{dcnet,conj(pc) cc }{nat}{$\neg \emptyset$?(cc)}
 	\tadOperacion{enviaronK}{dcnet,conj(pc),nat}{conj(pc)}{}
 
 	\tadAlinearAxiomas{$\#$enviados(CrearPaquete(dcn, p), ip)}
