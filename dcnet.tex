@@ -24,11 +24,11 @@
 
 	\tadOtrasOperaciones
 
-	\tadOperacion{recorridoPaquete}{dcnet/dcn,nat/id}{secu(segmento))}{paqueteEnTransito?(dcn, id)}
+	\tadOperacion{recorridoPaquete}{dcnet/dcn,nat/id}{secu(segmento)}{paqueteEnTransito?(dcn, id)}
 	\tadOperacion{cortarRecHasta}{sec(segmento), pc}{sec(segmento)}{}
 
 	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(pc)/pcs, nat/id}{pc}{pcs $\subseteq$ compus(topo(dcn)) $\land$ paqueteEnTransito?(dcn, id)}
-	\tadOperacion{ids}{{conj(paquete)}}{conj(nat))}{}
+	\tadOperacion{ids}{{conj(paquete)}}{conj(nat)}{}
 
 	\tadOperacion{paqueteEnTransito?}{dcnet, nat}{bool}{}
 
@@ -43,7 +43,7 @@
 
 
 	\tadOperacion{paquetesEnLaRed}{dcnet dcn}{conj(paquete)}{$\neg \emptyset$?(compus(topo(dcn)))}
-	\tadOperacion{buscarPaquetesEnLaRed}{dcnet, conj(pc))}{conj(paquete)}{}
+	\tadOperacion{buscarPaquetesEnLaRed}{dcnet, conj(pc)}{conj(paquete)}{}
 
 	\tadOperacion{compuQueMasEnvio}{dcnet dcn}{pc}{$\neg \emptyset$?(compus(topo(dcn)))}
 	\tadOperacion{maxEnviado}{dcnet,conj(pc) cc }{nat}{$\neg \emptyset$?(cc)}

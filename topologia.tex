@@ -41,7 +41,7 @@
 	\tadOperacion{estáEnRuta?}{secu(segmento)/ruta, pc/ip}{bool}{}
 	\tadOperacion{darSiguientePc}{secu(segmento)/ruta, pc/ip}{pc}{$est\acute{a}EnRuta?(ruta, ip)$}
 	\tadOperacion{darCaminoMasCorto}{topologia/t, pc/ipA, pc/ipB}{secu(segmento)}{$ipA \in compus(t)$ $\land$ $ipB \in compus(t)$ $\yluego conectados?(t, ipA, ipB)$}
-	\tadOperacion{darRutas}{topologia, pc/ipA, pc/ipB, conj(nat), {secu(segmento))}}{conj(secu(segmento)))}{$ipA \in compus(t) \land ipB \in compus(t)$}
+	\tadOperacion{darRutas}{topologia, pc/ipA, pc/ipB, conj(nat), {secu(segmento)}}{conj(secu(segmento))}{$ipA \in compus(t) \land ipB \in compus(t)$}
 	\tadOperacion{darRutasVecinas}{topologia, conj(pc), pc/ip, conj(pc), secu(segmento)}{conj(secu(segmento))}{$ip \in compus(t)$}
 	\tadOperacion{longMenorSec}{conj(secu($\alpha$))/secus}{nat}{$\neg \emptyset?(secus)$}
 	\tadOperacion{secusDeLongK}{conj(secu($\alpha$)), nat}{conj(secu($\alpha$))}{}
