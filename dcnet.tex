@@ -59,9 +59,7 @@
 
 	\tadAxioma{$\#$enviados(crearRed(t),ip)}{0}
 	\tadAxioma{$\#$enviados(seg(dcn),ip)}{
-		\IF $\emptyset$?(buffer(dcn, ip)) THEN $\#$enviados(dcn, ip) + 1 
-		ELSE $\#$enviados(dcn, ip) 
-		FI
+		\#enviados(dcn, ip) + \IF $\neg\emptyset$?(buffer(dcn, ip)) THEN 1 ELSE 0 FI
 	}
 	\tadAxioma{$\#$enviados(CrearPaquete(dcn, p), ip)}{$\#$enviados(dcn, ip)}
 	\tadAxioma{buffer(CrearRed($t$), $c$)}{$\emptyset$}
