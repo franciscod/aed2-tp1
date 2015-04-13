@@ -66,7 +66,7 @@
 	\tadAxioma{buffer(CrearRed($t$), $c$)}{$\emptyset$}
         \tadAxioma{buffer(CrearPaquete($dcn$, $p$), $c$)}{
             \IF $\pi_2$($p$) = $c$ THEN
-                Ag($p$, $\emptyset$) $\cup$ buffer($dcn$, $c$)
+                Ag($p$, buffer($dcn$, $c$))
             ELSE
                 buffer($dcn$, $c$)
             FI
