@@ -35,12 +35,12 @@
 
 	\tadOperacion{vecinas}{topologia/t, pc/ip}{conj(pc)}{$ip \in compus(t)$}
 	\tadOperacion{interfacesOcupadasDe}{topologia/t, pc/ip}{conj(nat)}{$ip \in compus(t)$}
-	\tadOperacion{conectados?}{topologia/t, pc/ipA, pc/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
+	\tadOperacion{conectadas?}{topologia/t, pc/ipA, pc/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
 	\tadOperacion{darInterfazConectada}{{conj(tupla(pc, nat))}/cablesA, pc/ipB}{nat}{$ipB \in \pi_2Conj(cablesA)$}
 	\tadOperacion{darSegmento}{topologia/t, pc/ipA, pc/ipB}{segmento}{$ipA \in compus(t) \yluego ipB \in vecinas(t, ipA)$}
 	\tadOperacion{estáEnRuta?}{secu(segmento)/ruta, pc/ip}{bool}{}
 	\tadOperacion{darSiguientePc}{secu(segmento)/ruta, pc/ip}{pc}{$est\acute{a}EnRuta?(ruta, ip)$}
-	\tadOperacion{darCaminoMasCorto}{topologia/t, pc/ipA, pc/ipB}{secu(segmento)}{$ipA \in compus(t)$ $\land$ $ipB \in compus(t)$ $\yluego conectados?(t, ipA, ipB)$}
+	\tadOperacion{darCaminoMasCorto}{topologia/t, pc/ipA, pc/ipB}{secu(segmento)}{$ipA \in compus(t)$ $\land$ $ipB \in compus(t)$ $\yluego conectadas?(t, ipA, ipB)$}
 	\tadOperacion{darRutas}{topologia, pc/ipA, pc/ipB, conj(nat), {secu(segmento)}}{conj(secu(segmento))}{$ipA \in compus(t) \land ipB \in compus(t)$}
 	\tadOperacion{darRutasVecinas}{topologia, conj(pc), pc/ip, conj(pc), secu(segmento)}{conj(secu(segmento))}{$ip \in compus(t)$}
 	\tadOperacion{longMenorSec}{conj(secu($\alpha$))/secus}{nat}{$\neg \emptyset?(secus)$}
@@ -70,7 +70,7 @@
 
 	\tadAxioma{interfacesOcupadasDe($t$, $ip$)}{$\pi_1$Conj(cablesEn($t$, $ip$))}
 	\tadAxioma{vecinas($t$, $ip$)}{$\pi_2$Conj(cablesEn($t$, $ip$))}
-	\tadAxioma{conectados?($t$, $ipA$, $ipB$)}{
+	\tadAxioma{conectadas?($t$, $ipA$, $ipB$)}{
 		$\neg$ $\emptyset$?(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>))
 	}
 		\tadAxioma{darInterfazConectada($conjCablesIpA$, $ipB$)}{
