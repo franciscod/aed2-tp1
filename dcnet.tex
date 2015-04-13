@@ -18,7 +18,7 @@
 	\tadObservadores
 
 	\tadOperacion{topo}{dcnet}{topologia}{}
-	\tadOperacion{$\#$enviados}{dcnet/dcn, pc/ip}{nat}{ip $\in$ compus(topo(dcn))}
+	\tadOperacion{\#enviados}{dcnet/dcn, pc/ip}{nat}{ip $\in$ compus(topo(dcn))}
 	\tadOperacion{buffer}{dcnet/dcn, pc/ip}{conj(paquete)}{ip $\in$ compus(topo(dcn))}
 
 
@@ -49,7 +49,7 @@
 	\tadOperacion{maxEnviado}{dcnet,conj(pc) cc }{nat}{$\neg \emptyset$?(cc)}
 	\tadOperacion{enviaronK}{dcnet,conj(pc),nat}{conj(pc)}{}
 
-	\tadAlinearAxiomas{$\#$enviados(CrearPaquete(dcn, p), ip)}
+	\tadAlinearAxiomas{\#enviados(CrearPaquete(dcn, p), ip)}
 
 	\tadAxiomas
 
@@ -57,11 +57,11 @@
 	\tadAxioma{topo(seg(dcn))}{topo(dcn)}
 	\tadAxioma{topo(CrearPaquete(dcn, p))}{topo(dcn)}
 
-	\tadAxioma{$\#$enviados(crearRed(t),ip)}{0}
-	\tadAxioma{$\#$enviados(seg(dcn),ip)}{
+	\tadAxioma{\#enviados(crearRed(t),ip)}{0}
+	\tadAxioma{\#enviados(seg(dcn),ip)}{
 		\#enviados(dcn, ip) + \IF $\neg\emptyset$?(buffer(dcn, ip)) THEN 1 ELSE 0 FI
 	}
-	\tadAxioma{$\#$enviados(CrearPaquete(dcn, p), ip)}{$\#$enviados(dcn, ip)}
+	\tadAxioma{\#enviados(CrearPaquete(dcn, p), ip)}{\#enviados(dcn, ip)}
 	\tadAxioma{buffer(CrearRed($t$), $c$)}{$\emptyset$}
         \tadAxioma{buffer(CrearPaquete($dcn$, $p$), $c$)}{
             \IF $\pi_2$($p$) = $c$ THEN
