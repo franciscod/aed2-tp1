@@ -50,17 +50,7 @@
 
 	\tadAlinearAxiomas{cablesEn(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}
 
-	\tadAxiomas[
-	\paratodo{topologia}{t},
-	\paratodo{nat}{ipNueva, ip, ipA, ipB, ifA, ifB, cantIfaces, k},
-	\paratodo{conj(tupla(pc, nat))}{conjDuplas},
-	\paratodo{conj(tupla(pc, nat))}{conjCablesIpA},
-	\paratodo{conj(pc)}{rec, vecinas},
-	\paratodo{conj(secu($\alpha$))}{secus},
-	\paratodo{conj(secu($\alpha$))}{sc},
-	\paratodo{secu(segmento)}{ruta}
-	]
-
+	\tadAxiomas
 
 	\tadAxioma{compus(NuevaTopo)}{$\emptyset$}
 	\tadAxioma{compus(Compu($t$, $ipNueva$, $cantIfaces$))}{Ag($ipNueva$, compus($t$))}
