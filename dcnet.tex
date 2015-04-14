@@ -147,7 +147,7 @@
 	\tadAxioma{paquetesConPrioridadK($dcn$, $cp$, $k$)}{
 		\IF $\emptyset$?($cp$) THEN
 			$\emptyset$
-		ELSE{
+		ELSE {
 			\IF darPrioridad($dcn$, dameUno($cp$)) = $k$ THEN
 				 Ag(dameUno($cp$), paquetesConPrioridadK
 				($dcn$, sinUno($cp$), $k$))
@@ -173,7 +173,7 @@
 	\tadAxioma{enviaronK($dcn$, $cc$, $k$)}{
 		\IF $\emptyset$?($cc$) THEN
 			$\emptyset$
-		ELSE{
+		ELSE {
 			\IF \#enviados(dcn, dameUno($cc$)) = $k$ THEN
 				 Ag(dameUno($cc$), enviaronK($dcn$, sinUno($cc$), $k$))
 			ELSE
