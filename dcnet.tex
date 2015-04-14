@@ -99,7 +99,7 @@
 	\tadAxioma{paqueteEnTransito?($dcn$, $id$)}{
 		$id$ $\in$ ids(paquetesEnLaRed($dcn$))
 	}
-	
+
 
 	\tadAxioma{buscarPaquetesEnLaRed($dcn$, $cc$)}{
 		\IF $\emptyset$?($cc$) THEN
@@ -112,9 +112,9 @@
 	\tadAxioma{paquetesEnLaRed($d$)}{buscarPaquetesEnLaRed($d$, compus(topo($d$)))}
 
 	\tadAxioma{buscarPrioridad($idPaq$, $cs$)}{
-		\IF $idPaq$ = id(dameUno($cs$)) THEN 
-			prioridad(dameUno($cs$))
-		ELSE 
+		\IF $idPaq$ = $\pi_1$(dameUno($cs$)) THEN
+			$\pi_4$(dameUno($cs$))
+		ELSE
 			buscarPrioridad($idPaq$, sinUno($cs$))
 		FI
 	}
@@ -154,11 +154,11 @@
 			ELSE
 				paquetesConPrioridadK($dcn$, sinUno($cp$), $k$)
 			FI
-			}	
+			}
 		FI
 	}
 
-	\tadAxioma{compuQueMasEnvio($dcn$)}{dameUno(enviaronK($dcn$, compus(topo($dcn$)), \\  
+	\tadAxioma{compuQueMasEnvio($dcn$)}{dameUno(enviaronK($dcn$, compus(topo($dcn$)), \\
 											maxEnviado($dcn$, compus(topo($dcn$))) ))}
 
 	\tadAxioma{maxEnviado($dcn$, $cc$)}{
