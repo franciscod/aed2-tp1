@@ -1,7 +1,8 @@
 \begin{tad}{\tadNombre{DCNet}}
 	\tadGeneros{dcnet}
 
-	\tadAlinearFunciones{buscarPaquetesEnLaRed}{dcnet/dcn,pc/p1,pc/p2,paquete}
+	\tadAlinearFunciones{rutaPaqueteEnviado}{dcnet, conj(pc)/vecinasPc, pc/compu}
+
 	\tadIgualdadObservacional{d}{d'}{dcnet}{
 		(topo($d$) \igobs topo($d'$)) \yluego ( \\
 			\- ($\forall p: pc$)($p$ $\in$ compus(topo($d$)) ) \impluego ( \\
@@ -12,7 +13,9 @@
 	\tadGeneradores
 	\tadOperacion{CrearRed}{topo}{dcnet}{}
 	\tadOperacion{Seg}{dcnet}{dcnet}{}
-	\tadOperacion{CrearPaquete}{dcnet/dcn, paquete/p}{dcnet}{$(ipOrigen(p) \in compus(topo(dcn)) \land  ipDestino(p) \in compus(topo(dcn)) \yluego conectadas?(topo(dcn), ipOrigen(p), ipDestino(p))$}
+	\tadOperacion{CrearPaquete}{dcnet/dcn, paquete/p}{dcnet}{
+		(ipOrigen($p$) $\in$ compus(topo($dcn$)) $\land$ ipDestino($p$) $\in$ compus(topo($dcn$)) \yluego \\
+		conectadas?(topo($dcn$), ipOrigen($p$), ipDestino($p$))}
 
 	\tadObservadores
 
@@ -33,11 +36,14 @@
 
 	\tadOperacion{darPaqueteEnviado}{conj(paquete)/cp}{paquete}{$\neg \emptyset?(cp)$}
 	\tadOperacion{rutaPaqueteEnviado}{dcnet/dcn, pc/compu}{secu(segmento)}{$compu \in compus(topo(dcn)$}
-	\tadOperacion{paquetesRecibidos}{dcnet, conj(pc)/vecinasPc, pc/compu}{conj(paquete)}{$compu \in compus(topo(dcn)) \yluego vecinasPc \subseteq vecinas(topo(dcnet), compu)$}
+	\tadOperacion{paquetesRecibidos}{dcnet, conj(pc)/vecinasPc, pc/compu}{conj(paquete)}{$compu$ $\in$ compus(topo($dcn$)) \yluego $vecinasPc$ $\subseteq$ vecinas(topo($dcnet$), $compu$)}
 
 	\tadOperacion{darPrioridad}{dcnet/dcn,nat/id}{nat}{$paqueteEnTransito?(dcn, id)$}
 	\tadOperacion{buscarPrioridad}{nat/k,conj(paquetes)/cp}{nat}{$\neg \emptyset?(cp) \land \exists(p \in cp) prioridad(p) = k$}
 	\tadOperacion{maxPrioridad}{dcnet,conj(pc) c}{nat}{$\neg \emptyset?(cc) \land cc \subseteq compus(topo(dcn))$}
+
+	\tadAlinearFunciones{buscarPaquetesEnLaRed}{dcnet/dcn,pc/p1,pc/p2,paquete}
+
 	\tadOperacion{paquetesConPrioridadK}{dcnet/dcn,conj(pc)/cc,nat/k}{conj(paquete)}{$cc \subseteq compus(topo(dcn))$}
 
 

@@ -41,6 +41,9 @@
 	\tadOperacion{estáEnRuta?}{secu(segmento)/ruta, pc/ip}{bool}{}
 	\tadOperacion{darSiguientePc}{secu(segmento)/ruta, pc/ip}{pc}{$est\acute{a}EnRuta?(ruta, ip)$}
 	\tadOperacion{darCaminoMasCorto}{topologia/t, pc/ipA, pc/ipB}{secu(segmento)}{$ipA \in compus(t)$ $\land$ $ipB \in compus(t)$ $\yluego conectadas?(t, ipA, ipB)$}
+
+	\tadAlinearFunciones{darRutasVecinas}{topologia, conj(pc), pc/ip, conj(pc), secu(segmento)}
+
 	\tadOperacion{darRutas}{topologia, pc/ipA, pc/ipB, conj(nat), {secu(segmento)}}{conj(secu(segmento))}{$ipA \in compus(t) \land ipB \in compus(t)$}
 	\tadOperacion{darRutasVecinas}{topologia, conj(pc), pc/ip, conj(pc), secu(segmento)}{conj(secu(segmento))}{$ip \in compus(t)$}
 	\tadOperacion{longMenorSec}{conj(secu($\alpha$))/secus}{nat}{$\neg \emptyset?(secus)$}
@@ -129,7 +132,10 @@
 		FI
 	}
 
-	\tadAxioma{darCaminoMasCorto($t$, $ipA$, $ipB$)}{dameUno(secusDeLongK(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>), longMenorSec(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>)))}
+	\tadAxioma{darCaminoMasCorto($t$, $ipA$, $ipB$)}{
+		dameUno(secusDeLongK(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>), \\
+		longMenorSec(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>)))
+	}
 
 	\tadAxioma{secusDeLongK($secus$, $k$)}{
 		\IF $\emptyset$?($secus$) THEN
@@ -148,7 +154,8 @@
 		\IF $\emptyset$?(sinUno($secus$)) THEN
 			long(dameUno($secus$))
 		ELSE
-			min(long(dameUno($secus$)), longMenorSec(sinUno($secus$)))
+			min(long(dameUno($secus$)), \\
+			longMenorSec(sinUno($secus$)))
 		FI
 	}
 
@@ -156,14 +163,18 @@
 		\IF $\emptyset$?($conjDuplas$) THEN
 			$\emptyset$
 		ELSE
-			Ag($\pi_1$(dameUno($conjDuplas$)), $\pi_1$Conj(sinUno($conjDuplas$)))
+			Ag($\pi_1$(dameUno($conjDuplas$)), \\
+			$\pi_1$Conj(sinUno($conjDuplas$)))
 		FI
 	}
+
 	\tadAxioma{$\pi_2$Conj($conjDuplas$)}{
 		\IF $\emptyset$?($conjDuplas$) THEN
 			$\emptyset$
 		ELSE
-			Ag($\pi_2$(dameUno($conjDuplas$)), $\pi_2$Conj(sinUno($conjDuplas$)))
+			Ag($\pi_2$(dameUno($conjDuplas$)), \\
+			$\pi_2$Conj(sinUno($conjDuplas$)))
 		FI
 	}
+
 \end{tadx}
