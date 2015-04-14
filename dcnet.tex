@@ -118,8 +118,8 @@
 	\tadAxioma{paquetesEnLaRed($d$)}{buscarPaquetesEnLaRed($d$, compus(topo($d$)))}
 
 	\tadAxioma{buscarPrioridad($idPaq$, $cs$)}{
-		\IF $idPaq$ = $\pi_1$(dameUno($cs$)) THEN
-			$\pi_4$(dameUno($cs$))
+		\IF $idPaq$ = id(dameUno($cs$)) THEN
+			prioridad(dameUno($cs$))
 		ELSE
 			buscarPrioridad($idPaq$, sinUno($cs$))
 		FI
