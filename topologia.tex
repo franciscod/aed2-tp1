@@ -17,7 +17,7 @@
 	\tadGeneradores
 	\tadOperacion{NuevaTopo}{}{topologia}{}
 	\tadOperacion{Compu}{topologia, pc/ip, nat}{topologia}{$\neg(ip \in compus(t))$}
-	\tadOperacion{Cable}{topologia, pc/ipA, nat/ifA, pc/ipB, nat/ifB}{topologia}{
+	\tadOperacion{Cable}{topologia, pc/ipA, ifz/ifA, pc/ipB, ifz/ifB}{topologia}{
 		$(ipA \in compus(t) \land ipB \in compus(t)) \yluego$ \\
 		$(ifA < \#interfaces(t, ipA)) \land$ \\
 		$(ifB < \#interfaces(t, ipB)) \land$ \\
@@ -28,15 +28,15 @@
 	\tadObservadores
 
 	\tadOperacion{compus}{topologia}{conj(pc)}{}
-	\tadOperacion{cablesEn}{topologia/t, pc/ip}{conj(tupla(pc, nat))}{$ip \in compus(t)$}
+	\tadOperacion{cablesEn}{topologia/t, pc/ip}{conj(tupla(pc, ifz))}{$ip \in compus(t)$}
 	\tadOperacion{\#interfaces}{topologia/t, pc/ip}{nat}{$ip \in compus(t)$}
 
 	\tadOtrasOperaciones
 
 	\tadOperacion{vecinas}{topologia/t, pc/ip}{conj(pc)}{$ip \in compus(t)$}
-	\tadOperacion{interfacesOcupadasDe}{topologia/t, pc/ip}{conj(nat)}{$ip \in compus(t)$}
+	\tadOperacion{interfacesOcupadasDe}{topologia/t, pc/ip}{conj(ifz)}{$ip \in compus(t)$}
 	\tadOperacion{conectadas?}{topologia/t, pc/ipA, pc/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
-	\tadOperacion{darInterfazConectada}{{conj(tupla(pc, nat))}/cablesA, pc/ipB}{nat}{$ipB \in \pi_2Conj(cablesA)$}
+	\tadOperacion{darInterfazConectada}{{conj(tupla(pc, ifz))}/cablesA, pc/ipB}{ifz}{$ipB \in \pi_2Conj(cablesA)$}
 	\tadOperacion{darSegmento}{topologia/t, pc/ipA, pc/ipB}{segmento}{$ipA \in compus(t) \yluego ipB \in vecinas(t, ipA)$}
 	\tadOperacion{estáEnRuta?}{secu(segmento)/ruta, pc/ip}{bool}{}
 	\tadOperacion{darSiguientePc}{secu(segmento)/ruta, pc/ip}{pc}{$est\acute{a}EnRuta?(ruta, ip)$}
@@ -44,12 +44,12 @@
 
 	\tadAlinearFunciones{darRutasVecinas}{topologia, conj(pc), pc/ip, conj(pc), secu(segmento)}
 
-	\tadOperacion{darRutas}{topologia, pc/ipA, pc/ipB, conj(nat), {secu(segmento)}}{conj(secu(segmento))}{$ipA \in compus(t) \land ipB \in compus(t)$}
+	\tadOperacion{darRutas}{topologia, pc/ipA, pc/ipB, conj(pc), {secu(segmento)}}{conj(secu(segmento))}{$ipA \in compus(t) \land ipB \in compus(t)$}
 	\tadOperacion{darRutasVecinas}{topologia, conj(pc), pc/ip, conj(pc), secu(segmento)}{conj(secu(segmento))}{$ip \in compus(t)$}
 	\tadOperacion{longMenorSec}{conj(secu($\alpha$))/secus}{nat}{$\neg \emptyset?(secus)$}
 	\tadOperacion{secusDeLongK}{conj(secu($\alpha$)), nat}{conj(secu($\alpha$))}{}
-	\tadOperacion{$\pi_1$Conj}{conj({tupla(pc, nat)})}{conj(pc)}{}
-	\tadOperacion{$\pi_2$Conj}{conj({tupla(pc, nat)})}{conj(nat)}{}
+	\tadOperacion{$\pi_1$Conj}{conj({tupla(pc, ifz)})}{conj(pc)}{}
+	\tadOperacion{$\pi_2$Conj}{conj({tupla(pc, ifz)})}{conj(ifz)}{}
 
 	\tadAlinearAxiomas{cablesEn(Compu($t$, $ipNueva$, $cantIfaces$), $ip$)}
 
@@ -86,7 +86,7 @@
 					\IF vacía?($ruta$) THEN
 						false
 					ELSE{
-						\IF $\pi_1$(prim($ruta$)) = $ip$ THEN
+						\IF ipOrigen(prim($ruta$)) = $ip$ THEN
 							true
 						ELSE
 							estáEnRuta?(fin($rutas$), $ip$)
@@ -95,8 +95,8 @@
 					FI
 		}
 	\tadAxioma{darSiguientePc($ruta$, $ip$)}{
-					\IF $\pi_1$(prim($ruta$)) = $ip$ THEN
-						$\pi_3$(prim($ruta$))
+					\IF ipOrigen(prim($ruta$)) = $ip$ THEN
+						ipDestino(prim($ruta$))
 					ELSE
 						darSiguientePc(fin($rutas$), $ip$)
 					FI
