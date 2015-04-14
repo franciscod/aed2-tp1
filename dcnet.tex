@@ -12,8 +12,7 @@
 	\tadGeneradores
 	\tadOperacion{CrearRed}{topo}{dcnet}{}
 	\tadOperacion{Seg}{dcnet}{dcnet}{}
-	\tadOperacion{CrearPaquete}{dcnet/dcn, paquete/p}{dcnet}
-	{$(ipOrigen(p) \in compus(topo(dcn)) \land  ipDestino(p) \in compus(topo(dcn)) \yluego  conectadas?(topo(dcn) , ipOrigen(p) , ipDestino(p))$}
+	\tadOperacion{CrearPaquete}{dcnet/dcn, paquete/p}{dcnet}{$(ipOrigen(p) \in compus(topo(dcn)) \land  ipDestino(p) \in compus(topo(dcn)) \yluego conectadas?(topo(dcn), ipOrigen(p), ipDestino(p))$}
 
 	\tadObservadores
 
@@ -37,7 +36,7 @@
 	\tadOperacion{paquetesRecibidos}{dcnet, conj(pc)/vecinasPc, pc/compu}{conj(paquete)}{$compu \in compus(topo(dcn)) \yluego vecinasPc \subseteq vecinas(topo(dcnet), compu)$}
 
 	\tadOperacion{darPrioridad}{dcnet/dcn,nat/id}{nat}{$paqueteEnTransito?(dcn, id)$}
-	\tadOperacion{buscarPrioridad}{nat/k,conj(paquetes)/cp}{nat}{$\neg \emptyset?(cp) \land \exists(p \in cp) \pi_4(p) = k$}
+	\tadOperacion{buscarPrioridad}{nat/k,conj(paquetes)/cp}{nat}{$\neg \emptyset?(cp) \land \exists(p \in cp) prioridad(p) = k$}
 	\tadOperacion{maxPrioridad}{dcnet,conj(pc) c}{nat}{$\neg \emptyset?(cc) \land cc \subseteq compus(topo(dcn))$}
 	\tadOperacion{paquetesConPrioridadK}{dcnet/dcn,conj(pc)/cc,nat/k}{conj(paquete)}{$cc \subseteq compus(topo(dcn))$}
 
@@ -77,7 +76,7 @@
 	}
 
 	\tadAxioma{recorridoPaquete($dcn$, $p$)}{
-		cortarRecHasta(darCaminoMasCorto(topo($dcn$), \\origen($p$), destino($p$)), buscarPaquete(compus(topo($dcn$)), $p$))
+		cortarRecHasta(darCaminoMasCorto(topo($dcn$), \\ipOrigen($p$), ipDestino($p$)), buscarPaquete(compus(topo($dcn$)), $p$))
 	}
 	\tadAxioma{cortarRecHasta($s$, $ip$)}{
 		\IF vacia?($s$) $\oluego$ $ip$ = ipOrigen(prim($s$)) THEN <> 		% ipOrigen es el primer elemento del segmento
@@ -113,8 +112,8 @@
 	\tadAxioma{paquetesEnLaRed($d$)}{buscarPaquetesEnLaRed($d$, compus(topo($d$)))}
 
 	\tadAxioma{buscarPrioridad($idPaq$, $cs$)}{
-		\IF $idPaq$ = $\pi_1$(dameUno($cs$)) THEN 
-			$\pi_4$(dameUno($cs$))
+		\IF $idPaq$ = id(dameUno($cs$)) THEN 
+			prioridad(dameUno($cs$))
 		ELSE 
 			buscarPrioridad($idPaq$, sinUno($cs$))
 		FI
