@@ -32,29 +32,32 @@
 	\tadOperacion{buscarPaquete}{dcnet/dcn, conj(pc)/pcs, nat/id}{pc}{$pcs \subseteq compus(topo(dcn)) \land paqueteEnTransito?(dcn, id)$}
 	\tadOperacion{ids}{{conj(paquete)}}{conj(nat)}{}
 
-	\tadOperacion{paqueteEnTransito?}{dcnet, nat}{bool}{}
+	
 
-	\tadOperacion{darPaqueteEnviado}{conj(paquete)/cp}{paquete}{$\neg \emptyset?(cp)$}
+	
 	\tadOperacion{rutaPaqueteEnviado}{dcnet/dcn, pc/compu}{secu(segmento)}{$compu \in compus(topo(dcn)$}
 	\tadOperacion{paquetesRecibidos}{dcnet, conj(pc)/vecinasPc, pc/compu}{conj(paquete)}{$compu$ $\in$ compus(topo($dcn$)) \yluego $vecinasPc$ $\subseteq$ vecinas(topo($dcnet$), $compu$)}
 
+	\tadOperacion{darPaqueteEnviado}{conj(paquete)/cp}{paquete}{$\neg \emptyset?(cp)$}
+	\tadAlinearFunciones{buscarPaquetesEnLaRed}{dcnet/dcn,pc/p1,pc/p2,paquete}
+	\tadOperacion{paquetesConPrioridadK}{dcnet/dcn,conj(pc)/cc,nat/k}{conj(paquete)}{$cc \subseteq compus(topo(dcn))$}
+	\tadOperacion{maxPrioridad}{dcnet,conj(pc) c}{nat}{$\neg \emptyset?(cc) \land cc \subseteq compus(topo(dcn))$}
 	\tadOperacion{darPrioridad}{dcnet/dcn,nat/id}{nat}{$paqueteEnTransito?(dcn, id)$}
 	\tadOperacion{buscarPrioridad}{nat/k,conj(paquetes)/cp}{nat}{$\neg \emptyset?(cp) \land \exists(p \in cp) prioridad(p) = k$}
-	\tadOperacion{maxPrioridad}{dcnet,conj(pc) c}{nat}{$\neg \emptyset?(cc) \land cc \subseteq compus(topo(dcn))$}
+	
+	
+	
 
-	\tadAlinearFunciones{buscarPaquetesEnLaRed}{dcnet/dcn,pc/p1,pc/p2,paquete}
-
-	\tadOperacion{paquetesConPrioridadK}{dcnet/dcn,conj(pc)/cc,nat/k}{conj(paquete)}{$cc \subseteq compus(topo(dcn))$}
-
-
+	\tadOperacion{paqueteEnTransito?}{dcnet, nat}{bool}{}
 	\tadOperacion{paquetesEnLaRed}{dcnet}{conj(paquete)}{}
 	\tadOperacion{buscarPaquetesEnLaRed}{dcnet/dcn,conj(pc)/cc}{conj(paquete)}{$cc \subseteq compus(topo(dcn))$}
-
 
 	\tadOperacion{compuQueMasEnvio}{dcnet/dcn}{pc}{$\neg \emptyset?(compus(topo(dcn)))$}
 	\tadOperacion{maxEnviado}{dcnet/dcn,conj(pc)/cc }{nat}{$\neg \emptyset?(cc) \land cc \subseteq compus(topo(dcn))$}
 	\tadOperacion{enviaronK}{dcnet/dcn,conj(pc)/cc,nat}{conj(pc)}{$cc  \subseteq compus(topo(dcn))$}
 
+
+	
 	\tadAlinearAxiomas{\#enviados(CrearPaquete(dcn, p), $ip$)}
 
 	\tadAxiomas
@@ -102,37 +105,13 @@
 		FI
 	}
 
-	\tadAxioma{paqueteEnTransito?($dcn$, $id$)}{
-		$id$ $\in$ ids(paquetesEnLaRed($dcn$))
-	}
+	
 
-
-	\tadAxioma{buscarPaquetesEnLaRed($dcn$, $cc$)}{
-		\IF $\emptyset$?($cc$) THEN
-			$\emptyset$
-		ELSE
-			buffer($dcn$, dameUno($cc$)) $\cup$ \\ buscarPaquetesEnLaRed($dcn$, sinUno($cc$))
-		FI
-	}
-
-	\tadAxioma{paquetesEnLaRed($d$)}{buscarPaquetesEnLaRed($d$, compus(topo($d$)))}
-
-	\tadAxioma{buscarPrioridad($idPaq$, $cs$)}{
-		\IF $idPaq$ = id(dameUno($cs$)) THEN
-			prioridad(dameUno($cs$))
-		ELSE
-			buscarPrioridad($idPaq$, sinUno($cs$))
-		FI
-	}
-
-	\tadAxioma{darPrioridad($d$, $idPaq$)}{buscarPrioridad($idPaq$, compus(topo($dcn$)))}
-
-	\tadAxioma{darPaqueteEnviado($dcn$, $cp$)}{dameUno(paquetesConPrioridadK
-											($dcn$, $cp$, \\ maxPrioridad($dcn$, $cp$)))}
-	\tadAlinearAxiomas{paquetesRecibidos($dcn$, $vecinasPc$, $c$)}
 	\tadAxioma{rutaPaqueteEnviado($dcn$, $c$)}{
 		darCaminoMasCorto(topo($dcn$), \\ ipOrigen(darPaqueteEnviado($dcn$, buffer($dcn$, $c$))), \\ ipDestino(darPaqueteEnviado($dcn$, buffer($dcn$, $c$))))
 	}
+	\tadAlinearAxiomas{paquetesRecibidos($dcn$, $vecinasPc$, $c$)}
+	
 	\tadAxioma{paquetesRecibidos($dcn$, $vecinasPc$, $c$)}{
 		\IF darSiguientePc( \\ rutaPaqueteEnviado($dcn$, dameUno($vecinasPc$)), \\ dameUno($vecinasPc$)) = $c$ THEN
 			Ag(darPaqueteEnviado($dcn$, \\ buffer($dcn$, dameUno($vecinasPc$))), $\emptyset$) $\cup$ \\
@@ -141,15 +120,11 @@
 			paquetesRecibidos($dcn$, sinUno($vecinasPc$), $c$)
 		FI
 	}
-	\tadAxioma{maxPrioridad($dcn$, $cp$)}{
-		\IF $\emptyset$?(sinUno($cp$)) THEN
-			darPrioridad($dcn$, dameUno($cp$)
-		ELSE
-			max(darPrioridad($dcn$, dameUno($cp$), \\
-			maxPrioridad($dcn$, sinUno($cp$)))
-		FI
-	}
 
+	
+
+	\tadAxioma{darPaqueteEnviado($dcn$, $cp$)}{dameUno(paquetesConPrioridadK
+											($dcn$, $cp$, \\ maxPrioridad($dcn$, $cp$)))}
 	\tadAxioma{paquetesConPrioridadK($dcn$, $cp$, $k$)}{
 		\IF $\emptyset$?($cp$) THEN
 			$\emptyset$
@@ -163,10 +138,39 @@
 			}
 		FI
 	}
+	\tadAxioma{maxPrioridad($dcn$, $cp$)}{
+		\IF $\emptyset$?(sinUno($cp$)) THEN
+			darPrioridad($dcn$, dameUno($cp$)
+		ELSE
+			max(darPrioridad($dcn$, dameUno($cp$), \\
+			maxPrioridad($dcn$, sinUno($cp$)))
+		FI
+	}
+	\tadAxioma{darPrioridad($d$, $idPaq$)}{buscarPrioridad($idPaq$, compus(topo($dcn$)))}
+	\tadAxioma{buscarPrioridad($idPaq$, $cs$)}{
+		\IF $idPaq$ = id(dameUno($cs$)) THEN
+			prioridad(dameUno($cs$))
+		ELSE
+			buscarPrioridad($idPaq$, sinUno($cs$))
+		FI
+	}
+
+	
+	\tadAxioma{paqueteEnTransito?($dcn$, $id$)}{
+		$id$ $\in$ ids(paquetesEnLaRed($dcn$))
+	}
+	\tadAxioma{paquetesEnLaRed($d$)}{buscarPaquetesEnLaRed($d$, compus(topo($d$)))}
+	\tadAxioma{buscarPaquetesEnLaRed($dcn$, $cc$)}{
+		\IF $\emptyset$?($cc$) THEN
+			$\emptyset$
+		ELSE
+			buffer($dcn$, dameUno($cc$)) $\cup$ \\ buscarPaquetesEnLaRed($dcn$, sinUno($cc$))
+		FI
+	}
+
 
 	\tadAxioma{compuQueMasEnvio($dcn$)}{dameUno(enviaronK($dcn$, compus(topo($dcn$)), \\
 											maxEnviado($dcn$, compus(topo($dcn$))) ))}
-
 	\tadAxioma{maxEnviado($dcn$, $cc$)}{
 		\IF $\emptyset$?(sinUno($cc$)) THEN
 			\#enviados($dcn$, dameUno($cc$))
@@ -175,7 +179,6 @@
 			maxEnviado($dcn$, sinUno($cc$)))
 		FI
 	}
-
 	\tadAxioma{enviaronK($dcn$, $cc$, $k$)}{
 		\IF $\emptyset$?($cc$) THEN
 			$\emptyset$
