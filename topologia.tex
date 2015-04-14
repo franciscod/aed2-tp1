@@ -36,7 +36,7 @@
 	\tadOperacion{vecinas}{topologia/t, pc/ip}{conj(pc)}{$ip \in compus(t)$}
 	\tadOperacion{interfacesOcupadasDe}{topologia/t, pc/ip}{conj(nat)}{$ip \in compus(t)$}
 	\tadOperacion{conectadas?}{topologia/t, pc/ipA, pc/ipB}{bool}{$ipA \in compus(t) $ $\land$ $ipB \in compus(t)$}
-	\tadOperacion{darInterfazConectada}{{conj(tupla(pc, nat))}/cablesA, pc/ipB}{nat}{$ipB \in \pi_2Conj(cablesA)$}
+	\tadOperacion{buscaSegmento}{pc/ipA, pc/ipB, conj(segmento)}{segmento}{$ipB \in vecinas(ipA)$}
 	\tadOperacion{darSegmento}{topologia/t, pc/ipA, pc/ipB}{segmento}{$ipA \in compus(t) \yluego ipB \in vecinas(t, ipA)$}
 	\tadOperacion{estáEnRuta?}{secu(segmento)/ruta, pc/ip}{bool}{}
 	\tadOperacion{darSiguientePc}{secu(segmento)/ruta, pc/ip}{pc}{$est\acute{a}EnRuta?(ruta, ip)$}
@@ -73,12 +73,18 @@
 	\tadAxioma{conectadas?($t$, $ipA$, $ipB$)}{
 		$\neg$ $\emptyset$?(darRutas($t$, $ipA$, $ipB$, $\emptyset$, <>))
 	}
-		\tadAxioma{darInterfazConectada($conjCablesIpA$, $ipB$)}{
-			\IF $ipB$ = $\pi_2$(dameUno($conjCablesIpA$)) THEN $\pi_1$(dameUno($conjCablesIpA$)) ELSE darInterfazConectada(sinUno($conjCablesIpA$), $ipB$) FI
-		}
-		\tadAxioma{darSegmento($t$, $ipA$, $ipB$)}{
-			$\langle$ $ipA$, darInterfazConectada(cablesEn($t$, $ipA$), $ipB$), \\ $ipB$, darInterfazConectada(cablesEn($t$, $ipB$), $ipA$) $\rangle$
-		}
+	\tadAxioma{buscaSegmento($ipA$, $ipB$, $ss$)}{
+		\IF ($ipA$ = $\pi_1$(dameUno($ss$))) $\land$ ($ipB$ = $\pi_3$(dameUno($ss$))) THEN
+			dameUno($ss$)
+		ELSE
+			buscaSegmento($ipA$, $ipB$, sinUno($ss$))
+		FI
+	}
+
+	\tadAxioma{darSegmento($t$, $ipA$, $ipB$)}{
+		buscaSegmento($ipA$, $ipB$, segmentos($t$))
+	}
+
 		\tadAxioma{estáEnRuta?($ruta$, $ip$)}{
 					\IF vacía?($ruta$) THEN
 						false
@@ -166,4 +172,13 @@
 			Ag($\pi_2$(dameUno($conjDuplas$)), $\pi_2$Conj(sinUno($conjDuplas$)))
 		FI
 	}
+
+	\tadAlinearAxiomas{segmentos(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$))}
+
+	\tadAxioma{segmentos(NuevaTopo)}{$\emptyset$}
+	\tadAxioma{segmentos(Compu($t$, $ip$, $cantIfaces$))}{segmentos($t$)}
+	\tadAxioma{segmentos(Cable($t$, $ipA$, $ifA$, $ipB$, $ifB$))}{
+		Ag($\langle ipA, ifA, ipB, ifB \rangle$, Ag($\langle ipB, ifB, ipA, ifA \rangle$, segmentos($t$)))
+	}
+
 \end{tadx}
