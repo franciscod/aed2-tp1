@@ -38,7 +38,7 @@
 	\tadOperacion{rutaPaqueteEnviado}{dcnet/dcn, pc/compu}{secu(segmento)}{$compu \in compus(topo(dcn)$}
 	\tadOperacion{paquetesRecibidos}{dcnet, conj(pc)/vecinasPc, pc/compu}{conj(paquete)}{$compu$ $\in$ compus(topo($dcn$)) \yluego $vecinasPc$ $\subseteq$ vecinas(topo($dcnet$), $compu$)}
 
-	\tadOperacion{maxPrioridad}{conj(paquetes)/cp}{prioridad}{$\neg \emptyset?(cp)$}
+	\tadOperacion{altaPrioridad}{conj(paquetes)/cp}{prioridad}{$\neg \emptyset?(cp)$}
 	\tadAlinearFunciones{buscarPaquetesEnLaRed}{dcnet/dcn,pc/p1,pc/p2,paquete}
 
 	\tadOperacion{darPaqueteEnviado}{conj(paquete)/cp}{paquete}{$\neg \emptyset?(cp)$}
@@ -121,14 +121,14 @@
 
 
 
-	\tadAxioma{darPaqueteEnviado($dcn$, $cp$)}{dameUno(paquetesConPrioridadK($cp$, maxPrioridad($cp$)))}
+	\tadAxioma{darPaqueteEnviado($dcn$, $cp$)}{dameUno(paquetesConPrioridadK($cp$, altaPrioridad($cp$)))}
 
 
-	\tadAxioma{maxPrioridad($cp$)}{
+	\tadAxioma{altaPrioridad($cp$)}{
 		\IF $\emptyset$?(sinUno($cp$)) THEN
 			prioridad(dameUno($cp$))
 		ELSE
-			max(prioridad(dameUno($cp$)), maxPrioridad(sinUno($cp$)))
+			min(prioridad(dameUno($cp$)), altaPrioridad(sinUno($cp$)))
 		FI
 	}
 
