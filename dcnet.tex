@@ -121,8 +121,6 @@
 	\tadAxioma{darPaqueteEnviado($dcn$, $cp$)}{dameUno(paquetesConPrioridadK($cp$, maxPrioridad($cp$)))}
 
 
-	\tadAxioma{paquetesConPrioridadK($cp$, $k$)}{
-
 	\tadAxioma{maxPrioridad($cp$)}{
 		\IF $\emptyset$?(sinUno($cp$)) THEN
 			prioridad(dameUno($cp$))
@@ -130,6 +128,8 @@
 			max(prioridad(dameUno($cp$)), maxPrioridad(sinUno($cp$)))
 		FI
 	}
+
+	\tadAxioma{paquetesConPrioridadK($cp$, $k$)}{
 
 		\IF $\emptyset$?($cp$) THEN
 			$\emptyset$
