@@ -1,5 +1,6 @@
 \begin{tad}{\tadNombre{DCNet}}
 	\tadGeneros{dcnet}
+	\tadExporta{dcnet, generadores, observadores, $recorridoPaquete$, $compuQueMasEnvio$, $paqueteEnTransito?$, $\#paquetesEnEspera$}
 
 	\tadAlinearFunciones{buscarPcConPaquete}{dcnet, conj(pc)/vecinasPc, pc/compu}
 
@@ -23,9 +24,8 @@
 	\tadOperacion{\#enviados}{dcnet/dcn, pc/ip}{nat}{$ip \in compus(topo(dcn))$}
 	\tadOperacion{buffer}{dcnet/dcn, pc/ip}{conj(paquete)}{$ip \in compus(topo(dcn))$}
 
-
 	\tadOtrasOperaciones
-
+	\tadOperacion{\#paquetesEnEspera}{dcnet/dcn, pc/ip}{nat}{$ip \in compus(topo(dcn))$}
 	\tadOperacion{recorridoPaquete}{dcnet/dcn,id/idP}{secu(segmento)}{$paqueteEnTransito?(dcn, idP)$}
 	\tadOperacion{cortarRecHasta}{sec(segmento), pc}{sec(segmento)}{}
 
@@ -79,6 +79,7 @@
 		paquetesRecibidos($dcn$, vecinas($c$), $c$)
 	}
 
+	\tadAxioma{\#paquetesEnEspera($dcn$, $ip$)}{\#(buffer(dcn,ip))}
 	\tadAxioma{recorridoPaquete($dcn$, $p$)}{
 		cortarRecHasta( \\
 		darCaminoMasCorto(topo($dcn$), ipOrigen($p$), ipDestino($p$)), \\
