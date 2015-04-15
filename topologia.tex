@@ -45,7 +45,7 @@
 	\tadAlinearFunciones{darRutasVecinas}{topologia, conj(pc), pc/ip, conj(pc), secu(segmento)}
 
 	\tadOperacion{darRutas}{topologia, pc/ipA, pc/ipB, conj(pc), {secu(segmento)}}{conj(secu(segmento))}{$ipA \in compus(t) \land ipB \in compus(t)$}
-	\tadOperacion{darRutasVecinas}{topologia, conj(pc), pc/ip, conj(pc), secu(segmento)}{conj(secu(segmento))}{$ip \in compus(t)$}
+	\tadOperacion{darRutasVecinas}{topologia/t, conj(pc)/vec, pc/ip, conj(pc), secu(segmento)}{conj(secu(segmento))}{$ip \in compus(t) \land vec \subseteq compus(t)$}
 	\tadOperacion{longMenorSec}{conj(secu($\alpha$))/secus}{nat}{$\neg \emptyset?(secus)$}
 	\tadOperacion{secusDeLongK}{conj(secu($\alpha$)), nat}{conj(secu($\alpha$))}{}
 	\tadOperacion{ips}{conj({tupla(pc, ifz)})}{conj(pc)}{}
