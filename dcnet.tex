@@ -1,7 +1,7 @@
 \begin{tad}{\tadNombre{DCNet}}
 	\tadGeneros{dcnet}
 
-	\tadAlinearFunciones{rutaPaqueteEnviado}{dcnet, conj(pc)/vecinasPc, pc/compu}
+	\tadAlinearFunciones{buscarPcConPaquete}{dcnet, conj(pc)/vecinasPc, pc/compu}
 
 	\tadIgualdadObservacional{d}{d'}{dcnet}{
 		(topo($d$) \igobs topo($d'$)) \yluego ( \\
@@ -80,7 +80,9 @@
 	}
 
 	\tadAxioma{recorridoPaquete($dcn$, $p$)}{
-		cortarRecHasta(darCaminoMasCorto(topo($dcn$), \\ipOrigen($p$), ipDestino($p$)), buscarPcConPaquete(compus(topo($dcn$)), $p$))
+		cortarRecHasta( \\
+		darCaminoMasCorto(topo($dcn$), ipOrigen($p$), ipDestino($p$)), \\
+		buscarPcConPaquete(compus(topo($dcn$)), $p$))
 	}
 	\tadAxioma{cortarRecHasta($s$, $ip$)}{
 		\IF vacia?($s$) $\oluego$ $ip$ = ipOrigen(prim($s$)) THEN <> 		% ipOrigen es el primer elemento del segmento
